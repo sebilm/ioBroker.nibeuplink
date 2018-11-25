@@ -35,7 +35,8 @@
             "pt": "docs/pt/admin.md"
         },
         "platform": "Javascript/Node.js",
-        "mode": "daemon",
+        "mode": "schedule",
+        "schedule":     "*/2 * * * *",
         "icon": "nibeuplink.png",
         "materialize": true,
         "enabled": true,
