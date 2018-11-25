@@ -1,28 +1,28 @@
 {
-  "name": "iobroker.template",
+  "name": "iobroker.nibeuplink",
   "version": "0.6.0",
-  "description": "ioBroker template Adapter",
+  "description": "nibeuplink",
   "author": {
-    "name": "@@Author@@",
-    "email": "@@email@@"
+    "name": "Sebastian Haesselbarth",
+    "email": "seb@sebmail.de"
   },
   "contributors": [
     {
-      "name": "@@Author@@",
-      "email": "@@email@@"
+      "name": "Sebastian Haesselbarth",
+      "email": "seb@sebmail.de"
     }
   ],
-  "homepage": "https://github.com/ioBroker/ioBroker.template",
+  "homepage": "https://github.com/ioBroker/ioBroker.nibeuplink",
   "license": "MIT",
   "keywords": [
     "ioBroker",
-    "template",
+    "nibeuplink",
     "Smart Home",
     "home automation"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.template"
+    "url": "https://github.com/ioBroker/ioBroker.nibeuplink"
   },
   "dependencies": {},
   "devDependencies": {
@@ -35,7 +35,7 @@
     "test": "node node_modules/mocha/bin/mocha --exit"
   },
   "bugs": {
-    "url": "https://github.com/ioBroker/ioBroker.template/issues"
+    "url": "https://github.com/ioBroker/ioBroker.nibeuplink/issues"
   },
   "readmeFilename": "README.md"
 }
