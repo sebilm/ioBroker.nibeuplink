@@ -1,31 +1,6 @@
 /**
  *
- * nibeuplink adapter
- *
- *
- *  file io-package.json comments:
- *
- *  {
- *      "common": {
- *          "name":         "nibeuplink",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.0.1",                    // use "Semantic Versioning"! see http://semver.org/
- *          "title":        "Nibe Uplink Adapter",  // Adapter title shown in User Interfaces
- *          "authors":  [                               // Array of authord
- *              "Sebastian Haesselbarth <seb@sebmail.de>"
- *          ]
- *          "desc":         "Nibe Uplink Adapter",          // Adapter description shown in User Interfaces. Can be a language object {de:"...",ru:"..."} or a string
- *          "platform":     "Javascript/Node.js",       // possible values "javascript", "javascript/Node.js" - more coming
- *          "mode":         "schedule",                   // possible values "daemon", "schedule", "subscribe"
- *          "materialize":  true,                       // support of admin3
- *          "schedule":     "*\/5 * * * *"                 // cron-style schedule. Only needed if mode=schedule
- *          "loglevel":     "info"                      // Adapters Log Level
- *      },
- *      "native": {                                     // the native object is available via adapter.config in your adapters code - use it for configuration
- *          "test1": true,
- *          "test2": 42,
- *          "mySelect": "auto"
- *      }
- *  }
+ * nibeuplink adapter 
  *
  */
 
@@ -40,6 +15,8 @@ const utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
 // name has to be set and has to be equal to adapters folder name and main file name excluding extension
 // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.nibeuplink.0
 const adapter = new utils.Adapter('nibeuplink');
+
+const Fetcher = require('nibe-fetcher')
 
 /*Variable declaration, since ES6 there are let to declare variables. Let has a more clearer definition where 
 it is available then var.The variable is available inside a block and it's childs, but not outside. 
@@ -92,67 +69,109 @@ adapter.on('ready', function () {
     main();
 });
 
-function main() {
+// For todays date;
+Date.prototype.today = function () { 
+    return this.getFullYear() + "-" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "-" + ((this.getDate() < 10)?"0":"") + this.getDate();
+}
 
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // adapter.config:
-    adapter.log.info('config test1: '    + adapter.config.test1);
-    adapter.log.info('config test1: '    + adapter.config.test2);
-    adapter.log.info('config mySelect: ' + adapter.config.mySelect);
+// For the time now
+Date.prototype.timeNow = function () {
+     return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+}
 
-
-    /**
-     *
-     *      For every state in the system there has to be also an object of type state
-     *
-     *      Here a simple nibeuplink for a boolean variable named "testVariable"
-     *
-     *      Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-     *
-     */
-
-    adapter.setObject('testVariable', {
+function createStringObject(path, name)
+{
+    adapter.setObjectNotExists(path, {
         type: 'state',
         common: {
-            name: 'testVariable',
-            type: 'boolean',
-            role: 'indicator'
+            name: name,
+            type: 'string',
+            role: 'text'
         },
         native: {}
     });
+}
 
+function createChannel(path, name)
+{
+    adapter.setObjectNotExists(path, {
+        type: 'channel',
+        common: {
+            name: name,
+            type: 'string',
+            role: 'text'
+        },
+        native: {}
+    });
+}
+
+function createInfoObjects()
+{
+    createChannel("info",                    "Information");
+    createStringObject("info.updateTime",    "Last Update Time");
+    createStringObject("info.currentError",  "Current Error");
+    createStringObject("info.lastError",     "Last Error");
+    createStringObject("info.lastErrorTime", "Last Error Time");
+}
+
+
+function main() {
+
+    adapter.log.info('Starting adapter.');
+    
+    var f = new Fetcher({
+        clientId: adapter.config.Identifier,
+        clientSecret: adapter.config.Secret,
+        redirectUri: adapter.config.CallbackURL,
+        interval: 60,
+        authCode: adapter.config.AuthCode,
+        systemId: adapter.config.SystemId
+    });
+
+    f.on('data', (data) => {
+        adapter.log.debug(JSON.stringify(data, null, ' '))
+        adapter.log.info("Data received.");
+
+        createInfoObjects();
+
+        var newDate = new Date();
+        var datetime = newDate.today() + " @ " + newDate.timeNow();
+        adapter.setState("info.updateTime", {val: datetime, ack: true});
+        adapter.setState("info.currentError", {val: null, ack: true});
+
+        for (var i in data) {            
+            var par = data[i];
+            var title = par["title"];
+            var parameterId = par["parameterId"];
+            var categoryId = par ["categoryId"];
+            var path = categoryId + "." + parameterId;
+            createChannel(path, title);
+            
+            for (var p in par) {   
+                var parPath = path + "." + p;
+                var value = par[p];
+                createStringObject(parPath, p);
+                adapter.setState(parPath, {val: value, ack: true});
+            }            
+        }
+        adapter.log.info("Data processed.");
+    });
+    
+
+    f.on('error', (data) => {
+        adapter.log.error('' + data)
+        
+        createInfoObjects();
+
+        var newDate = new Date();
+        var datetime = newDate.today() + " @ " + newDate.timeNow();
+        adapter.setState("info.lastErrorTime", {val: datetime, ack: true});
+        adapter.setState("info.lastError", {val: '' + data, ack: true});        
+        adapter.setState("info.currentError", {val: '' + data, ack: true});
+    });    
+
+    adapter.log.info('Adapter started.');
+    
     // in this nibeuplink all states changes inside the adapters namespace are subscribed
-    adapter.subscribeStates('*');
-
-
-    /**
-     *   setState examples
-     *
-     *   you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-     *
-     */
-
-    // the variable testVariable is set to true as command (ack=false)
-    adapter.setState('testVariable', true);
-
-    // same thing, but the value is flagged "ack"
-    // ack should be always set to true if the value is received from or acknowledged from the target system
-    adapter.setState('testVariable', {val: true, ack: true});
-
-    // same thing, but the state is deleted after 30s (getState will return null afterwards)
-    adapter.setState('testVariable', {val: true, ack: true, expire: 30});
-
-
-
-    // examples for the checkPassword/checkGroup functions
-    adapter.checkPassword('admin', 'iobroker', function (res) {
-        console.log('check user admin pw ioboker: ' + res);
-    });
-
-    adapter.checkGroup('admin', 'admin', function (res) {
-        console.log('check group user admin group admin: ' + res);
-    });
-
-
-
+    //adapter.subscribeStates('*');
 }
