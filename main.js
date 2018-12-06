@@ -16,7 +16,7 @@ const utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
 // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.nibeuplink.0
 const adapter = new utils.Adapter('nibeuplink');
 
-const Fetcher = require('nibe-fetcher')
+const Fetcher = require('./nibe-fetcher.js')
 
 /*Variable declaration, since ES6 there are let to declare variables. Let has a more clearer definition where 
 it is available then var.The variable is available inside a block and it's childs, but not outside. 
