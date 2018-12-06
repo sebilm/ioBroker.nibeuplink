@@ -129,8 +129,8 @@ function main() {
     });
 
     f.on('data', (data) => {
-        adapter.log.debug(JSON.stringify(data, null, ' '))
-        adapter.log.info("Data received.");
+        adapter.log.debug("Data received:");
+        adapter.log.debug(JSON.stringify(data, null, ' '))        
 
         createInfoObjects();
 
@@ -154,7 +154,7 @@ function main() {
                 adapter.setState(parPath, {val: value, ack: true});
             }            
         }
-        adapter.log.info("Data processed.");
+        adapter.log.debug("Data processed.");
     });
     
 
