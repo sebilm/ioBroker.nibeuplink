@@ -227,8 +227,10 @@ const defaultOptions = {
 }
 
 class Fetcher extends EventEmitter {
-  constructor (options) {
+  constructor (options, adapter) {
     super()
+
+    this.adapter = adapter;
 
     Joi.assert(options, Joi.object({
       clientId: Joi.string().length(32).required(),
@@ -267,22 +269,20 @@ class Fetcher extends EventEmitter {
             state: 'init'
           }
 
-          console.log('Open in webbrowser to receive your NIBE Uplink Auth-Code:')
-          console.log('')
-          console.log(this.options.baseUrl + '/oauth/authorize?' + querystring.stringify(query))
-          console.log('')
-          console.log('Afterwards make sure to provide the NIBE Uplink Auth-Code as environment property NIBE_AUTH_CODE and restart the process.')
-          this.stop()
+          this.adapter.log.error("You need to get and set a new Auth-Code. You can do this in the adapter setting.");
+          this.stop();
         }
       },
       (callback) => {
-        if (!this._isTokenExpired()) return callback()
-        console.log('Token is expired / expires soon - refreshing')
-        this.refreshToken().then((data) => callback(), (error) => callback(error))
+        if (!this._isTokenExpired())
+          return callback();
+        this.adapter.log.debug('Token is expired / expires soon - refreshing');
+        this.refreshToken().then((data) => callback(), (error) => callback(error));
       },
       (callback) => {
-        if (this.categories != null) return callback()
-        console.log('Loading categories')
+        if (this.categories != null)
+          return callback();
+        this.adapter.log.debug('Loading categories');
         this.fetchCategories().then((data) => {
           callback()
         }, (error) => {
@@ -479,9 +479,10 @@ class Fetcher extends EventEmitter {
 
   _isError (response) {
     if (response.statusCode !== 200) {
-      console.error('Error occurred: ' + response.statusCode + ': ' + response.statusMessage)
-      if (response.statusCode === 401) this.clear()
-      return true
+      this.adapter.log.error('Error occurred: ' + response.statusCode + ': ' + response.statusMessage);
+      if (response.statusCode === 401)
+        this.clear();
+      return true;
     }
 
     return false

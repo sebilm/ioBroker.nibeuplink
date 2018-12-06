@@ -126,7 +126,7 @@ function main() {
         interval: 60,
         authCode: adapter.config.AuthCode,
         systemId: adapter.config.SystemId
-    });
+    }, adapter);
 
     f.on('data', (data) => {
         adapter.log.debug("Data received:");
