@@ -86,7 +86,7 @@ function createStringObject(path, name)
         common: {
             name: name,
             type: 'string',
-            role: 'text'
+            role: 'value'
         },
         native: {}
     });
