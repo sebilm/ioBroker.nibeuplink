@@ -1,14 +1,14 @@
-const EventEmitter = require('events')
-const Hoek = require('hoek')
-const Wreck = require('wreck')
-const Joi = require('joi')
-const querystring = require('querystring')
-const async = require('async')
-const info = require('./package.json')
-const jsonfile = require('jsonfile')
-jsonfile.spaces = 2
-const Path = require('path')
-const fs = require('fs')
+const EventEmitter = require('events');
+const Hoek = require('hoek');
+const Wreck = require('wreck');
+const Joi = require('joi');
+const querystring = require('querystring');
+const async = require('async');
+const info = require('./package.json');
+const jsonfile = require('jsonfile');
+jsonfile.spaces = 2;
+const Path = require('path');
+const fs = require('fs');
 
 const defaultOptions = {
   clientId: null,
@@ -248,18 +248,21 @@ class Fetcher extends EventEmitter {
       maxBytes: this.options.maxBytes
     })
 
-    if (process.env.NIBE_AUTH_CODE) this.options.authCode = process.env.NIBE_AUTH_CODE
-    if (this.options.autoStart) this.start()
+    if (process.env.NIBE_AUTH_CODE)
+      this.options.authCode = process.env.NIBE_AUTH_CODE;
+    if (this.options.autoStart)
+      this.start();
   }
 
   fetch (callback) {
     async.waterfall([
       (callback) => {
-        if (this._hasRefreshToken()) return callback()
+        if (this._hasRefreshToken())
+          return callback();
         if (this.options.authCode) {
           this.token(this.options.authCode)
             .then((data) => callback(), (error) => callback(error))
-          return
+          return;
         } else {
           const query = {
             response_type: 'code',
@@ -284,51 +287,53 @@ class Fetcher extends EventEmitter {
           return callback();
         this.adapter.log.debug('Loading categories');
         this.fetchCategories().then((data) => {
-          callback()
+          callback();
         }, (error) => {
-          callback(error)
+          callback(error);
         })
       },
       (callback) => {
         this.fetchAllParams().then((data) => {
-          callback()
+          callback();
         }, (error) => {
-          callback(error)
+          callback(error);
         })
       }
     ], (error) => {
       if (error) {
-        this._onError(error)
+        this._onError(error);
       }
-
-      callback()
+      callback();
     })
   }
 
   start () {
-    if (this._interval) return
-    var active = false
+    if (this._interval)
+      return;
+    var active = false;
 
     var exec = () => {
-      if (active) return
-      active = true
+      if (active)
+        return;
+      active = true;
       this.fetch(() => {
-        active = false
+        active = false;
       })
     }
 
-    this._interval = setInterval(exec, this.options.interval * 1000)
-    exec()
+    this._interval = setInterval(exec, this.options.interval * 1000);
+    exec();
   }
 
   stop () {
-    if (!this._interval) return
-    clearInterval(this._interval)
-    this._interval = null
+    if (!this._interval)
+      return;
+    clearInterval(this._interval);
+    this._interval = null;
   }
 
   clear () {
-    this.setSesssion({})
+    this.setSesssion({});
   }
 
   token (code) {
@@ -349,12 +354,13 @@ class Fetcher extends EventEmitter {
         json: true,
         payload: querystring.stringify(data)
       }, (error, response, payload) => {
-        if (error) return reject(error)
-        if (this._isError(response)) return reject(new Error(response.statusCode + ': ' + response.statusMessage))
-        payload.expires_at = Date.now() + (payload.expires_in * 1000)
-        this.setSesssion(payload)
-        this.setSesssion(payload)
-        return resolve(payload)
+        if (error)
+          return reject(error);
+        if (this._isError(response))
+          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
+        payload.expires_at = Date.now() + (payload.expires_in * 1000);
+        this.setSesssion(payload);
+        return resolve(payload);
       })
     })
   }
@@ -375,9 +381,11 @@ class Fetcher extends EventEmitter {
         json: true,
         payload: querystring.stringify(data)
       }, (error, response, payload) => {
-        if (error) return reject(error)
-        if (this._isError(response)) return reject(new Error(response.statusCode + ': ' + response.statusMessage))
-        payload.expires_at = Date.now() + (payload.expires_in * 1000)
+        if (error)
+          return reject(error);
+        if (this._isError(response))
+          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
+        payload.expires_at = Date.now() + (payload.expires_in * 1000);
         this.setSesssion(payload);
         return resolve(payload);
       })
@@ -385,7 +393,7 @@ class Fetcher extends EventEmitter {
   }
 
   fetchCategories () {
-    const systemId = this.options.systemId
+    const systemId = this.options.systemId;
     return new Promise((resolve, reject) => {
       this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
         headers: {
@@ -393,16 +401,18 @@ class Fetcher extends EventEmitter {
         },
         json: true
       }, (error, response, payload) => {
-        if (error) return reject(error)
-        if (this._isError(response)) return reject(new Error(response.statusCode + ': ' + response.statusMessage))
-        this.categories = payload
-        return resolve(payload)
+        if (error)
+          return reject(error);
+        if (this._isError(response))
+          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
+        this.categories = payload;
+        return resolve(payload);
       })
     })
   }
 
   fetchParams (category) {
-    const systemId = this.options.systemId
+    const systemId = this.options.systemId;
     return new Promise((resolve, reject) => {
       this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
         headers: {
@@ -410,71 +420,77 @@ class Fetcher extends EventEmitter {
         },
         json: true
       }, (error, response, payload) => {
-        if (error) return reject(error)
-        if (this._isError(response)) return reject(new Error(response.statusCode + ': ' + response.statusMessage))
-        return resolve(payload)
+        if (error)
+          return reject(error);
+        if (this._isError(response))
+          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
+        return resolve(payload);
       })
     })
   }
 
   fetchAllParams () {
-    const categories = this.categories
+    const categories = this.categories;
     return new Promise((resolve, reject) => {
       async.map(categories, (item, reply) => {
         this.fetchParams(item.categoryId).then((result) => {
           result.forEach((i) => {
-            const name = i.parameterId || (item.categoryId + '_' + i.title.split(/[^a-z]+/gi).join('_')).toLowerCase().replace(/[_]+$/, '')
-            const parameters = this.options.parameters[name]
+            const name = i.parameterId || (item.categoryId + '_' + i.title.split(/[^a-z]+/gi).join('_')).toLowerCase().replace(/[_]+$/, '');
+            const parameters = this.options.parameters[name];
             Object.assign(i, {
               key: name,
               categoryId: item.categoryId
             }, parameters)
 
-            if (i.divideBy > 0) i.value = i.rawValue / i.divideBy
+            if (i.divideBy > 0)
+              i.value = i.rawValue / i.divideBy;
           })
           reply(null, result)
         }, (error) => {
-          reply(error)
+          reply(error);
         })
       }, (error, results) => {
-        if (error) return reject(error)
-        results = [].concat.apply([], results)
-        this._onData(results)
-        resolve(results)
+        if (error)
+          return reject(error);
+        results = [].concat.apply([], results);
+        this._onData(results);
+        resolve(results);
       })
     })
   }
 
   readSession () {
-    if (!this.options.sessionStore || !fs.existsSync(this.options.sessionStore)) return
-    this._auth = jsonfile.readFileSync(this.options.sessionStore, { throws: false })
+    if (!this.options.sessionStore || !fs.existsSync(this.options.sessionStore))
+      return this._auth = jsonfile.readFileSync(this.options.sessionStore, { throws: false });
   }
 
   getSession (key) {
-    if (this._auth == null) this.readSession()
-    return this._auth ? this._auth[key] : null
+    if (this._auth == null)
+      this.readSession();
+    return this._auth ? this._auth[key] : null;
   }
 
   setSesssion (auth) {
-    this._auth = auth
-    if (!this.options.sessionStore) return
-    jsonfile.writeFileSync(this.options.sessionStore, this._auth)
+    this._auth = auth;
+    if (!this.options.sessionStore)
+      return;
+    jsonfile.writeFileSync(this.options.sessionStore, this._auth);
   }
 
   _isTokenExpired () {
-    return (this.getSession('expires_at') || 0) < (Date.now() + this.options.renewBeforeExpiry)
+    return (this.getSession('expires_at') || 0) < (Date.now() + this.options.renewBeforeExpiry);
   }
 
   _hasRefreshToken () {
-    return !!this.getSession('refresh_token')
+    return !!this.getSession('refresh_token');
   }
 
   _onData (data) {
-    this.emit('data', data)
+    this.emit('data', data);
   }
 
   _onError (error) {
-    this.emit('error', error)
+    this.emit('error', error);
   }
 
   _isError (response) {
@@ -485,8 +501,8 @@ class Fetcher extends EventEmitter {
       return true;
     }
 
-    return false
+    return false;
   }
 }
 
-module.exports = Fetcher
+module.exports = Fetcher;
