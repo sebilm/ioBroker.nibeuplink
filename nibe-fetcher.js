@@ -16,10 +16,10 @@ const defaultOptions = {
   systemId: null,
   pattern: /<tr>\s*<td>\s*([^<]+)<span[^>]+>([^<]*)<\/span>\s*<\/td>\s*<td>\s*<span class="AutoUpdateValue ID([0-9]*)[^>]+>([^<]*)<\/span>\s*<\/td>\s*<\/tr>/g,
   baseUrl: 'https://api.nibeuplink.com',
-  redirectUri: 'http://z0mt3c.github.io/nibe.html',
+  redirectUri: 'https://z0mt3c.github.io/nibe.html',
   scope: 'READSYSTEM',
   autoStart: true,
-  timeout: 60000,
+  timeout: 45000,
   maxBytes: 1048576,
   followRedirects: 2,
   userAgent: [info.name, info.version].join(' '),
@@ -220,7 +220,7 @@ const defaultOptions = {
       'key': 'system_info_country'
     }
   },
-  interval: 15,
+  interval: 60,
   timezone: 'Europe/Berlin',
   renewBeforeExpiry: 5 * 60 * 1000,
   sessionStore: Path.join(__dirname, './.session.json')
