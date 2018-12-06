@@ -56,6 +56,14 @@ const defaultOptions = {
       'key': 'status_hot_water_charging',
       'divideBy': 10
     },
+    '40015': {
+      'key': 'brine_in',
+      'divideBy': 10
+    },
+    '40016': {
+      'key': 'brine_out',
+      'divideBy': 10
+    },
     '40017': {
       'key': 'cpr_info_ep14_condenser_out',
       'divideBy': 10
