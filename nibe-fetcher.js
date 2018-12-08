@@ -473,7 +473,8 @@ class Fetcher extends EventEmitter {
   readSession () {
     this.adapter.log.debug("Read session.");
     if (!this.options.sessionStore || !fs.existsSync(this.options.sessionStore))
-      return this._auth = jsonfile.readFileSync(this.options.sessionStore, { throws: false });
+      return;
+    this._auth = jsonfile.readFileSync(this.options.sessionStore, { throws: false });
   }
 
   getSession (key) {
