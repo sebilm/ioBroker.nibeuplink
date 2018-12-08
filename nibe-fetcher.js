@@ -277,14 +277,6 @@ class Fetcher extends EventEmitter {
             .then((data) => callback(), (error) => callback(error))
           return;
         } else {
-          const query = {
-            response_type: 'code',
-            client_id: this.options.clientId,
-            scope: this.options.scope,
-            redirect_uri: this.options.redirectUri,
-            state: 'init'
-          }
-
           this.adapter.log.error("You need to get and set a new Auth-Code. You can do this in the adapter setting.");
           this.stop();
         }
