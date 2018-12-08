@@ -1,3 +1,15 @@
+//
+// nibe-fetcher
+//
+// original author: Timo Behrmann (timo.behrmann@gmail.com)
+//
+// sources: https://github.com/z0mt3c/nibe-fetcher
+//
+// license: MIT
+//
+// this version is based on nibe-fetcher version 1.1.0
+//
+
 const EventEmitter = require('events');
 const Hoek = require('hoek');
 const Wreck = require('wreck');
