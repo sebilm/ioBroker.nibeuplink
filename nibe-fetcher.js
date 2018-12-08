@@ -267,6 +267,7 @@ class Fetcher extends EventEmitter {
   }
 
   fetch (callback) {
+    this.adapter.log.debug("fetch()");
     async.waterfall([
       (callback) => {
         if (this._hasRefreshToken())
@@ -345,10 +346,12 @@ class Fetcher extends EventEmitter {
   }
 
   clear () {
+    this.adapter.log.debug("clear()");
     this.setSesssion({});
   }
 
   token (code) {
+    this.adapter.log.debug("token()");
     const data = {
       grant_type: 'authorization_code',
       client_id: this.options.clientId,
@@ -378,6 +381,7 @@ class Fetcher extends EventEmitter {
   }
 
   refreshToken () {
+    this.adapter.log.debug("Refresh token.");
     const data = {
       grant_type: 'refresh_token',
       refresh_token: this.getSession('refresh_token'),
@@ -405,6 +409,7 @@ class Fetcher extends EventEmitter {
   }
 
   fetchCategories () {
+    this.adapter.log.debug("Fetch categories.");
     const systemId = this.options.systemId;
     return new Promise((resolve, reject) => {
       this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
@@ -424,6 +429,7 @@ class Fetcher extends EventEmitter {
   }
 
   fetchParams (category) {
+    this.adapter.log.debug("Fetch params.");
     const systemId = this.options.systemId;
     return new Promise((resolve, reject) => {
       this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
@@ -442,6 +448,7 @@ class Fetcher extends EventEmitter {
   }
 
   fetchAllParams () {
+    this.adapter.log.debug("Fetch all params.");
     const categories = this.categories;
     return new Promise((resolve, reject) => {
       async.map(categories, (item, reply) => {
@@ -472,17 +479,20 @@ class Fetcher extends EventEmitter {
   }
 
   readSession () {
+    this.adapter.log.debug("Read session.");
     if (!this.options.sessionStore || !fs.existsSync(this.options.sessionStore))
       return this._auth = jsonfile.readFileSync(this.options.sessionStore, { throws: false });
   }
 
   getSession (key) {
+    this.adapter.log.debug("Get session.");
     if (this._auth == null)
       this.readSession();
     return this._auth ? this._auth[key] : null;
   }
 
   setSesssion (auth) {
+    this.adapter.log.debug("Set session.");
     this._auth = auth;
     if (!this.options.sessionStore)
       return;
@@ -490,11 +500,17 @@ class Fetcher extends EventEmitter {
   }
 
   _isTokenExpired () {
-    return (this.getSession('expires_at') || 0) < (Date.now() + this.options.renewBeforeExpiry);
+    this.adapter.log.debug("Is token expired?");
+    var expired = (this.getSession('expires_at') || 0) < (Date.now() + this.options.renewBeforeExpiry);
+    this.adapter.log.debug("Is token expired: " + expired);
+    return expired;
   }
 
   _hasRefreshToken () {
-    return !!this.getSession('refresh_token');
+    this.adapter.log.debug("Has refresh token?");
+    var hasToken = !!this.getSession('refresh_token');
+    this.adapter.log.debug("Has refresh token: " + hasToken);
+    return hasToken;
   }
 
   _onData (data) {
