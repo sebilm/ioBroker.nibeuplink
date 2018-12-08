@@ -71,49 +71,44 @@
     <div class="m adapter-container">
         <div class="row">
             <!-- Forms are the standard way to receive user inputted data.
-         Learn more http://materializecss.com/forms.html-->
-            <div class="row">
-                <div class="input-field col s6">
-                    <img src="nibeuplink.png" class="logo">
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12 m6 l4">
-                    <input class="value" id="CallbackURL" type="text" onchange="generateURL()">
-                    <label for="CallbackURL">Callback URL</label>
-                    <span class="translate">Descriptions of the input field</span>
-                </div>
-            </div>
+                 Learn more http://materializecss.com/forms.html-->
             <div class="row">
                 <div class="input-field col s12 m6 l4">
                     <input class="value" id="Identifier" type="text" onchange="generateURL()">
                     <label for="Identifier">Identifier</label>
-                    <span class="translate">Descriptions of the input field</span>
+                    <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+                </div>
+                <div class="input-field col s12 m6 l4">
+                    <input class="value" id="Secret" type="text">
+                    <label for="Secret">Secret</label>
+                    <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input class="value" id="CallbackURL" type="text" onchange="generateURL()">
+                    <label for="CallbackURL">Callback URL</label>
+                    <span class="translate">Does not need to be changed.</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <p class="translate"><a target="_blank" id="URL">Click here to generate the Auth Code on NIBE Uplink.</div></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input class="value" id="AuthCode" type="text">
+                    <label for="AuthCode">Auth Code</label>
+                    <span class="translate">Paste your Auth Code here.</span>
                 </div>
             </div>            
             <div class="row">
-                <div class="col s12">
-                    <p class="translate">Link: <a target="_blank" id="URL">Hier klicken, um den Auth-Code auf NIBE Uplink zu generieren.</div></p>
-                </div>
-            </div>
-            <div class="row">
                 <div class="input-field col s12 m6 l4">
-                    <input class="value" id="AuthCode" type="text">
-                    <label for="AuthCode">Auth-Code</label>
-                    <span class="translate">Descriptions of the input field</span>
+                    <input type="number" class="value" id="SystemId" />
+                    <label for="SystemId" class="translate">System ID</label>
+                    <span class="translate">Log in at https://www.nibeuplink.com. It is the number in the URL.</span>
                 </div>
-            </div>
-            <div class="row">
-                    <div class="input-field col s12 m6 l4">
-                        <input class="value" id="Secret" type="text">
-                        <label for="Secret">Secret</label>
-                        <span class="translate">Descriptions of the input field</span>
-                    </div>
-                </div>
-            <div class="input-field col s12 m6 l4">
-                <input type="number" class="value" id="SystemId" />
-                <label for="SystemId" class="translate">System ID</label>
-                <span class="translate">From URL</span>
             </div>
         </div>
     </div>

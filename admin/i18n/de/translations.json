@@ -1,9 +1,8 @@
 {
-  "Auto": "Auto",
-  "Manual": "Manual",
-  "My select": "Mein Auswahl",
-  "on save adapter restarts with new config immediately": "Beim Speichern von Einstellungen wird der Adapter sofort neu gestartet.",
-  "template adapter settings": "Beispiel",
-  "test1": "Test 1",
-  "test2": "Test 2"
+  "Does not need to be changed.": "Muss nicht geändert werden.",
+  "Get it from https://api.nibeuplink.com/Applications.": "Gibts auf https://api.nibeuplink.com/Applications.",
+  "Click here to generate the Auth Code on NIBE Uplink.": "Hier klicken, um den Auth-Code auf NIBE Uplink zu generieren.",
+  "Paste your Auth Code here.": "Den Auth-Code hier einfügen.",
+  "Log in at https://www.nibeuplink.com. It is the number in the URL.": "Auf https://www.nibeuplink.com eionloggen. Es ist die Zahl in der URL.",
+  "on save adapter restarts with new config immediately": "Beim Speichern von Einstellungen wird der Adapter sofort neu gestartet."
 }
