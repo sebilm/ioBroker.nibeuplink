@@ -1,4 +1,3 @@
-![Logo](admin/nibeuplink.png)
 # ioBroker.nibeuplink
 =================
 
