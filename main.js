@@ -164,7 +164,7 @@ function main() {
         createInfoObjects();
 
         var newDate = new Date();
-        var datetime = newDate.today() + " @ " + newDate.timeNow();
+        var datetime = newDate.today() + " " + newDate.timeNow();
         adapter.setState("info.lastErrorTime", {val: datetime, ack: true});
         adapter.setState("info.lastError", {val: '' + data, ack: true});        
         adapter.setState("info.currentError", {val: '' + data, ack: true});
