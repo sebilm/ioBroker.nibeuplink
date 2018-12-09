@@ -49,7 +49,8 @@
         "restartAdapters": []
     },
     "native": {
-        "CallbackURL": "https://z0mt3c.github.io/nibe.html"
+        "CallbackURL": "https://z0mt3c.github.io/nibe.html",
+        "Interval": 1
     },
     "objects": [
     ]

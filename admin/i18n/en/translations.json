@@ -4,5 +4,6 @@
   "Click here to generate the Auth Code on NIBE Uplink.": "Click here to generate the Auth Code on NIBE Uplink.",
   "Paste your Auth Code here.": "Paste your Auth Code here.",
   "Log in at https://www.nibeuplink.com. It is the number in the URL.": "Log in at https://www.nibeuplink.com. It is the number in the URL.",
+  "Time in minutes of fetching data from Nibe Uplink.": "Time in minutes of fetching data from nibe uplink.",
   "on save adapter restarts with new config immediately": "on save adapter restarts with new config immediately"
 }

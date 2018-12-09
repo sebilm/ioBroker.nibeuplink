@@ -119,11 +119,15 @@ function main() {
 
     adapter.log.info('Starting adapter.');
     
+    var refreshInterval = adapter.config.Interval;
+    if (refreshInterval <= 0)
+        refreshInterval = 1;
+
     var f = new Fetcher({
         clientId: adapter.config.Identifier,
         clientSecret: adapter.config.Secret,
         redirectUri: adapter.config.CallbackURL,
-        interval: 60,
+        interval: refreshInterval * 60,
         authCode: adapter.config.AuthCode,
         systemId: adapter.config.SystemId
     }, adapter);

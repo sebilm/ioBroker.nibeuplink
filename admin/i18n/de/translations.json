@@ -4,5 +4,6 @@
   "Click here to generate the Auth Code on NIBE Uplink.": "Hier klicken, um den Auth-Code auf NIBE Uplink zu generieren.",
   "Paste your Auth Code here.": "Den Auth-Code hier einfügen.",
   "Log in at https://www.nibeuplink.com. It is the number in the URL.": "Auf https://www.nibeuplink.com eionloggen. Es ist die Zahl in der URL.",
+  "Time in minutes of fetching data from Nibe Uplink.": "Aller wie viele Minuten die Daten von Nibe Uplink geholt werden.",
   "on save adapter restarts with new config immediately": "Beim Speichern von Einstellungen wird der Adapter sofort neu gestartet."
 }
