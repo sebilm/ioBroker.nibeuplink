@@ -123,6 +123,32 @@ function main() {
     if (refreshInterval <= 0)
         refreshInterval = 1;
 
+    var error = false;
+    if (adapter.config.Identifier == "")
+    {
+        adapter.log.error("Missing Identifier in the settings!");
+        error = true;
+    }
+    if (adapter.config.Secret == "")
+    {
+        adapter.log.error("Missing Secret in the settings!");
+        error = true;
+    }
+    if (adapter.config.CallbackURL == "")
+    {
+        adapter.log.error("Missing Callback URL in the settings!");
+        error = true;
+    }
+    if (adapter.config.SystemId == "")
+    {
+        adapter.log.error("Missing System ID in the settings!");
+        error = true;
+    }
+    if (error)
+    {        
+        return;
+    }
+
     var f = new Fetcher({
         clientId: adapter.config.Identifier,
         clientSecret: adapter.config.Secret,
@@ -175,7 +201,4 @@ function main() {
     });    
 
     adapter.log.info('Adapter started.');
-    
-    // in this nibeuplink all states changes inside the adapters namespace are subscribed
-    //adapter.subscribeStates('*');
 }
