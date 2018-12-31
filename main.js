@@ -86,6 +86,19 @@ function createStringObject(path, name)
         common: {
             name: name,
             type: 'string',
+            role: 'text'
+        },
+        native: {}
+    });
+}
+
+function createNumberObject(path, name)
+{
+    adapter.setObjectNotExists(path, {
+        type: 'state',
+        common: {
+            name: name,
+            type: 'number',
             role: 'value'
         },
         native: {}
@@ -180,7 +193,10 @@ function main() {
             for (var p in par) {   
                 var parPath = path + "." + p;
                 var value = par[p];
-                createStringObject(parPath, p);
+                if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId")))
+                    createNumberObject(parPath, p);
+                else if (p != "name")
+                    createStringObject(parPath, p);
                 adapter.setState(parPath, {val: value, ack: true});
             }            
         }
