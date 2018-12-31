@@ -211,10 +211,12 @@ const defaultOptions = {
       'divideBy': 0
     },
     '47408': {
-      'key': 'aux_in_out_aux_2'
+      'key': 'aux_in_out_aux_2',
+      'divideBy': 0
     },
     '47409': {
-      'key': 'aux_in_out_aux_3'
+      'key': 'aux_in_out_aux_3',
+      'divideBy': 0
     },
     '47410': {
       'key': 'aux_in_out_aux_4',
