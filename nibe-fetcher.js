@@ -37,90 +37,117 @@ const defaultOptions = {
   userAgent: [info.name, info.version].join(' '),
   parameters: {
     '10001': {
-      'key': 'ventilation_fan_speed',
+      'key': 'FAN_SPEED',
       'divideBy': 0
     },
     '10012': {
-      'key': 'cpr_info_ep14_blocked',
+      'key': 'CPR_INFO_EP14_BLOCKED',
       'divideBy': 0
     },
     '10033': {
-      'key': 'addition_blocked',
+      'key': 'ADDITION_BLOCKED',
       'divideBy': 0
     },
     '40004': {
-      'key': 'status_outdoor_temp',
+      'key': 'OUTDOOR_TEMP_BT1',
       'divideBy': 10
     },
     '40008': {
-      'key': 'system_1_heat_medium_flow',
+      'key': 'HEAT_MEDIUM_FLOW_BT2',
       'divideBy': 10
     },
     '40012': {
-      'key': 'cpr_info_ep14_condenser_return',
+      'key': 'RETURN_TEMP_EB100_EP14_BT3',
       'divideBy': 10
     },
     '40013': {
-      'key': 'status_hot_water_top',
+      'key': 'HOT_WATER_TOP_BT7',
       'divideBy': 10
     },
     '40014': {
-      'key': 'status_hot_water_charging',
+      'key': 'HOT_WATER_CHARGING_BT6',
       'divideBy': 10
     },
     '40015': {
-      'key': 'brine_in',
+      'key': 'BRINE_IN_EB100_EP14_BT10',
       'divideBy': 10
     },
     '40016': {
-      'key': 'brine_out',
+      'key': 'BRINE_OUT_EB100_EP14_BT11',
       'divideBy': 10
     },
     '40017': {
-      'key': 'cpr_info_ep14_condenser_out',
+      'key': 'CONDENSER_OUT_EB100_EP14_BT12',
       'divideBy': 10
     },
     '40018': {
-      'key': 'cpr_info_ep14_hot_gas',
+      'key': 'HOT_GAS_EB100_EP14_BT14',
       'divideBy': 10
     },
     '40019': {
-      'key': 'cpr_info_ep14_liquid_line',
+      'key': 'LIQUID_LINE_EB100_EP14_BT15',
       'divideBy': 10
     },
     '40020': {
-      'key': 'cpr_info_ep14_evaporator',
+      'key': 'EVAPORATOR_EB100_BT16',
       'divideBy': 10
     },
     '40022': {
-      'key': 'cpr_info_ep14_suction_gas',
+      'key': 'SUCTION_GAS_EB100_EP14_BT17',
       'divideBy': 10
     },
     '40025': {
-      'key': 'ventilation_exhaust_air',
+      'key': 'EXHAUST_AIR_BT20',
       'divideBy': 10
     },
     '40026': {
-      'key': 'ventilation_extract_air',
+      'key': 'EXTRACT_AIR_BT21',
       'divideBy': 10
     },
     '40033': {
-      'key': 'system_1_room_temperature',
+      'key': 'ROOM_TEMPERATURE_BT50',
       'divideBy': 10
     },
+    '40047': {
+      'key': 'HEAT_MEDIUM_FLOW_EB100_BT61',
+      'divideBy': 10
+    },
+    '40048': {
+      'key': 'HEAT_MEDIUM_RETURN_EB100_BT62',
+      'divideBy': 10
+    },
+    '40050': {
+      'key': 'VALUE_AIR_VELOCITY_SENSOR_EB100_BS1'
+    },
     '40067': {
-      'key': 'status_avg_outdoor_temp',
+      'key': 'AVG_OUTDOOR_TEMP_BT1',
       'divideBy': 10
     },
     '40071': {
-      'key': 'system_1_external_flow_temp'
+      'key': 'EXTERNAL_FLOW_TEMP_BT25'
     },
     '40072': {
-      'key': 'heat_meter_flow',
+      'key': 'FLOW_BF1',
+      'divideBy': 10
+    },
+    '40079': {
+      'key': 'CURRENT_EB100_BE3',
+      'divideBy': 10
+    },
+    '40081': {
+      'key': 'CURRENT_EB100_BE2',
+      'divideBy': 10
+    },
+    '40083': {
+      'key': 'CURRENT_EB100_BE1',
       'divideBy': 10
     },
     '40101': {
-      'key': 'outdoor_air_mix_incoming_air_temp',
+      'key': 'INCOMING_AIR_TEMP',
+      'divideBy': 10
+    },
+    '40771': {
+      'key': 'POOL2_COMPR_ONLY_EP14',
       'divideBy': 10
     },
     '40919': {
@@ -128,110 +155,156 @@ const defaultOptions = {
       'divideBy': 0
     },
     '41026': {
-      'key': 'defrosting_value_air_velocity_sensor',
+      'key': 'VALUE_AIR_VELOCITY_SENSOR_EB100_BS1',
       'divideBy': 10
     },
     '43005': {
-      'key': 'status_degree_minutes',
+      'key': 'DEGREE_MINUTES',
       'divideBy': 10
     },
     '43009': {
-      'key': 'system_1_calculated_flow_temp',
+      'key': 'CALCULATED_FLOW_TEMP_S1',
       'divideBy': 10
     },
+    '43064': {
+      'key': 'HEAT_DT_CALC_VALUE'
+    },
+    '43065': {
+      'key': 'HEAT_DT_IS_BT12_BT63_BT3'
+    },
+    '43066': {
+      'key': 'DEFROSTING_TIME'
+    },
     '43081': {
-      'key': 'addition_time_factor',
+      'key': 'ADDITION_TIME_FACTOR',
       'divideBy': 10
     },
     '43084': {
-      'key': 'addition_electrical_addition_power',
+      'key': 'ELECTRICAL_ADDITION_POWER',
       'divideBy': 10
+    },    
+    '43115': {
+      'key': 'HW_CHARGE_CALC_VALUE',
+    },
+    '43116': {
+      'key': 'HW_CURR_CHARGE_VAL_BT12_BT63',
     },
     '43123': {
-      'key': 'cpr_info_ep14_allowed_compr_freq',
-      'divideBy': 0
+      'key': 'ALLOWED_COMPR_FREQ'
     },
     '43124': {
-      'key': 'defrosting_reference_air_velocity_sensor',
+      'key': 'REFERENCE_AIR_VELOCITY_SENSOR',
       'divideBy': 10
     },
     '43125': {
-      'key': 'defrosting_decrease_from_reference',
+      'key': 'DECREASE_FROM_REFERENCE',
       'divideBy': 10
     },
     '43136': {
-      'key': 'cpr_info_ep14_current_compr_frequency',
+      'key': 'CURRENT_COMPR_FREQUENCY',
       'divideBy': 10
     },
+    '43144': {
+      'key': 'COMPRESSOR_TIME_FACTOR'
+    },
+    '43146': {
+      'key': 'DT_INVERTER_EXHAUST_AIR'
+    },
     '43161': {
-      'key': 'system_1_external_adjustment',
+      'key': 'EXTERNAL_ADJUSTMENT_S1',
       'divideBy': 0
     },
+    '43181': {
+      'key': 'SPEED_HEAT_MED_PUMP_1',
+    },
+    '43305': {
+      'key': 'COMPRESSOR_TIME_FACTOR_HOT_WATER',
+    },
+    '43371': {
+      'key': 'HOTGAS LIMIT',
+    },
+    '43372': {
+      'key': 'EVAPORATING LIMIT',
+    },
     '43416': {
-      'key': 'cpr_info_ep14_compressor_starts',
+      'key': 'COMPRESSOR_STARTS_EB100_EP14',
       'divideBy': 0
     },
     '43420': {
-      'key': 'cpr_info_ep14_compressor_operating_time',
+      'key': 'COMPRESSOR_OPERATING_TIME_EB100_EP14',
       'divideBy': 0
     },
     '43424': {
-      'key': 'cpr_info_ep14_compressor_operating_time_hot_water',
+      'key': 'COMPRESSOR_OPERATING_TIME_HOT_WATER_EB100_EP14',
       'divideBy': 0
     },
     '43437': {
-      'key': 'cpr_info_ep14_pump_speed_heating_medium',
+      'key': 'PUMP_SPEED_HEATING_MEDIUM_EP14',
+      'divideBy': 0
+    },
+    '43439': {
+      'key': 'BRINE_PUMP_SPEED_EP14_GP2',
       'divideBy': 0
     },
     '44298': {
-      'key': 'heat_meter_hw_incl_int_add',
+      'key': 'HW_INCL_INT_ADD_EP14',
       'divideBy': 10
     },
     '44300': {
-      'key': 'heat_meter_heating_int_add_incl',
+      'key': 'HEATING_INT_ADD_INCL_EP14',
+      'divideBy': 10
+    },
+    '44304': {
+      'key': 'POOL_COMPR_ONLY_EP14',
       'divideBy': 10
     },
     '44306': {
-      'key': 'heat_meter_hotwater_compr_only',
+      'key': 'HOTWATER_COMPR_ONLY_EP14',
       'divideBy': 10
     },
     '44308': {
-      'key': 'heat_meter_heating_compr_only',
+      'key': 'HEATING_COMPR_ONLY_EP14',
       'divideBy': 10
     },
     '47212': {
-      'key': 'addition_set_max_electrical_add',
+      'key': 'SET_MAX_ELECTRICAL_ADDITION',
       'divideBy': 100
     },
     '47214': {
-      'key': 'addition_fuse_size'
+      'key': 'ADDITION_FUSE_SIZE',
+      'divideBy': 0
+    },
+    '47276': {
+      'key': 'FLOOR_DRYING_FUNCTION',
+      'divideBy': 0
     },
     '47407': {
-      'key': 'aux_in_out_aux_1',
+      'key': 'AUX_5',
       'divideBy': 0
     },
     '47408': {
-      'key': 'aux_in_out_aux_2',
+      'key': 'AUX_4',
       'divideBy': 0
     },
     '47409': {
-      'key': 'aux_in_out_aux_3',
+      'key': 'AUX_3',
       'divideBy': 0
     },
     '47410': {
-      'key': 'aux_in_out_aux_4',
+      'key': 'AUX_2',
       'divideBy': 0
     },
     '47411': {
-      'key': 'aux_in_out_aux_5',
+      'key': 'AUX_1',
       'divideBy': 0
     },
     '47412': {
-      'key': 'aux_in_out_x',
+      'key': 'AUX_X7',
       'divideBy': 0
     },
     '48745': {
-      'key': 'system_info_country'
+      'key': 'COUNTRY',
+      'divideBy': 0
     }
   },
   interval: 60,
