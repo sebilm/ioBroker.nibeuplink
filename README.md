@@ -1,6 +1,4 @@
 # ioBroker.nibeuplink
-=================
-
 This adapter is still in development. You can use it but without support and help. Later I will document it here.
 
 ## Changelog
