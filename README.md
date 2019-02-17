@@ -1,7 +1,13 @@
 # ioBroker.nibeuplink
 This adapter is still in development. You can use it but without support and help. Later I will document it here.
 
+**Attention:**
+In version 0.1.0 new, more readable objects were added to the object tree. In a later version the old objects in the child paths will be removed!
+
 ## Changelog
+
+### 0.1.0
+* Objects tree changed: New, more readable objects added
 
 ### 0.0.2
 * Language support for objects tree

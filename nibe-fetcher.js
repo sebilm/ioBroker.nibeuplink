@@ -524,15 +524,27 @@ class Fetcher extends EventEmitter {
       async.map(categories, (item, reply) => {
         this.fetchParams(item.categoryId).then((result) => {
           result.forEach((i) => {
-            const name = i.parameterId || (item.categoryId + '_' + i.title.split(/[^a-z]+/gi).join('_')).toUpperCase().replace(/[_]+$/, '');
-            const parameters = this.options.parameters[name];
+            var name = i.title;
+            if ((i.designation != undefined) && (i.designation != ""))
+            {
+                name = name + "_" + i.designation;
+            }
+            name = (name.split(/[^a-z]+/gi).join('_')).toUpperCase().replace(/[_]+$/, '');
+            const parameters = this.options.parameters[i.parameterId];
             Object.assign(i, {
               key: name,
-              categoryId: item.categoryId
+              categoryId: item.categoryId,
+              categoryName: item.name
             }, parameters)
 
             if (i.divideBy > 0)
+            {
               i.value = i.rawValue / i.divideBy;
+            }
+            else
+            {
+              i.value = i.rawValue;
+            }
           })
           reply(null, result)
         }, (error) => {

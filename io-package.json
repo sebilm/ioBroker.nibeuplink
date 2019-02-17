@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.0.2",
+        "version": "0.1.0",
         "news": {
+            "0.1.0": {
+                "en": "Objects tree changed: New, more readable objects added",
+                "de": "Objektbaum wurde geändert: Neue, besser lesbare Objekte wurden hinzugefügt"
+            },
             "0.0.2": {
                 "en": "Language support for objects tree",
                 "de": "Unterstützung von Sprachen im Objektbaum"

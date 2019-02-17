@@ -185,21 +185,51 @@ function main() {
 
         for (var i in data) {            
             var par = data[i];
+            var key = par["key"];
             var title = par["title"];
+            var designation = par["designation"];            
+            if ((designation != undefined) && (designation != ""))
+            {
+                title = title + " (" + designation + ")";
+            }            
+            var categoryId = par["categoryId"];
+            createChannel(categoryId, par["categoryName"]);
+                        
+            var valuePath = categoryId + "." + key.toString().toUpperCase();
+            adapter.setObjectNotExists(valuePath, {
+                type: 'state',
+                common: {
+                    name: title,
+                    type: 'number',
+                    role: 'value',
+                    unit: par["unit"]
+                },
+                native: {}
+            });
+            adapter.setState(valuePath, {val: par["value"], ack: true});
+            var displayPath = categoryId + "." + key.toString().toUpperCase() + "_DISPLAY";
+            adapter.setObjectNotExists(displayPath, {
+                type: 'state',
+                common: {
+                    name: title + " [Display]",
+                    type: 'string',
+                    role: 'text'
+                },
+                native: {}
+            });
+            adapter.setState(displayPath, {val: par["displayValue"], ack: true});
+            
             var parameterId = par["parameterId"];
-            var categoryId = par ["categoryId"];
             var path = categoryId + "." + parameterId;
             createChannel(path, title);
-            
             for (var p in par) {   
                 var parPath = path + "." + p;
-                var value = par[p];
                 if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId")))
                     createNumberObject(parPath, p);
                 else if (p != "name")
                     createStringObject(parPath, p);
-                adapter.setState(parPath, {val: value, ack: true});
-            }            
+                adapter.setState(parPath, {val: par[p], ack: true});
+            }
         }
         adapter.log.debug("Data processed.");
     });
