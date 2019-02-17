@@ -104,15 +104,30 @@
                 </div>
             </div>            
             <div class="row">
-                <div class="input-field col s12 m6 l6">
+                <div class="input-field col s12 m4 l4">
                     <input type="number" class="value" id="SystemId" />
                     <label for="SystemId" class="translate">System ID</label>
                     <span class="translate">Log in at https://www.nibeuplink.com. It is the number in the URL.</span>
                 </div>
-                <div class="input-field col s12 m6 l6">
+                <div class="input-field col s12 m4 l4">
                     <input type="number" class="value" id="Interval" min="1" />
                     <label for="Interval" class="translate">Refresh interval</label>
                     <span class="translate">Time in minutes of fetching data from Nibe Uplink.</span>
+                </div>
+                <div class="input-field col s12 m4 l4">
+                    <select class="value" id="Language">
+                        <option value="en" class="translate">English</option>
+                        <option value="de" class="translate">German</option>
+                        <option value="cs" class="translate">Czech</option>
+                        <option value="da" class="translate">Danish</option>
+                        <option value="nl" class="translate">Dutch</option>
+                        <option value="fi" class="translate">Finnish</option>
+                        <option value="fr" class="translate">French</option>
+                        <option value="pl" class="translate">Polish</option>
+                        <option value="sv" class="translate">Swedish</option>
+                    </select>
+                    <label for="Language" class="translate">Language</label>
+                    <span class="translate">The language for naming the data objects.</span>
                 </div>
             </div>
         </div>

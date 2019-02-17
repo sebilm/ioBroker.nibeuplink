@@ -236,6 +236,7 @@ const defaultOptions = {
   },
   interval: 60,
   timezone: 'Europe/Berlin',
+  language: 'en',
   renewBeforeExpiry: 5 * 60 * 1000,
   sessionStore: Path.join(__dirname, './.session.json')
 }
@@ -408,7 +409,8 @@ class Fetcher extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
         headers: {
-          Authorization: 'Bearer ' + this.getSession('access_token')
+          Authorization: 'Bearer ' + this.getSession('access_token'),
+          'Accept-Language': this.options.language,
         },
         json: true
       }, (error, response, payload) => {
@@ -428,7 +430,8 @@ class Fetcher extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
         headers: {
-          Authorization: 'Bearer ' + this.getSession('access_token')
+          Authorization: 'Bearer ' + this.getSession('access_token'),
+          'Accept-Language': this.options.language,
         },
         json: true
       }, (error, response, payload) => {
@@ -448,7 +451,7 @@ class Fetcher extends EventEmitter {
       async.map(categories, (item, reply) => {
         this.fetchParams(item.categoryId).then((result) => {
           result.forEach((i) => {
-            const name = i.parameterId || (item.categoryId + '_' + i.title.split(/[^a-z]+/gi).join('_')).toLowerCase().replace(/[_]+$/, '');
+            const name = i.parameterId || (item.categoryId + '_' + i.title.split(/[^a-z]+/gi).join('_')).toUpperCase().replace(/[_]+$/, '');
             const parameters = this.options.parameters[name];
             Object.assign(i, {
               key: name,

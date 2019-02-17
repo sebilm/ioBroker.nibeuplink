@@ -5,8 +5,11 @@ This adapter is still in development. You can use it but without support and hel
 
 ## Changelog
 
+### 0.0.2
+* Language support for objects tree
+
 ### 0.0.1
-* initial release
+* Initial release
 
 ## License
 The MIT License (MIT)

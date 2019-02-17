@@ -1,10 +1,14 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "news": {
+            "0.0.2": {
+                "en": "Language support for objects tree",
+                "de": "Unterstützung von Sprachen im Objektbaum"
+            },
             "0.0.1": {
-                "en": "initial adapter",
+                "en": "Initial adapter",
                 "de": "Initiale Version",
                 "ru": "Первоначальный адаптер",
                 "pt": "Versão inicial",
@@ -50,7 +54,8 @@
     },
     "native": {
         "CallbackURL": "https://z0mt3c.github.io/nibe.html",
-        "Interval": 1
+        "Interval": 1,
+        "Language": "en"
     },
     "objects": [
     ]

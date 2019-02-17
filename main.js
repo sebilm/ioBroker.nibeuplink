@@ -168,7 +168,8 @@ function main() {
         redirectUri: adapter.config.CallbackURL,
         interval: refreshInterval * 60,
         authCode: adapter.config.AuthCode,
-        systemId: adapter.config.SystemId
+        systemId: adapter.config.SystemId,
+        language: adapter.config.Language
     }, adapter);
 
     f.on('data', (data) => {
