@@ -219,17 +219,24 @@ function main() {
             });
             adapter.setState(displayPath, {val: par["displayValue"], ack: true});
             
+            // update deprecated subpath values if present:            
             var parameterId = par["parameterId"];
             var path = categoryId + "." + parameterId;
-            createChannel(path, title);
-            for (var p in par) {   
-                var parPath = path + "." + p;
-                if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId")))
-                    createNumberObject(parPath, p);
-                else if (p != "name")
-                    createStringObject(parPath, p);
-                adapter.setState(parPath, {val: par[p], ack: true});
-            }
+            (function(path, par) {
+                adapter.getObject(path, function (err, obj) {
+                    if (obj) {
+                        for (var p in par) {   
+                            var parPath = path + "." + p;
+                            if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId")))
+                                createNumberObject(parPath, p);
+                            else if (p != "name")
+                                createStringObject(parPath, p);
+                            adapter.setState(parPath, {val: par[p], ack: true});
+                        }     
+                    }
+                });
+            })(path, par);
+                        
         }
         adapter.log.debug("Data processed.");
     });
