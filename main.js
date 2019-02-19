@@ -26,6 +26,7 @@ let variable = 1234;
 // is called when adapter shuts down - callback has to be called under any circumstances!
 adapter.on('unload', function (callback) {
     try {
+        adapter.setState("info.connection", {val: false, ack: true});
         adapter.log.info('cleaned everything up...');
         callback();
     } catch (e) {
@@ -125,6 +126,15 @@ function createInfoObjects()
     createStringObject("info.currentError",  "Current Error");
     createStringObject("info.lastError",     "Last Error");
     createStringObject("info.lastErrorTime", "Last Error Time");
+    adapter.setObjectNotExists("info.connection", {
+        type: 'state',
+        common: {
+            name: "If connected to Nibe Uplink",
+            type: 'boolean',
+            role: 'indicator.connected'
+        },
+        native: {}
+    });
 }
 
 
@@ -132,9 +142,9 @@ function main() {
 
     adapter.log.info('Starting adapter.');
     
-    var refreshInterval = adapter.config.Interval;
-    if (refreshInterval <= 0)
-        refreshInterval = 1;
+    var refreshInterval = adapter.config.Interval * 60;
+    if (refreshInterval < 60)
+        refreshInterval = 60;
 
     var error = false;
     if (adapter.config.Identifier == "")
@@ -166,7 +176,7 @@ function main() {
         clientId: adapter.config.Identifier,
         clientSecret: adapter.config.Secret,
         redirectUri: adapter.config.CallbackURL,
-        interval: refreshInterval * 60,
+        interval: refreshInterval,
         authCode: adapter.config.AuthCode,
         systemId: adapter.config.SystemId,
         language: adapter.config.Language
@@ -177,6 +187,7 @@ function main() {
         adapter.log.debug(JSON.stringify(data, null, ' '))        
 
         createInfoObjects();
+        adapter.setState("info.connection", {val: true, expire: refreshInterval + 30, ack: true});
 
         var newDate = new Date();
         var datetime = newDate.today() + " " + newDate.timeNow();
@@ -246,6 +257,7 @@ function main() {
         adapter.log.error('' + data)
         
         createInfoObjects();
+        adapter.setState("info.connection", {val: false, ack: true});
 
         var newDate = new Date();
         var datetime = newDate.today() + " " + newDate.timeNow();
