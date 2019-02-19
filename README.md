@@ -1,10 +1,11 @@
 # ioBroker.nibeuplink
 This adapter is still in development. You can use it but without support and help. Later I will document it here.
 
-**Attention:**
-In version 0.1.0 new, more readable objects were added to the object tree. In a later version the old objects in the child paths will be removed!
-
 ## Changelog
+
+### 0.1.1
+* Do not create deprecated sub path objects - only update them if present (if you have them and don't use them, you can delete them)
+* info.connection added
 
 ### 0.1.0
 * Objects tree changed: New, more readable objects added
