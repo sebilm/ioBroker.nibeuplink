@@ -37,7 +37,7 @@
             "Sebastian Haesselbarth <seb@sebmail.de>"
         ],
         "docs": {
-            "en": "docs/en/admin.md"
+            "en": "docs/en/nibeuplink.md"
         },
         "platform": "Javascript/Node.js",
         "mode": "daemon",
