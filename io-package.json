@@ -24,14 +24,14 @@
                 "nl": "Eerste release"
             }
         },
-		"title": "Nibe Uplink adapter",
+		"title": "Nibe Uplink",
         "titleLang": {
-            "en": "Nibe Uplink adapter",
-            "de": "Nibe Uplink adapter"
+            "en": "Nibe Uplink",
+            "de": "Nibe Uplink"
         },
         "desc": {
-            "en": "Nibe Uplink adapter",
-            "de": "Nibe Uplink adapter"
+            "en": "With this adapter data of a Nibe heat pump can be read from Nibe Uplink.",
+            "de": "Mit diesem Adapter können Daten einer Nibe Wärmepumpe von Nibe Uplink gelesen werden."
         },
         "authors": [
             "Sebastian Haesselbarth <seb@sebmail.de>"
