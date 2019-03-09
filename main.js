@@ -147,30 +147,37 @@ function main() {
         refreshInterval = 60;
 
     var error = false;
-    if (adapter.config.Identifier == "")
+    if ((adapter.config.Identifier == "") || (adapter.config.Identifier == undefined))
     {
         adapter.log.error("Missing Identifier in the settings!");
         error = true;
     }
-    if (adapter.config.Secret == "")
+    if ((adapter.config.Secret == "") || (adapter.config.Secret == undefined))
     {
         adapter.log.error("Missing Secret in the settings!");
         error = true;
     }
-    if (adapter.config.CallbackURL == "")
+    if ((adapter.config.CallbackURL == "") || (adapter.config.CallbackURL == undefined))
     {
         adapter.log.error("Missing Callback URL in the settings!");
         error = true;
     }
-    if (adapter.config.SystemId == "")
+    if ((adapter.config.SystemId == "") || (adapter.config.SystemId == undefined))
     {
         adapter.log.error("Missing System ID in the settings!");
         error = true;
     }
     if (error)
-    {        
+    {
+        createInfoObjects();
+        adapter.setState("info.connection", {val: false, ack: true});
+        var newDate = new Date();
+        var datetime = newDate.today() + " " + newDate.timeNow();
+        adapter.setState("info.lastErrorTime", {val: datetime, ack: true});
+        adapter.setState("info.lastError", {val: "Missing settings!", ack: true});        
+        adapter.setState("info.currentError", {val: "Missing settings!", ack: true});
         return;
-    }
+    }    
 
     var f = new Fetcher({
         clientId: adapter.config.Identifier,
