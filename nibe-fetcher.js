@@ -117,7 +117,8 @@ const defaultOptions = {
       'divideBy': 10
     },
     '40050': {
-      'key': 'VALUE_AIR_VELOCITY_SENSOR_EB100_BS1'
+      'key': 'VALUE_AIR_VELOCITY_SENSOR_EB100_BS1',
+      'divideBy': 10
     },
     '40067': {
       'key': 'AVG_OUTDOOR_TEMP_BT1',
@@ -167,10 +168,12 @@ const defaultOptions = {
       'divideBy': 10
     },
     '43064': {
-      'key': 'HEAT_DT_CALC_VALUE'
+      'key': 'HEAT_DT_CALC_VALUE',
+      'divideBy': 10
     },
     '43065': {
-      'key': 'HEAT_DT_IS_BT12_BT63_BT3'
+      'key': 'HEAT_DT_IS_BT12_BT63_BT3',
+      'divideBy': 10
     },
     '43066': {
       'key': 'DEFROSTING_TIME'
@@ -185,9 +188,11 @@ const defaultOptions = {
     },    
     '43115': {
       'key': 'HW_CHARGE_CALC_VALUE',
+      'divideBy': 10
     },
     '43116': {
       'key': 'HW_CURR_CHARGE_VAL_BT12_BT63',
+      'divideBy': 10
     },
     '43123': {
       'key': 'ALLOWED_COMPR_FREQ'
@@ -205,10 +210,12 @@ const defaultOptions = {
       'divideBy': 10
     },
     '43144': {
-      'key': 'COMPRESSOR_TIME_FACTOR'
+      'key': 'COMPRESSOR_TIME_FACTOR',
+      'divideBy': 10
     },
     '43146': {
-      'key': 'DT_INVERTER_EXHAUST_AIR'
+      'key': 'DT_INVERTER_EXHAUST_AIR',
+      'divideBy': 10
     },
     '43161': {
       'key': 'EXTERNAL_ADJUSTMENT_S1',
@@ -219,12 +226,13 @@ const defaultOptions = {
     },
     '43305': {
       'key': 'COMPRESSOR_TIME_FACTOR_HOT_WATER',
+      'divideBy': 10
     },
     '43371': {
-      'key': 'HOTGAS LIMIT',
+      'key': 'HOTGAS_LIMIT',
     },
     '43372': {
-      'key': 'EVAPORATING LIMIT',
+      'key': 'EVAPORATING_LIMIT',
     },
     '43416': {
       'key': 'COMPRESSOR_STARTS_EB100_EP14',
