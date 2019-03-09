@@ -211,7 +211,7 @@ const defaultOptions = {
     },
     '43144': {
       'key': 'COMPRESSOR_TIME_FACTOR',
-      'divideBy': 10
+      'divideBy': 100
     },
     '43146': {
       'key': 'DT_INVERTER_EXHAUST_AIR',
@@ -226,7 +226,7 @@ const defaultOptions = {
     },
     '43305': {
       'key': 'COMPRESSOR_TIME_FACTOR_HOT_WATER',
-      'divideBy': 10
+      'divideBy': 100
     },
     '43371': {
       'key': 'HOTGAS_LIMIT',
