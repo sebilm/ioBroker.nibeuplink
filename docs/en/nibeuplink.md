@@ -24,3 +24,5 @@ This ioBroker adapter receives data from a Nibe heat pump from Nibe Uplink.
 16. Fill in your System ID from Nibe Uplink URL.
 17. Choose your language.
 18. Click Save and Close
+
+If you (later) get a "400 bad request" error in the log, you must get a new Auth Code - so do numbers 13 until 15 and 18.
