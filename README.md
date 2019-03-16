@@ -33,6 +33,7 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 * Code change to new template
 * Support for Compact mode (js-Controller 2.0 Feature) added (#1)
 * Translations in settings page
+* Type moved from general to climate control
 
 ### 0.1.1
 * Do not create deprecated sub path objects - only update them if present (if you have them and don't use them, you can delete them)

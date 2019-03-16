@@ -4,8 +4,8 @@
         "version": "0.2.0",
         "news": {
             "0.2.0": {
-                "en": "Code change to new template; Support for Compact mode added (#1); Translations in settings page",
-                "de": "Code anhand des neuen Templates geändert; Support für Compact mode (#1); Übersetzungen in den Einstellungen"
+                "en": "Code change to new template; Support for Compact mode added (#1); Translations in settings page; Type moved from general to climate control",
+                "de": "Code anhand des neuen Templates geändert; Support für Compact mode (#1); Übersetzungen in den Einstellungen; der Typ wurde von Allgemein zu Klimakontrolle geändert"
             },
             "0.1.1": {
                 "en": "info.connection added; do not create deprecated sub path objects",
