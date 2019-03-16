@@ -1,30 +1,25 @@
 <html>
+
 <head>
-<!-- these 4 files always have to be included -->
-<link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
-<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
 
-<script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+    <!-- Load ioBroker scripts and styles-->
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
 
-<!-- these files always have to be included -->
-<script type="text/javascript" src="../../js/translate.js"></script>
-<script type="text/javascript" src="../../lib/js/materialize.js"></script>
-<script type="text/javascript" src="../../js/adapter-settings.js"></script>
-<script type="text/javascript" src="words.js"></script>
-<script type="text/javascript" src="scripts.js"></script>
- <style>
-  .m .col .select-wrapper+label {
-   top: -26px;  
-  }
-     .m span{
-         font-size: 0.9em;
-     }
- </style>
-<!-- you have to define 2 functions in the global scope: -->
-<script type="text/javascript">
+    <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
-    // the function loadSettings has to exist ...
+    <script type="text/javascript" src="../../js/translate.js"></script>
+    <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+
+    <!-- Load our own files -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="words.js"></script>
+    <script type="text/javascript" src="scripts.js"></script>
+
+    <script type="text/javascript">
+        // This will be called by the admin adapter when the settings page loads
     function load(settings, onChange) {
         // example: select elements with id=key and class=value and insert value
        if (!settings) return;
@@ -33,24 +28,23 @@
             var id = $key.attr('id');
             if ($key.attr('type') === 'checkbox') {
 		        // do not call onChange direct, because onChange could expect some arguments
-                $key.prop('checked', settings[id]).on('change', function() {
-                    onChange();
-                });
+                    $key.prop('checked', settings[id])
+                        .on('change', () => onChange())
+                        ;
             } else {
 		        // do not call onChange direct, because onChange could expect some arguments
-                $key.val(settings[id]).on('change', function() {
-                    onChange();
-                }).on('keyup', function() {
-                    onChange();
-                });
+                    $key.val(settings[id])
+                        .on('change', () => onChange())
+                        .on('keyup', () => onChange())
+                        ;
             }
         });
         onChange(false);
-        M.updateTextFields();  // function Materialize.updateTextFields(); to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.
+            // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
+            if (M) M.updateTextFields();
     }
 
-    // ... and the function save has to exist.
-    // you have to make sure the callback is called with the settings object as first param!
+        // This will be called by the admin adapter when the user presses the save button
     function save(callback) {
         // example: select elements with class=value and build settings object
         var obj = {};
@@ -64,82 +58,89 @@
         });
         callback(obj);
     }
-</script>
+    </script>
+
 </head>
+
 <body>
-    <!-- you have to put your config page in a div with id adapter-container -->
+
     <div class="m adapter-container">
-        <div class="row">
-            <!-- Forms are the standard way to receive user inputted data.
-                 Learn more http://materializecss.com/forms.html-->
-            <div class="row">
-                <div class="col s6 m4 l2">
-                    <img src="nibeuplink.png" class="logo">
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12 m6 l6">
-                    <input class="value" id="Identifier" type="text" onchange="generateURL()">
-                    <label for="Identifier">Identifier</label>
-                    <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
-                </div>
-                <div class="input-field col s12 m6 l6">
-                    <input class="value" id="Secret" type="text">
-                    <label for="Secret">Secret</label>
-                    <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input class="value" id="CallbackURL" type="text" onchange="generateURL()">
-                    <label for="CallbackURL">Callback URL</label>
-                    <span class="translate">Does not need to be changed.</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    <p class="translate"><a target="_blank" id="URL">Click here to generate the Auth Code on NIBE Uplink.</div></p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input class="value" id="AuthCode" type="text">
-                    <label for="AuthCode">Auth Code</label>
-                    <span class="translate">Paste your Auth Code here.</span>
-                </div>
-            </div>            
-            <div class="row">
-                <div class="input-field col s12 m4 l4">
-                    <input type="number" class="value" id="SystemId" />
-                    <label for="SystemId" class="translate">System ID</label>
-                    <span class="translate">Log in at https://www.nibeuplink.com. It is the number in the URL.</span>
-                </div>
-                <div class="input-field col s12 m4 l4">
-                    <input type="number" class="value" id="Interval" min="1" />
-                    <label for="Interval" class="translate">Refresh interval</label>
-                    <span class="translate">Time in minutes of fetching data from Nibe Uplink.</span>
-                </div>
-                <div class="input-field col s12 m4 l4">
-                    <select class="value" id="Language">
-                        <option value="en" class="translate">English</option>
-                        <option value="de" class="translate">German</option>
-                        <option value="cs" class="translate">Czech</option>
-                        <option value="da" class="translate">Danish</option>
-                        <option value="nl" class="translate">Dutch</option>
-                        <option value="fi" class="translate">Finnish</option>
-                        <option value="fr" class="translate">French</option>
-                        <option value="pl" class="translate">Polish</option>
-                        <option value="sv" class="translate">Swedish</option>
-                    </select>
-                    <label for="Language" class="translate">Language</label>
-                    <span class="translate">The language for naming the data objects.</span>
-                </div>
+
+         <div class="row">
+            <div class="col s12 m4 l2">
+                <img src="nibeuplink.png" class="logo">
             </div>
         </div>
+
+		<!-- Forms are the standard way to receive user inputted data.
+             Learn more http://materializecss.com/forms.html-->
+
+        <!-- Put your content here -->
+
+        <div class="row">
+            <div class="input-field col s12 m6 l6">
+                <input class="value" id="Identifier" type="text" onchange="generateURL()">
+                <label for="Identifier">Identifier</label>
+                <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+            </div>
+            <div class="input-field col s12 m6 l6">
+                <input class="value" id="Secret" type="text">
+                <label for="Secret">Secret</label>
+                <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input class="value" id="CallbackURL" type="text" onchange="generateURL()">
+                <label for="CallbackURL">Callback URL</label>
+                <span class="translate">Does not need to be changed.</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <p><a class="translate" target="_blank" id="URL">Click here to generate the Auth Code on NIBE Uplink.</a></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input class="value" id="AuthCode" type="text">
+                <label for="AuthCode">Auth Code</label>
+                <span class="translate">Paste your Auth Code here.</span>
+            </div>
+        </div>            
+        <div class="row">
+            <div class="input-field col s12 m4 l4">
+                <input type="number" class="value" id="SystemId" />
+                <label for="SystemId">System ID</label>
+                <span class="translate">Log in at https://www.nibeuplink.com. It is the number in the URL.</span>
+            </div>
+            <div class="input-field col s12 m4 l4">
+                <input type="number" class="value" id="Interval" min="1" />
+                <label for="Interval" class="translate">Refresh interval</label>
+                <span class="translate">Time in minutes of fetching data from Nibe Uplink.</span>
+            </div>
+            <div class="input-field col s12 m4 l4">
+                <select class="value" id="Language">
+                    <option value="en" class="translate">English</option>
+                    <option value="de" class="translate">German</option>
+                    <option value="cs" class="translate">Czech</option>
+                    <option value="da" class="translate">Danish</option>
+                    <option value="nl" class="translate">Dutch</option>
+                    <option value="fi" class="translate">Finnish</option>
+                    <option value="fr" class="translate">French</option>
+                    <option value="pl" class="translate">Polish</option>
+                    <option value="sv" class="translate">Swedish</option>
+                </select>
+                <label for="Language" class="translate">Language</label>
+                <span class="translate">The language for naming the data objects.</span>
+            </div>
+        </div>
+
     </div>
 
     <script>
         var id = setInterval(function() { clearInterval(id); generateURL(); }, 1000);
     </script>
 </body>
+
 </html>

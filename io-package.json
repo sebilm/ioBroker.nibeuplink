@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.1.1",
+        "version": "0.2.0",
         "news": {
+            "0.2.0": {
+                "en": "Code change to new template; Support for Compact mode added (#1); Translations in settings page",
+                "de": "Code anhand des neuen Templates geändert; Support für Compact mode (#1); Übersetzungen in den Einstellungen"
+            },
             "0.1.1": {
                 "en": "info.connection added; do not create deprecated sub path objects",
                 "de": "info.connection hinzugefügt; veraltete Unterpfade werden nicht mehr angelegt"
@@ -36,28 +40,62 @@
         "authors": [
             "Sebastian Haesselbarth <seb@sebmail.de>"
         ],
-        "docs": {
-            "en": "docs/en/nibeuplink.md"
-        },
+		"keywords": [
+            "ioBroker",
+            "Smart Home",
+            "home automation",
+			"nibeuplink",
+			"nibe"
+        ],
+		"license": "MIT",
         "platform": "Javascript/Node.js",
-        "mode": "daemon",
+		"main": "main.js",
         "icon": "nibeuplink.png",
-        "materialize": true,
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/sebilm/ioBroker.nibeuplink/master/admin/nibeuplink.png",
-        "keywords": ["nibeuplink", "nibe", "nibeuplink"],
         "readme": "https://github.com/sebilm/ioBroker.nibeuplink/blob/master/README.md",
         "loglevel": "info",
-        "type": "general",
-        "license": "MIT",
-        "messagebox": false,
-        "restartAdapters": []
+        "mode": "daemon",
+		"type": "climate-control",
+        "compact": true,
+        "materialize": true, 
+        "supportCustoms": true,
+        "dependencies": [
+            {
+                "admin": ">=3.0.0"
+            },
+            {
+                "js-controller": ">=1.4.2"
+            }
+        ]
     },
     "native": {
         "CallbackURL": "https://z0mt3c.github.io/nibe.html",
         "Interval": 1,
         "Language": "en"
     },
-    "objects": [
-    ]
+    "objects": [],
+	"instanceObjects": [
+		{
+			"_id": "info",
+			"type": "channel",
+			"common": {
+				"name": "Information"
+			},
+			"native": {}
+		},
+		{
+			"_id": "info.connection",
+			"type": "state",
+			"common": {
+				"role": "indicator.connected",
+				"name": "Device or service connected",
+				"type": "boolean",
+				"read": true,
+				"write": false,
+				"def": false
+			},
+			"native": {}
+		}
+	]
 }
