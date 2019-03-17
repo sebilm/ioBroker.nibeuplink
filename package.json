@@ -21,11 +21,11 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^1.0.3",
-	"async": "^2.1.4",
-    "hoek": "^4.1.0",
-    "joi": "^10.1.0",
+	  "async": "^2.1.4",
+    "hoek": "^4.2.1",
+    "joi": "^11.4.0",
     "jsonfile": "^2.4.0",
-    "wreck": "^10.0.0"
+    "wreck": "^12.5.1"
   },
   "devDependencies": {
     "@iobroker/testing": "^1.1.16",
