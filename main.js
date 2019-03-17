@@ -100,12 +100,14 @@ function createInfoObjects(adapter)
 
 class NibeUplink extends utils.Adapter {
 
+    /**
+     * @param {Partial<ioBroker.AdapterOptions>} [options={}]
+     */
     constructor(options) {
-        
-        options = options || {};
-        Object.assign(options, {name: 'nibeuplink'});
-        super(options);
-
+        super({
+            ...options,
+            name: 'nibeuplink',
+        });
         this.on('ready', this.onReady.bind(this));
         this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
