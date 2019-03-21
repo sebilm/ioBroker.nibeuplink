@@ -118,7 +118,7 @@ class NibeUplink extends utils.Adapter {
     /**
      * Is called when databases are connected and adapter received configuration.
      */
-    async onReady() {
+    onReady() {
         // Initialize your adapter here
 
         this.log.info('Starting adapter.');
