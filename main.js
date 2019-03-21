@@ -165,8 +165,8 @@ class NibeUplink extends utils.Adapter {
         }, this);
     
         f.on('data', (data) => {
-            this.log.debug("Data received:");
-            this.log.debug(JSON.stringify(data, null, ' '))        
+            this.log.debug("Data received.");
+            this.log.silly(JSON.stringify(data, null, ' '))        
     
             createInfoObjects(this);
             this.setState("info.connection", {val: true, expire: refreshInterval + 30, ack: true});
@@ -260,7 +260,7 @@ class NibeUplink extends utils.Adapter {
     onUnload(callback) {
         try {
             this.setState("info.connection", {val: false, ack: true});
-            this.log.info('cleaned everything up...');
+            this.log.info('Cleaned everything up...');
             callback();
         } catch (e) {
             callback();
@@ -275,10 +275,10 @@ class NibeUplink extends utils.Adapter {
     onObjectChange(id, obj) {
         if (obj) {
             // The object was changed
-            this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+            this.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
         } else {
             // The object was deleted
-            this.log.info(`object ${id} deleted`);
+            this.log.silly(`object ${id} deleted`);
         }
     }
 
@@ -290,10 +290,10 @@ class NibeUplink extends utils.Adapter {
     onStateChange(id, state) {
         if (state) {
             // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
         } else {
             // The state was deleted
-            this.log.info(`state ${id} deleted`);
+            this.log.silly(`state ${id} deleted`);
         }
     }
 
