@@ -29,6 +29,10 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 
 ## Changelog
 
+### 0.2.1
+* Dependencies updated
+* Fix problem with nodejs 6 and the spread operator and async
+
 ### 0.2.0
 * Code change to new template
 * Support for Compact mode (js-Controller 2.0 Feature) added (#1)
