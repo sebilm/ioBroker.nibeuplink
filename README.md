@@ -1,5 +1,5 @@
 # ioBroker.nibeuplink
-
+![Number of Installations](http://iobroker.live/badges/nibeuplink-installed.svg) ![Stable Version](http://iobroker.live/badges/nibeuplink-stable.svg) 
 This adapter is still in development. You can use it but without support and help. Later I will document it here.
 
 This ioBroker adapter receives data from a Nibe heat pump from Nibe Uplink.
