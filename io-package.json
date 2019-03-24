@@ -74,7 +74,11 @@
         ]
     },
     "native": {
+        "Identifier": "",
+        "Secret" : "",
         "CallbackURL": "https://z0mt3c.github.io/nibe.html",
+        "AuthCode": "",
+        "SystemId": 0,
         "Interval": 1,
         "Language": "en"
     },
