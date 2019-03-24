@@ -28,6 +28,9 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 
 ## Changelog
 
+### 0.2.2
+* Internal clean-up
+
 ### 0.2.1
 * Dependencies updated
 * Fix problem with nodejs 6 and the spread operator and async

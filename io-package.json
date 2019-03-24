@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.2.1",
+        "version": "0.2.2",
         "news": {
+            "0.2.2": {
+                "en": "Internal clean-up",
+                "de": "Interne Aufräumarbeiten"
+            },
             "0.2.1": {
                 "en": "Dependencies update; Fix problem with nodejs 6 and the spread operator and async",
                 "de": "Abhängigkeiten aktualisiert; Problem mit nodejs 6 und dem Spread-Operator und async gelöst"
