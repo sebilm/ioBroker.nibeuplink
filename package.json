@@ -13,7 +13,7 @@
     "Smart Home",
     "home automation",
     "nibeuplink",
-	"nibe"
+    "nibe"
   ],
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^1.0.3",
-	  "async": "^2.1.4",
+    "async": "^2.1.4",
     "hoek": "^4.2.1",
     "joi": "^11.4.0",
     "jsonfile": "^2.4.0",
