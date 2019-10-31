@@ -100,16 +100,18 @@ function createInfoObjects(adapter)
 
 class NibeUplink extends utils.Adapter {
 
+    /**
+     * @param {Partial<ioBroker.AdapterOptions>} [options={}]
+     */
     constructor(options) {
-        
-        options = options || {};
-        Object.assign(options, {name: 'nibeuplink'});
-        super(options);
-
+        super({
+            ...options,
+            name: 'nibeuplink',
+        });
         this.on('ready', this.onReady.bind(this));
         this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
-        // this.on("message", this.onMessage.bind(this));
+        // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
     }
 
@@ -275,10 +277,10 @@ class NibeUplink extends utils.Adapter {
     onObjectChange(id, obj) {
         if (obj) {
             // The object was changed
-            this.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
+            this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
         } else {
             // The object was deleted
-            this.log.silly(`object ${id} deleted`);
+            this.log.info(`object ${id} deleted`);
         }
     }
 
@@ -290,10 +292,10 @@ class NibeUplink extends utils.Adapter {
     onStateChange(id, state) {
         if (state) {
             // The state was changed
-            this.log.silly(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
         } else {
             // The state was deleted
-            this.log.silly(`state ${id} deleted`);
+            this.log.info(`state ${id} deleted`);
         }
     }
 
@@ -303,19 +305,20 @@ class NibeUplink extends utils.Adapter {
     //  * @param {ioBroker.Message} obj
     //  */
     // onMessage(obj) {
-    // 	if (typeof obj === "object" && obj.message) {
-    // 		if (obj.command === "send") {
+    // 	if (typeof obj === 'object' && obj.message) {
+    // 		if (obj.command === 'send') {
     // 			// e.g. send email or pushover or whatever
-    // 			this.log.info("send command");
+    // 			this.log.info('send command');
 
     // 			// Send response in callback if required
-    // 			if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
+    // 			if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
     // 		}
     // 	}
     // }
 
 }
 
+// @ts-ignore parent is a valid property on module
 if (module.parent) {
     // Export the constructor in compact mode
     /**
