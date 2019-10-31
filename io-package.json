@@ -65,7 +65,7 @@
         "loglevel": "info",
         "mode": "daemon",
 		"type": "climate-control",
-        "compact": true,
+        "compact": false,
         "materialize": true, 
         "supportCustoms": false,
         "dependencies": [
