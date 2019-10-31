@@ -126,19 +126,23 @@ class NibeUplink extends utils.Adapter {
         var refreshInterval = this.config.Interval * 60;
         if (refreshInterval < 60)
             refreshInterval = 60;
+
+        var identifier = this.config.Identifier.trim();
+        var secret = this.config.Secret.trim();
+        var callbackURL = this.config.CallbackURL.trim();
     
         var error = false;
-        if ((this.config.Identifier == "") || (this.config.Identifier == undefined))
+        if ((identifier == "") || (identifier == undefined))
         {
             this.log.error("Missing Identifier in the settings!");
             error = true;
         }
-        if ((this.config.Secret == "") || (this.config.Secret == undefined))
+        if ((secret == "") || (secret == undefined))
         {
             this.log.error("Missing Secret in the settings!");
             error = true;
         }
-        if ((this.config.CallbackURL == "") || (this.config.CallbackURL == undefined))
+        if ((callbackURL == "") || (callbackURL == undefined))
         {
             this.log.error("Missing Callback URL in the settings!");
             error = true;
@@ -157,11 +161,11 @@ class NibeUplink extends utils.Adapter {
         }    
     
         var f = new Fetcher({
-            clientId: this.config.Identifier,
-            clientSecret: this.config.Secret,
-            redirectUri: this.config.CallbackURL,
+            clientId: identifier,
+            clientSecret: secret,
+            redirectUri: callbackURL,
             interval: refreshInterval,
-            authCode: this.config.AuthCode,
+            authCode: this.config.AuthCode.trim(),
             systemId: this.config.SystemId,
             language: this.config.Language
         }, this);
