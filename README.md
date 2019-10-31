@@ -28,6 +28,12 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 
 ## Changelog
 
+### 0.3.0
+* Compact mode disabled
+* Support for Node 6 removed
+* Trim whitespaces from setting parameters
+* Bugfix: Customs disabled
+
 ### 0.2.2
 * Internal clean-up
 
