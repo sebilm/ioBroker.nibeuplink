@@ -1,5 +1,5 @@
 # ioBroker.nibeuplink
-![Number of Installations](http://iobroker.live/badges/nibeuplink-installed.svg) ![Stable Version](http://iobroker.live/badges/nibeuplink-stable.svg) ![Travis CI State](https://travis-ci.org/sebilm/ioBroker.nibeuplink.svg?branch=master)
+![Number of Installations](http://iobroker.live/badges/nibeuplink-installed.svg) ![Stable Version](http://iobroker.live/badges/nibeuplink-stable.svg) ![NPM Version](https://img.shields.io/npm/v/iobroker.nibeuplink.svg) ![NPM Downloads](https://img.shields.io/npm/dm/iobroker.nibeuplink.svg) ![Travis CI State](https://travis-ci.org/sebilm/ioBroker.nibeuplink.svg?branch=master)
 
 This ioBroker adapter receives data from a Nibe heat pump from Nibe Uplink.
 
