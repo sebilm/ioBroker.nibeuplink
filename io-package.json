@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.2.3",
+        "version": "0.3.0",
         "news": {
+            "0.3.0": {
+                "en": "Compact mode disabled; Support for Node 6 removed; Bugfixing",
+                "de": "Compact mode deaktiviert; Node 6 wird nicht mehr unterstützt; Fehlerbehebung"
+            },
             "0.2.2": {
                 "en": "Internal clean-up",
                 "de": "Interne Aufräumarbeiten"
