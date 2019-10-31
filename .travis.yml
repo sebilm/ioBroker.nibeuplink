@@ -13,9 +13,10 @@ deploy:
   provider: npm
   email: $NPM_MAIL
   api_key: $NPM_TOKEN
-  skip_cleanup: true
   on:
     tags: true
+    node_js: '10'
+    condition: $TRAVIS_OS_NAME = linux
 
 env:
   - CXX=g++-6
