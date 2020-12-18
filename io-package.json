@@ -3,6 +3,9 @@
         "name": "nibeuplink",
         "version": "0.4.0",
         "news": {
+            "0.4.0": {
+                "en": "set required js-controller to >=2.0.0; devide by 10 added to external flow temperature; fallback names for unknown parameters changed (id added)",
+            },
             "0.3.0": {
                 "en": "Compact mode disabled; Support for Node 6 removed; Bugfixing",
                 "de": "Compact mode deaktiviert; Node 6 wird nicht mehr unterstützt; Fehlerbehebung"
