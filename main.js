@@ -7,6 +7,9 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
+const path = require('path');
+const dataDir = path.normalize(utils.controllerDir + '/' + require(utils.controllerDir + '/lib/tools').getDefaultDataDir());
+const fs = require('fs');
 
 // Load your modules here:
 const Fetcher = require('./nibe-fetcher.js');
@@ -158,7 +161,19 @@ class NibeUplink extends utils.Adapter {
             this.setState("info.connection", {val: false, ack: true});
             this.setState("info.currentError", {val: "Missing settings!", ack: true});
             return;
-        }    
+        }
+
+        var storeDir = path.join(dataDir, "nibeuplink");
+        try {
+            // create directory
+            if (!fs.existsSync(storeDir)) {
+                fs.mkdirSync(storeDir);
+            }
+        } catch (err) {
+            this.log.error('Could not create storage directory (' + storeDir + '): ' + err);
+            storeDir = __dirname;
+        }
+        var storeFile = path.join(storeDir, "session." + this.instance + ".json");        
     
         var f = new Fetcher({
             clientId: identifier,
@@ -167,7 +182,8 @@ class NibeUplink extends utils.Adapter {
             interval: refreshInterval,
             authCode: this.config.AuthCode.trim(),
             systemId: this.config.SystemId,
-            language: this.config.Language
+            language: this.config.Language,
+            sessionStore: storeFile
         }, this);
     
         f.on('data', (data) => {
