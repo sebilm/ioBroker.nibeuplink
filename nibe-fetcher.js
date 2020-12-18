@@ -536,9 +536,9 @@ class Fetcher extends EventEmitter {
             var name = i.title;
             if ((i.designation != undefined) && (i.designation != ""))
             {
-                name = name + "_" + i.designation;
+                name = i.parameterId + "_" + name + "_" + i.designation;
             }
-            name = (name.split(/[^a-z]+/gi).join('_')).toUpperCase().replace(/[_]+$/, '');
+            name = (name.split(/[^a-z0-9]+/gi).join('_')).toUpperCase().replace(/[_]+$/, '');
             const parameters = this.options.parameters[i.parameterId];
             Object.assign(i, {
               key: name,
