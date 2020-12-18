@@ -125,7 +125,8 @@ const defaultOptions = {
       'divideBy': 10
     },
     '40071': {
-      'key': 'EXTERNAL_FLOW_TEMP_BT25'
+      'key': 'EXTERNAL_FLOW_TEMP_BT25',
+      'divideBy': 10
     },
     '40072': {
       'key': 'FLOW_BF1',
