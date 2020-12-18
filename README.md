@@ -33,6 +33,7 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 * test for node 8 removed
 * devide by 10 added to external flow temperature
 * fallback names for unknown parameters changed (id added)
+* store session in iobroker data directory
 
 ### 0.3.0
 * Compact mode disabled
