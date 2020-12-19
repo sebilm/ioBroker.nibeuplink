@@ -18,7 +18,6 @@ const querystring = require('querystring');
 const async = require('async');
 const info = require('./package.json');
 const jsonfile = require('jsonfile');
-jsonfile.spaces = 2;
 const Path = require('path');
 const fs = require('fs');
 
@@ -582,7 +581,7 @@ class Fetcher extends EventEmitter {
     this._auth = auth;
     if (!this.options.sessionStore)
       return;
-    jsonfile.writeFileSync(this.options.sessionStore, this._auth);
+    jsonfile.writeFileSync(this.options.sessionStore, this._auth, { spaces: 2 });
   }
 
   _isTokenExpired () {

@@ -24,7 +24,7 @@
     "async": "^3.2.0",
     "hoek": "^4.2.1",
     "joi": "^11.4.0",
-    "jsonfile": "^2.4.0",
+    "jsonfile": "^6.1.0",
     "wreck": "^12.5.1"
   },
   "devDependencies": {
