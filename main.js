@@ -189,7 +189,7 @@ class NibeUplink extends utils.Adapter {
     
         f.on('data', (data) => {
             this.log.debug("Data received.");
-            this.log.silly(JSON.stringify(data, null, ' '))        
+            this.log.silly(JSON.stringify(data, null, ' '))
     
             createInfoObjects(this);
             this.setState("info.connection", {val: true, expire: refreshInterval + 30, ack: true});

@@ -26,11 +26,9 @@ const defaultOptions = {
   clientId: null,
   clientSecret: null,
   systemId: null,
-  pattern: /<tr>\s*<td>\s*([^<]+)<span[^>]+>([^<]*)<\/span>\s*<\/td>\s*<td>\s*<span class="AutoUpdateValue ID([0-9]*)[^>]+>([^<]*)<\/span>\s*<\/td>\s*<\/tr>/g,
   baseUrl: 'https://api.nibeuplink.com',
   redirectUri: 'https://z0mt3c.github.io/nibe.html',
   scope: 'READSYSTEM',
-  autoStart: true,
   timeout: 45000,
   maxBytes: 1048576,
   followRedirects: 2,
@@ -317,7 +315,6 @@ const defaultOptions = {
     }
   },
   interval: 60,
-  timezone: 'Europe/Berlin',
   language: 'en',
   renewBeforeExpiry: 5 * 60 * 1000,
   sessionStore: Path.join(__dirname, './.session.json')
@@ -345,10 +342,7 @@ class Fetcher extends EventEmitter {
       maxBytes: this.options.maxBytes
     })
 
-    if (process.env.NIBE_AUTH_CODE)
-      this.options.authCode = process.env.NIBE_AUTH_CODE;
-    if (this.options.autoStart)
-      this.start();
+    this.start();
   }
 
   fetch (callback) {
