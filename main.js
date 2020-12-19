@@ -8,7 +8,7 @@
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
 const path = require('path');
-const dataDir = path.normalize(utils.controllerDir + '/' + require(utils.controllerDir + '/lib/tools').getDefaultDataDir());
+const tools = require(utils.controllerDir + '/lib/tools');
 const fs = require('fs');
 
 // Load your modules here:
@@ -163,6 +163,7 @@ class NibeUplink extends utils.Adapter {
             return;
         }
 
+        var dataDir = path.normalize(utils.controllerDir + '/' + tools.getDefaultDataDir());
         var storeDir = path.join(dataDir, "nibeuplink");
         try {
             // create directory
