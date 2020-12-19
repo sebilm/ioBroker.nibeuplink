@@ -26,3 +26,5 @@ admin/i18n
 maintenance/**
 
 callback/
+
+tsconfig.json
