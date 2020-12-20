@@ -432,22 +432,24 @@ class Fetcher extends EventEmitter {
     }
 
     return new Promise((resolve, reject) => {
-      this.wreck.post('/oauth/token', {
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded'
-        },
-        json: true,
-        payload: querystring.stringify(data)
-      }, (error, response, payload) => {
-        if (error)
-          return reject(error);
+      try {
+        const { response, payload } = this.wreck.post('/oauth/token', {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          },
+          json: true,
+          payload: querystring.stringify(data)
+        });
         if (this._isError(response))
           return reject(new Error(response.statusCode + ': ' + response.statusMessage));
         payload.expires_at = Date.now() + (payload.expires_in * 1000);
         this.setSesssion(payload);
         return resolve(payload);
-      })
-    })
+      }
+      catch (error) {
+        return reject(error);
+      }
+    });
   }
 
   refreshToken () {
@@ -460,63 +462,69 @@ class Fetcher extends EventEmitter {
     }
 
     return new Promise((resolve, reject) => {
-      this.wreck.post('/oauth/token', {
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded'
-        },
-        json: true,
-        payload: querystring.stringify(data)
-      }, (error, response, payload) => {
-        if (error)
-          return reject(error);
+      try {
+        const { response, payload } = this.wreck.post('/oauth/token', {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          },
+          json: true,
+          payload: querystring.stringify(data)
+        });
         if (this._isError(response))
           return reject(new Error(response.statusCode + ': ' + response.statusMessage));
         payload.expires_at = Date.now() + (payload.expires_in * 1000);
         this.setSesssion(payload);
         return resolve(payload);
-      })
-    })
+      }
+      catch (error) {
+        return reject(error);
+      }
+    });
   }
 
   fetchCategories () {
     this.adapter.log.debug("Fetch categories.");
     const systemId = this.options.systemId;
     return new Promise((resolve, reject) => {
-      this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
-        headers: {
-          Authorization: 'Bearer ' + this.getSession('access_token'),
-          'Accept-Language': this.options.language,
-        },
-        json: true
-      }, (error, response, payload) => {
-        if (error)
-          return reject(error);
+      try {
+        const { response, payload } = this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
+          headers: {
+            Authorization: 'Bearer ' + this.getSession('access_token'),
+            'Accept-Language': this.options.language,
+          },
+          json: true
+        });
         if (this._isError(response))
           return reject(new Error(response.statusCode + ': ' + response.statusMessage));
         this.categories = payload;
         return resolve(payload);
-      })
-    })
+      }
+      catch (error) {
+        return reject(error);
+      }
+    });
   }
 
   fetchParams (category) {
     this.adapter.log.debug("Fetch params.");
     const systemId = this.options.systemId;
     return new Promise((resolve, reject) => {
-      this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
-        headers: {
-          Authorization: 'Bearer ' + this.getSession('access_token'),
-          'Accept-Language': this.options.language,
-        },
-        json: true
-      }, (error, response, payload) => {
-        if (error)
-          return reject(error);
+      try {
+        const { response, payload } = this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
+          headers: {
+            Authorization: 'Bearer ' + this.getSession('access_token'),
+            'Accept-Language': this.options.language,
+          },
+          json: true
+        });
         if (this._isError(response))
           return reject(new Error(response.statusCode + ': ' + response.statusMessage));
         return resolve(payload);
-      })
-    })
+      }
+      catch (error) {
+        return reject(error);
+      }
+    });
   }
 
   fetchAllParams () {

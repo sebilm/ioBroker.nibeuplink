@@ -22,10 +22,10 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.4.0",
     "async": "^3.2.0",
-    "hoek": "^4.2.1",
-    "joi": "^11.4.0",
-    "jsonfile": "^6.1.0",
-    "wreck": "^12.5.1"
+    "@hapi/hoek": "^9.1.0",
+    "@hapi/wreck": "^17.1.0",
+    "joi": "^17.3.0",
+    "jsonfile": "^6.1.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^1.2.6",
