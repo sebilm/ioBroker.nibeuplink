@@ -11,8 +11,8 @@
 //
 
 const EventEmitter = require('events');
-const Hoek = require('hoek');
-const Wreck = require('wreck');
+const Hoek = require('@hapi/hoek');
+const Wreck = require('@hapi/wreck');
 const Joi = require('joi');
 const querystring = require('querystring');
 const async = require('async');
