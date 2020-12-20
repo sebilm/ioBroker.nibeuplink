@@ -430,10 +430,9 @@ class Fetcher extends EventEmitter {
       redirect_uri: this.options.redirectUri,
       scope: this.options.scope
     }
-
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        const { response, payload } = this.wreck.post('/oauth/token', {
+        const { response, payload } = await this.wreck.post('/oauth/token', {
           headers: {
             'content-type': 'application/x-www-form-urlencoded'
           },
@@ -460,10 +459,9 @@ class Fetcher extends EventEmitter {
       client_id: this.options.clientId,
       client_secret: this.options.clientSecret
     }
-
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        const { response, payload } = this.wreck.post('/oauth/token', {
+        const { response, payload } = await this.wreck.post('/oauth/token', {
           headers: {
             'content-type': 'application/x-www-form-urlencoded'
           },
@@ -485,9 +483,9 @@ class Fetcher extends EventEmitter {
   fetchCategories () {
     this.adapter.log.debug("Fetch categories.");
     const systemId = this.options.systemId;
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        const { response, payload } = this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
+        const { response, payload } = await this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
           headers: {
             Authorization: 'Bearer ' + this.getSession('access_token'),
             'Accept-Language': this.options.language,
@@ -508,9 +506,9 @@ class Fetcher extends EventEmitter {
   fetchParams (category) {
     this.adapter.log.debug("Fetch params.");
     const systemId = this.options.systemId;
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        const { response, payload } = this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
+        const { response, payload } = await this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
           headers: {
             Authorization: 'Bearer ' + this.getSession('access_token'),
             'Accept-Language': this.options.language,
@@ -615,7 +613,7 @@ class Fetcher extends EventEmitter {
   }
 
   _isError (response) {
-    if (response.statusCode !== 200) {
+    if ((typeof(response) !== 'undefined') && (response !== null) && (response.statusCode !== 200)) {
       this.adapter.log.error('Error occurred: ' + response.statusCode + ': ' + response.statusMessage);
       if (response.statusCode === 401)
         this.clear();
