@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.4.0",
-    "async": "^3.2.0",
     "@hapi/hoek": "^9.1.0",
     "@hapi/wreck": "^17.1.0",
     "jsonfile": "^6.1.0"

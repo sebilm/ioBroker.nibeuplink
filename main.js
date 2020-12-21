@@ -189,8 +189,8 @@ class NibeUplink extends utils.Adapter {
     
         f.on('data', (data) => {
             this.log.debug("Data received.");
-            this.log.silly(JSON.stringify(data, null, ' '))
-    
+            this.log.silly(JSON.stringify(data, null, ' '));
+
             createInfoObjects(this);
             this.setState("info.connection", {val: true, expire: refreshInterval + 30, ack: true});
     
@@ -199,8 +199,7 @@ class NibeUplink extends utils.Adapter {
             this.setState("info.updateTime", {val: datetime, ack: true});
             this.setState("info.currentError", {val: null, ack: true});
 
-            for (var i in data) {
-                var par = data[i];
+            data.forEach(d => d.forEach(par => {
                 var key = par["key"];
                 var title = par["title"];
                 var designation = par["designation"];            
@@ -208,11 +207,11 @@ class NibeUplink extends utils.Adapter {
                 {
                     title = title + " (" + designation + ")";
                 }            
-                var categoryId = par["categoryId"];                
+                var categoryId = par["categoryId"];
 
                 createChannel(this, categoryId, par["categoryName"]);
 
-                var valuePath = categoryId + "." + key.toString().toUpperCase();
+                var valuePath = categoryId + "." + key;
                 this.setObjectNotExists(valuePath, {
                     type: 'state',
                     common: {
@@ -224,7 +223,7 @@ class NibeUplink extends utils.Adapter {
                     native: {}
                 });
                 this.setState(valuePath, {val: par["value"], ack: true});
-                var displayPath = categoryId + "." + key.toString().toUpperCase() + "_DISPLAY";
+                var displayPath = categoryId + "." + key + "_DISPLAY";
                 this.setObjectNotExists(displayPath, {
                     type: 'state',
                     common: {
@@ -255,13 +254,13 @@ class NibeUplink extends utils.Adapter {
                     });
                 })(path, par);
                             
-            }
+            }));
             this.log.debug("Data processed.");
         });
         
     
         f.on('error', (data) => {
-            this.log.error('' + data)
+            this.log.error('' + data);
             
             createInfoObjects(this);
             this.setState("info.connection", {val: false, ack: true});

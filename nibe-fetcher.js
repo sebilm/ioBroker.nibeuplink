@@ -2,19 +2,19 @@
 // nibe-fetcher
 //
 // original author: Timo Behrmann (timo.behrmann@gmail.com)
+// changed by Sebastian Haesselbarth (seb@sebmail.de)
 //
-// sources: https://github.com/z0mt3c/nibe-fetcher
+// original sources: https://github.com/z0mt3c/nibe-fetcher
 //
 // license: MIT
 //
-// this version is based on nibe-fetcher version 1.1.0
+// this version is based on original nibe-fetcher version 1.1.0
 //
 
 const EventEmitter = require('events');
 const Hoek = require('@hapi/hoek');
 const Wreck = require('@hapi/wreck');
 const querystring = require('querystring');
-const async = require('async');
 const info = require('./package.json');
 const jsonfile = require('jsonfile');
 const Path = require('path');
@@ -335,53 +335,7 @@ class Fetcher extends EventEmitter {
     })
 
     this.start();
-  }
-
-  fetch (callback) {
-    this.adapter.log.debug("fetch()");
-    async.waterfall([
-      (callback) => {
-        if (this._hasRefreshToken())
-          return callback();
-        if (this.options.authCode) {
-          this.token(this.options.authCode)
-            .then((data) => callback(), (error) => callback(error))
-          return;
-        } else {
-          this.adapter.log.error("You need to get and set a new Auth-Code. You can do this in the adapter setting.");
-          this.stop();
-        }
-      },
-      (callback) => {
-        if (!this._isTokenExpired())
-          return callback();
-        this.adapter.log.debug('Token is expired / expires soon - refreshing');
-        this.refreshToken().then((data) => callback(), (error) => callback(error));
-      },
-      (callback) => {
-        if (this.categories != null)
-          return callback();
-        this.adapter.log.debug('Loading categories');
-        this.fetchCategories().then((data) => {
-          callback();
-        }, (error) => {
-          callback(error);
-        })
-      },
-      (callback) => {
-        this.fetchAllParams().then((data) => {
-          callback();
-        }, (error) => {
-          callback(error);
-        })
-      }
-    ], (error) => {
-      if (error) {
-        this._onError(error);
-      }
-      callback();
-    })
-  }
+  }  
 
   start () {
     if (this._interval)
@@ -392,9 +346,9 @@ class Fetcher extends EventEmitter {
       if (active)
         return;
       active = true;
-      this.fetch(() => {
+      this.fetch().then(() => {
         active = false;
-      })
+      });
     }
 
     this._interval = setInterval(exec, this.options.interval * 1000);
@@ -408,43 +362,52 @@ class Fetcher extends EventEmitter {
     this._interval = null;
   }
 
-  clear () {
-    this.adapter.log.debug("clear()");
-    this.setSesssion({});
+  async fetch()
+  {
+    this.adapter.log.debug("fetch()");
+    try {
+      if (!this._hasRefreshToken()) {
+        if (this.options.authCode) {
+          let token = await this.getToken(this.options.authCode);
+          this.setSesssion(token);
+        } else {
+          this.adapter.log.error("You need to get and set a new Auth-Code. You can do this in the adapter setting.");
+          this.stop();
+          return;
+        }
+      }
+      if (this._isTokenExpired()) {
+        this.adapter.log.debug('Token is expired / expires soon - refreshing');
+        let token = await this.getRefreshToken();
+        this.setSesssion(token);
+      }
+      if (this.categories == null) {
+        this.adapter.log.debug('Loading categories');
+        this.categories = await this.fetchCategories();
+      }
+      let allParams = await this.fetchAllParams();
+      this.adapter.log.debug('All params fetched.');
+      this._onData(allParams);
+    }
+    catch (error) {
+      this._onError(error);
+    }
   }
 
-  token (code) {
+  async getToken (authCode) {
     this.adapter.log.debug("token()");
     const data = {
       grant_type: 'authorization_code',
       client_id: this.options.clientId,
       client_secret: this.options.clientSecret,
-      code: code,
+      code: authCode,
       redirect_uri: this.options.redirectUri,
       scope: this.options.scope
     }
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { response, payload } = await this.wreck.post('/oauth/token', {
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded'
-          },
-          json: true,
-          payload: querystring.stringify(data)
-        });
-        if (this._isError(response))
-          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
-        payload.expires_at = Date.now() + (payload.expires_in * 1000);
-        this.setSesssion(payload);
-        return resolve(payload);
-      }
-      catch (error) {
-        return reject(error);
-      }
-    });
+    return await this.postTokenRequest(data);
   }
 
-  refreshToken () {
+  async getRefreshToken () {
     this.adapter.log.debug("Refresh token.");
     const data = {
       grant_type: 'refresh_token',
@@ -452,112 +415,92 @@ class Fetcher extends EventEmitter {
       client_id: this.options.clientId,
       client_secret: this.options.clientSecret
     }
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { response, payload } = await this.wreck.post('/oauth/token', {
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded'
-          },
-          json: true,
-          payload: querystring.stringify(data)
-        });
-        if (this._isError(response))
-          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
-        payload.expires_at = Date.now() + (payload.expires_in * 1000);
-        this.setSesssion(payload);
-        return resolve(payload);
-      }
-      catch (error) {
-        return reject(error);
-      }
-    });
+    return await this.postTokenRequest(data);
   }
 
-  fetchCategories () {
+  async postTokenRequest(playload) {
+    const { response, payload } = await this.wreck.post('/oauth/token', {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      json: true,
+      payload: querystring.stringify(playload)
+    });
+    if (this._isErrorResponse(response)) {
+      throw new Error(response.statusCode + ': ' + response.statusMessage);
+    }
+    payload.expires_at = Date.now() + (payload.expires_in * 1000);    
+    return payload;
+  }
+
+  async fetchCategories () {
     this.adapter.log.debug("Fetch categories.");
-    const systemId = this.options.systemId;
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { response, payload } = await this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories`, {
-          headers: {
-            Authorization: 'Bearer ' + this.getSession('access_token'),
-            'Accept-Language': this.options.language,
-          },
-          json: true
-        });
-        if (this._isError(response))
-          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
-        this.categories = payload;
-        return resolve(payload);
-      }
-      catch (error) {
-        return reject(error);
-      }
-    });
+    return await this.getFromNibeuplink('serviceinfo/categories');
   }
 
-  fetchParams (category) {
-    this.adapter.log.debug("Fetch params.");
+  async fetchParams (category) {
+    this.adapter.log.debug(`Fetch params of category ${category}.`);
+    return await this.getFromNibeuplink(`serviceinfo/categories/status?categoryId=${category}`);
+  }  
+
+  async getFromNibeuplink(suburl) {
     const systemId = this.options.systemId;
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { response, payload } = await this.wreck.get(`/api/v1/systems/${systemId}/serviceinfo/categories/status?categoryId=${category}`, {
-          headers: {
-            Authorization: 'Bearer ' + this.getSession('access_token'),
-            'Accept-Language': this.options.language,
-          },
-          json: true
-        });
-        if (this._isError(response))
-          return reject(new Error(response.statusCode + ': ' + response.statusMessage));
-        return resolve(payload);
-      }
-      catch (error) {
-        return reject(error);
-      }
+    const { response, payload } = await this.wreck.get(`/api/v1/systems/${systemId}/${suburl}`, {
+      headers: {
+        Authorization: 'Bearer ' + this.getSession('access_token'),
+        'Accept-Language': this.options.language,
+      },
+      json: true
     });
+    if (this._isErrorResponse(response)) {
+      this.adapter.log.error(`error from ${suburl}`);
+      throw new Error(response.statusCode + ': ' + response.statusMessage);
+    }
+    return payload;
   }
 
-  fetchAllParams () {
+  async fetchAllParams () {
     this.adapter.log.debug("Fetch all params.");
     const categories = this.categories;
-    return new Promise((resolve, reject) => {
-      async.map(categories, (item, reply) => {
-        this.fetchParams(item.categoryId).then((result) => {
-          result.forEach((i) => {
-            var name = i.title;
-            if ((i.designation != undefined) && (i.designation != ""))
-            {
-                name = i.parameterId + "_" + name + "_" + i.designation;
-            }
-            name = (name.split(/[^a-z0-9]+/gi).join('_')).toUpperCase().replace(/[_]+$/, '');
-            const parameters = this.options.parameters[i.parameterId];
-            Object.assign(i, {
-              key: name,
-              categoryId: item.categoryId,
-              categoryName: item.name
-            }, parameters)
+    return Promise.all(categories.map(category => this.fetchAndProcessParams(category)));
+  }
 
-            if (i.divideBy > 0)
-            {
-              i.value = i.rawValue / i.divideBy;
-            }
-            else
-            {
-              i.value = i.rawValue;
-            }
-          })
-          reply(null, result)
-        }, (error) => {
-          reply(error);
-        })
-      }, (error, results) => {
-        if (error)
-          return reject(error);
-        results = [].concat.apply([], results);
-        this._onData(results);
-        resolve(results);
-      })
+  async fetchAndProcessParams(category) {
+    let params = await this.fetchParams(category.categoryId);
+    this.processParams(category, params);
+    return params;
+  }
+
+  processParams(category, result) {
+    result.forEach((item) => {
+      let key;
+      const parameters = this.options.parameters[item.parameterId];
+      if (parameters == null) {
+        key = item.title;
+        if (item.parameterId > 0) {
+          key = item.parameterId + "_" + key;
+        }
+        if ((item.designation != null) && (item.designation != ""))
+        {
+            key = key + "_" + item.designation;
+        }
+        const regex = /[^A-Z0-9_]+/gi;
+        key = key.toUpperCase().replace(regex, '_');
+      }
+      Object.assign(item, {
+        key: key,
+        categoryId: category.categoryId,
+        categoryName: category.name
+      }, parameters)
+
+      if (item.divideBy > 0)
+      {
+        item.value = item.rawValue / item.divideBy;
+      }
+      else
+      {
+        item.value = item.rawValue;
+      }
     })
   }
 
@@ -583,15 +526,18 @@ class Fetcher extends EventEmitter {
     jsonfile.writeFileSync(this.options.sessionStore, this._auth, { spaces: 2 });
   }
 
+  clearSesssion () {
+    this.adapter.log.debug("Clear session.");
+    this.setSesssion({});
+  }
+
   _isTokenExpired () {
-    this.adapter.log.debug("Is token expired?");
     var expired = (this.getSession('expires_at') || 0) < (Date.now() + this.options.renewBeforeExpiry);
     this.adapter.log.debug("Is token expired: " + expired);
     return expired;
   }
 
   _hasRefreshToken () {
-    this.adapter.log.debug("Has refresh token?");
     var hasToken = !!this.getSession('refresh_token');
     this.adapter.log.debug("Has refresh token: " + hasToken);
     return hasToken;
@@ -605,15 +551,15 @@ class Fetcher extends EventEmitter {
     this.emit('error', error);
   }
 
-  _isError (response) {
-    if ((typeof(response) !== 'undefined') && (response !== null) && (response.statusCode !== 200)) {
-      this.adapter.log.error('Error occurred: ' + response.statusCode + ': ' + response.statusMessage);
-      if (response.statusCode === 401)
-        this.clear();
+  _isErrorResponse (response) {
+    if ((response != null) && (response.statusCode !== 200)) {
+      if (response.statusCode === 401) {
+        this.clearSesssion();
+      }
       return true;
+    } else {
+      return false;
     }
-
-    return false;
   }
 }
 
