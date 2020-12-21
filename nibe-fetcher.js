@@ -48,6 +48,10 @@ const defaultOptions = {
       'key': 'OUTDOOR_TEMP_BT1',
       'divideBy': 10
     },
+    '40007': {
+      'key': 'HEAT_MEDIUM_FLOW_EP21_BT2',
+      'divideBy': 10
+    },
     '40008': {
       'key': 'HEAT_MEDIUM_FLOW_BT2',
       'divideBy': 10
@@ -100,6 +104,10 @@ const defaultOptions = {
       'key': 'EXTRACT_AIR_BT21',
       'divideBy': 10
     },
+    '40032': {
+      'key': 'ROOM_TEMPERATURE_EP21_BT50',
+      'divideBy': 10
+    },
     '40033': {
       'key': 'ROOM_TEMPERATURE_BT50',
       'divideBy': 10
@@ -144,6 +152,18 @@ const defaultOptions = {
       'key': 'INCOMING_AIR_TEMP',
       'divideBy': 10
     },
+    '40121': {
+      'key': 'ADDITION_TEMPERATURE_BT63',
+      'divideBy': 10
+    },
+    '40129': {
+      'key': 'HEAT_MEDIUM_RETURN_EP21_BT3',
+      'divideBy': 10
+    },
+    '40152': {
+      'key': 'EXTERNAL_RETURN_TEMP_BT71',
+      'divideBy': 10
+    },
     '40771': {
       'key': 'POOL2_COMPR_ONLY_EP14',
       'divideBy': 10
@@ -158,6 +178,10 @@ const defaultOptions = {
     },
     '43005': {
       'key': 'DEGREE_MINUTES',
+      'divideBy': 10
+    },
+    '43008': {
+      'key': 'CALCULATED_FLOW_TEMP_S2',
       'divideBy': 10
     },
     '43009': {
@@ -182,7 +206,11 @@ const defaultOptions = {
     '43084': {
       'key': 'ELECTRICAL_ADDITION_POWER',
       'divideBy': 10
-    },    
+    },
+    '43091': {
+      'key': 'STATUS',
+      'divideBy': 0
+    },
     '43115': {
       'key': 'HW_CHARGE_CALC_VALUE',
       'divideBy': 10
@@ -213,6 +241,10 @@ const defaultOptions = {
     '43146': {
       'key': 'DT_INVERTER_EXHAUST_AIR',
       'divideBy': 10
+    },
+    '43160': {
+      'key': 'EXTERNAL_ADJUSTMENT_S2',
+      'divideBy': 0
     },
     '43161': {
       'key': 'EXTERNAL_ADJUSTMENT_S1',
@@ -305,6 +337,14 @@ const defaultOptions = {
     },
     '47412': {
       'key': 'AUX_X7',
+      'divideBy': 0
+    },
+    '47613': {
+      'key': 'MAX_STEP',
+      'divideBy': 0
+    },
+    '48366': {
+      'key': 'AUX_6',
       'divideBy': 0
     },
     '48745': {
