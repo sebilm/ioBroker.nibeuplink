@@ -13,7 +13,6 @@
 const EventEmitter = require('events');
 const Hoek = require('@hapi/hoek');
 const Wreck = require('@hapi/wreck');
-const Joi = require('joi');
 const querystring = require('querystring');
 const async = require('async');
 const info = require('./package.json');
@@ -324,12 +323,6 @@ class Fetcher extends EventEmitter {
     super()
 
     this.adapter = adapter;
-
-    Joi.assert(options, Joi.object({
-      clientId: Joi.string().length(32).required(),
-      clientSecret: Joi.string().required(),
-      systemId: Joi.number().required()
-    }).options({ allowUnknown: true }))
 
     this.options = Hoek.applyToDefaults(defaultOptions, options || {})
 
