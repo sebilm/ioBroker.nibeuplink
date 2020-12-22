@@ -29,13 +29,25 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 ## Changelog
 
 ### 0.4.0
-* set required js-controller to >=2.0.0
-* test for node 8 removed
-* devide by 10 added to external flow temperature
+* Set required js-controller to >=2.0.0
+* Test for Node 8 removed
+* Support for more than one unit added
+  - There is a new object structure - one level more for the unit.
+  - The old objects will be updated if they are found - so don't panic.
+  - If you don't need the old objects, you can remove them. They will not be created again.
+* Devide by 10 added to external flow temperature
 * 10 missing parameters added for SMO 40
-* fallback names for unknown parameters changed (id added)
-* store session in iobroker data directory
-* code refactoring
+  - The old fallback objects are no longer supported and updated. So check your objects update time.
+  - You can remove the old objects. They will not be created again.
+* Fallback names for unknown parameters changed (id added at the beginning)
+  - The old fallback objects are no longer supported and updated. So check your objects update time.
+  - You can remove the old objects. They will not be created again.
+  - If you have objects with numbers at the beginning, then these are fallback names. Please email me and I can add them.
+* Store session in iobroker data directory
+  - After the adapter update you always had to get a new AuthCode and set it in the adapter settings.
+  - This is no longer necessary from the next version.
+  - But after the update to this version (0.4.0) it is necessary once again.
+* Code refactoring
 
 ### 0.3.0
 * Compact mode disabled
