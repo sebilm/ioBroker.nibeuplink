@@ -404,7 +404,7 @@ class Fetcher extends EventEmitter {
 
   async fetch()
   {
-    this.adapter.log.debug("fetch()");
+    this.adapter.log.debug("Fetch data.");
     try {
       if (!this._hasRefreshToken()) {
         if (this.options.authCode) {
@@ -421,13 +421,15 @@ class Fetcher extends EventEmitter {
         let token = await this.getRefreshToken();
         this.setSesssion(token);
       }
-      if (this.categories == null) {
-        this.adapter.log.debug('Loading categories');
-        this.categories = await this.fetchCategories();
+      if (this.units == null) {
+        this.units = await this.fetchUnits();
       }
-      let allParams = await this.fetchAllParams();
-      this.adapter.log.debug('All params fetched.');
-      this._onData(allParams);
+      let allData = await Promise.all(this.units.map(async (unit) => {        
+        let categories = await this.fetchCategories(unit);
+        return Object.assign({}, unit, { categories: categories });
+      }));
+      this.adapter.log.debug('All data fetched.');
+      this._onData(allData);
     }
     catch (error) {
       this._onError(error);
@@ -473,9 +475,19 @@ class Fetcher extends EventEmitter {
     return payload;
   }
 
-  async fetchCategories () {
+  async fetchUnits () {
+    this.adapter.log.debug('Fetch units.');
+    let units = await this.getFromNibeuplink('units');
+    this.adapter.log.debug(`${units.length} units fetched.`);
+    return units;
+  }
+
+  async fetchCategories (unit) {
     this.adapter.log.debug("Fetch categories.");
-    return await this.getFromNibeuplink('serviceinfo/categories');
+    let categories = await this.getFromNibeuplink(`serviceinfo/categories?parameters=true&systemUnitId=${unit.systemUnitId}`);
+    categories.forEach(category => this.processParams(category.parameters));
+    this.adapter.log.debug(`${categories.length} categories fetched.`);
+    return categories;
   }
 
   async fetchParams (category) {
@@ -499,24 +511,11 @@ class Fetcher extends EventEmitter {
     return payload;
   }
 
-  async fetchAllParams () {
-    this.adapter.log.debug("Fetch all params.");
-    const categories = this.categories;
-    return Promise.all(categories.map(category => this.fetchAndProcessParams(category)));
-  }
-
-  async fetchAndProcessParams(category) {
-    let params = await this.fetchParams(category.categoryId);
-    this.processParams(category, params);
-    return params;
-  }
-
-  processParams(category, result) {
-    result.forEach((item) => {
-      let key;
+  processParams(params) {
+    params.forEach((item) => {
       const parameters = this.options.parameters[item.parameterId];
       if (parameters == null) {
-        key = item.title;
+        let key = item.title;
         if (item.parameterId > 0) {
           key = item.parameterId + "_" + key;
         }
@@ -526,12 +525,10 @@ class Fetcher extends EventEmitter {
         }
         const regex = /[^A-Z0-9_]+/gi;
         key = key.toUpperCase().replace(regex, '_');
+        Object.assign(item, { key: key });
+      } else {
+        Object.assign(item, parameters);
       }
-      Object.assign(item, {
-        key: key,
-        categoryId: category.categoryId,
-        categoryName: category.name
-      }, parameters)
 
       if (item.divideBy > 0)
       {
@@ -552,7 +549,7 @@ class Fetcher extends EventEmitter {
   }
 
   getSession (key) {
-    this.adapter.log.debug("Get session.");
+    this.adapter.log.silly("Get session.");
     if (this._auth == null)
       this.readSession();
     return this._auth ? this._auth[key] : null;

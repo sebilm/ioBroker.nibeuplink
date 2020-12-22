@@ -67,6 +67,24 @@ function createNumberObject(adapter, path, name)
  * @param {string} path
  * @param {string} name
  */
+function createDevice(adapter, path, name)
+{
+    adapter.setObjectNotExists(path, {
+        type: 'device',
+        common: {
+            name: name,
+            type: 'string',
+            role: 'text'
+        },
+        native: {}
+    });
+}
+
+/**
+ * @param {utils.Adapter} adapter
+ * @param {string} path
+ * @param {string} name
+ */
 function createChannel(adapter, path, name)
 {
     adapter.setObjectNotExists(path, {
@@ -199,62 +217,85 @@ class NibeUplink extends utils.Adapter {
             this.setState("info.updateTime", {val: datetime, ack: true});
             this.setState("info.currentError", {val: null, ack: true});
 
-            data.forEach(d => d.forEach(par => {
-                var key = par["key"];
-                var title = par["title"];
-                var designation = par["designation"];            
-                if ((designation != undefined) && (designation != ""))
-                {
-                    title = title + " (" + designation + ")";
-                }            
-                var categoryId = par["categoryId"];
-
-                createChannel(this, categoryId, par["categoryName"]);
-
-                var valuePath = categoryId + "." + key;
-                this.setObjectNotExists(valuePath, {
-                    type: 'state',
-                    common: {
-                        name: title,
-                        type: 'number',
-                        role: 'value',
-                        unit: par["unit"]
-                    },
-                    native: {}
-                });
-                this.setState(valuePath, {val: par["value"], ack: true});
-                var displayPath = categoryId + "." + key + "_DISPLAY";
-                this.setObjectNotExists(displayPath, {
-                    type: 'state',
-                    common: {
-                        name: title + " [Display]",
-                        type: 'string',
-                        role: 'text'
-                    },
-                    native: {}
-                });
-                this.setState(displayPath, {val: par["displayValue"], ack: true});
-               
-                // update deprecated subpath values if present:            
-                var parameterId = par["parameterId"];
-                var path = categoryId + "." + parameterId;
-                var adapter = this;
-                (function(path, par) {
-                    adapter.getObject(path, function (err, obj) {
-                        if (obj) {
-                            for (var p in par) {   
-                                var parPath = path + "." + p;
-                                if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId")))
-                                    createNumberObject(adapter, parPath, p);
-                                else if (p != "name")
-                                    createStringObject(adapter, parPath, p);
-                                    adapter.setState(parPath, {val: par[p], ack: true});
-                            }     
+            data.forEach(unit => {
+                let unitPath = `UNIT_${unit.systemUnitId}`;
+                createDevice(this, unitPath, `${unit.name} (${unit.product})`);
+                unit.categories.forEach(category => {
+                    let categoryPath = `${unitPath}.${category.categoryId}`;
+                    createChannel(this, categoryPath, category.name);
+                    category.parameters.forEach(parameter => {
+                        let key = parameter["key"];
+                        let title = parameter["title"];
+                        let designation = parameter["designation"];            
+                        if ((designation != null) && (designation != ""))
+                        {
+                            title = `${title} (${designation})`;
                         }
-                    });
-                })(path, par);
-                            
-            }));
+                        let valuePath = `${categoryPath}.${key}`;
+
+                        this.setObjectNotExists(valuePath, {
+                            type: 'state',
+                            common: {
+                                name: title,
+                                type: 'number',
+                                role: 'value',
+                                unit: parameter["unit"]
+                            },
+                            native: {}
+                        });
+                        this.setState(valuePath, {val: parameter["value"], ack: true});
+                        
+                        let displayPath = `${categoryPath}.${key}_DISPLAY`;
+                        this.setObjectNotExists(displayPath, {
+                            type: 'state',
+                            common: {
+                                name: `${title} [Display]`,
+                                type: 'string',
+                                role: 'text'
+                            },
+                            native: {}
+                        });
+                        this.setState(displayPath, {val: parameter["displayValue"], ack: true});
+                    
+                        if (unit.systemUnitId == 0)
+                        {
+                            let adapter = this;
+
+                            // update deprecated subpath values if present (pre 0.4.0):
+                            let oldValuePath = `${category.categoryId}.${key}`;
+                            this.getObject(oldValuePath, function (err, obj) {
+                                if (obj) {
+                                    adapter.setState(oldValuePath, {val: parameter["value"], ack: true});
+                                }
+                            });
+                            let oldDisplayPath = `${category.categoryId}.${key}_DISPLAY`;
+                            this.getObject(oldDisplayPath, function (err, obj) {
+                                if (obj) {
+                                    adapter.setState(oldDisplayPath, {val: parameter["displayValue"], ack: true});
+                                }
+                            });
+
+                            // update deprecated subpath values if present (very old):
+                            let parameterId = parameter["parameterId"];
+                            let path = category.categoryId + "." + parameterId;                            
+                            (function(path, par) {
+                                adapter.getObject(path, function (err, obj) {
+                                    if (obj) {
+                                        for (let p in par) {   
+                                            let parPath = path + "." + p;
+                                            if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId")))
+                                                createNumberObject(adapter, parPath, p);
+                                            else if (p != "name")
+                                                createStringObject(adapter, parPath, p);
+                                                adapter.setState(parPath, {val: par[p], ack: true});
+                                        }     
+                                    }
+                                });
+                            })(path, parameter);
+                        }
+                    })
+                })
+            });
             this.log.debug("Data processed.");
         });
         
