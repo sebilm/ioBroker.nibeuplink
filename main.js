@@ -144,15 +144,16 @@ class NibeUplink extends utils.Adapter {
 
         this.log.info('Starting adapter.');
     
-        var refreshInterval = this.config.Interval * 60;
-        if (refreshInterval < 60)
+        let refreshInterval = this.config.Interval * 60;
+        if (refreshInterval < 60) {
             refreshInterval = 60;
+        }
 
-        var identifier = this.config.Identifier.trim();
-        var secret = this.config.Secret.trim();
-        var callbackURL = this.config.CallbackURL.trim();
+        let identifier = this.config.Identifier.trim();
+        let secret = this.config.Secret.trim();
+        let callbackURL = this.config.CallbackURL.trim();
     
-        var error = false;
+        let error = false;
         if ((identifier == "") || (identifier == undefined))
         {
             this.log.error("Missing Identifier in the settings!");
@@ -181,8 +182,8 @@ class NibeUplink extends utils.Adapter {
             return;
         }
 
-        var dataDir = path.normalize(utils.controllerDir + '/' + tools.getDefaultDataDir());
-        var storeDir = path.join(dataDir, "nibeuplink");
+        let dataDir = path.normalize(utils.controllerDir + '/' + tools.getDefaultDataDir());
+        let storeDir = path.join(dataDir, "nibeuplink");
         try {
             // create directory
             if (!fs.existsSync(storeDir)) {
@@ -192,7 +193,7 @@ class NibeUplink extends utils.Adapter {
             this.log.error('Could not create storage directory (' + storeDir + '): ' + err);
             storeDir = __dirname;
         }
-        var storeFile = path.join(storeDir, "session." + this.instance + ".json");        
+        let storeFile = path.join(storeDir, "session." + this.instance + ".json");        
     
         var f = new Fetcher({
             clientId: identifier,
@@ -212,8 +213,8 @@ class NibeUplink extends utils.Adapter {
             createInfoObjects(this);
             this.setState("info.connection", {val: true, expire: refreshInterval + 30, ack: true});
     
-            var newDate = new Date();
-            var datetime = newDate.today() + " " + newDate.timeNow();
+            let newDate = new Date();
+            let datetime = newDate.today() + " " + newDate.timeNow();
             this.setState("info.updateTime", {val: datetime, ack: true});
             this.setState("info.currentError", {val: null, ack: true});
 
@@ -306,12 +307,12 @@ class NibeUplink extends utils.Adapter {
             createInfoObjects(this);
             this.setState("info.connection", {val: false, ack: true});
     
-            var newDate = new Date();
-            var datetime = newDate.today() + " " + newDate.timeNow();
+            let newDate = new Date();
+            let datetime = newDate.today() + " " + newDate.timeNow();
             this.setState("info.lastErrorTime", {val: datetime, ack: true});
             this.setState("info.lastError", {val: '' + data, ack: true});        
             this.setState("info.currentError", {val: '' + data, ack: true});
-        });    
+        });
     
         this.log.info('Adapter started.');
     }
