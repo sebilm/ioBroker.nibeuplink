@@ -9884,7 +9884,8 @@ const defaultOptions = {
       'key': 'HIGH_PRESSURE_SENSOR_RAW_VALUE_EB101_EP14'
     },
     '44699': {
-      'key': 'HIGH_PRESSURE_SENSOR_EB101_EP14'
+      'key': 'HIGH_PRESSURE_SENSOR_EB101_EP14',
+      'divideBy': 10
     },
     '44700': {
       'key': 'LOW_PRESSURE_SENSOR_EB101_EP14'
