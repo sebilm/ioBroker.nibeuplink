@@ -195,7 +195,7 @@ class NibeUplink extends utils.Adapter {
         }
         let storeFile = path.join(storeDir, "session." + this.instance + ".json");        
     
-        var f = new Fetcher({
+        this.fetcher = new Fetcher({
             clientId: identifier,
             clientSecret: secret,
             redirectUri: callbackURL,
@@ -206,7 +206,7 @@ class NibeUplink extends utils.Adapter {
             sessionStore: storeFile
         }, this);
     
-        f.on('data', (data) => {
+        this.fetcher.on('data', (data) => {
             this.log.debug("Data received.");
             this.log.silly(JSON.stringify(data, null, ' '));
 
@@ -301,7 +301,7 @@ class NibeUplink extends utils.Adapter {
         });
         
     
-        f.on('error', (data) => {
+        this.fetcher.on('error', (data) => {
             this.log.error('' + data);
             
             createInfoObjects(this);
@@ -322,7 +322,11 @@ class NibeUplink extends utils.Adapter {
      * @param {() => void} callback
      */
     onUnload(callback) {
-        try {
+        try {            
+            if (this.fetcher != null) {
+                this.fetcher.stop();
+            }
+            this.fetcher = null;
             this.setState("info.connection", {val: false, ack: true});
             this.log.info('Cleaned everything up...');
             callback();
