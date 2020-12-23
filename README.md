@@ -47,6 +47,7 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
   - After the adapter update you always had to get a new AuthCode and set it in the adapter settings.
   - This is no longer necessary from the next version.
   - But after the update to this version (0.4.0) it is necessary once again.
+* Norwegian added
 * Code refactoring
 
 ### 0.3.0
