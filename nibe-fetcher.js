@@ -421,6 +421,9 @@ class Fetcher extends EventEmitter {
         let token = await this.getRefreshToken();
         this.setSesssion(token);
       }
+
+      // await this._getAndWriteAllParameters();
+      
       if (this.units == null) {
         this.units = await this.fetchUnits();
       }
@@ -495,12 +498,19 @@ class Fetcher extends EventEmitter {
     return await this.getFromNibeuplink(`serviceinfo/categories/status?categoryId=${category}`);
   }  
 
-  async getFromNibeuplink(suburl) {
+  /**
+  * @param {string} suburl
+  * @param {string} lang
+  */
+  async getFromNibeuplink(suburl, lang = '') {
+    if (lang == '') {
+      lang = this.options.language;
+    }
     const systemId = this.options.systemId;
     const { response, payload } = await this.wreck.get(`/api/v1/systems/${systemId}/${suburl}`, {
       headers: {
         Authorization: 'Bearer ' + this.getSession('access_token'),
-        'Accept-Language': this.options.language,
+        'Accept-Language': lang,
       },
       json: true
     });
@@ -511,23 +521,28 @@ class Fetcher extends EventEmitter {
     return payload;
   }
 
-  processParams(params) {
+  processParams(params, collect = false) {
     params.forEach((item) => {
       const parameters = this.options.parameters[item.parameterId];
       if (parameters == null) {
         let key = item.title;
-        if (item.parameterId > 0) {
+        if (!collect && (item.parameterId > 0)) {
           key = item.parameterId + "_" + key;
         }
         if ((item.designation != null) && (item.designation != ""))
         {
             key = key + "_" + item.designation;
         }
-        const regex = /[^A-Z0-9_]+/gi;
-        key = key.toUpperCase().replace(regex, '_');
+        key = key.toUpperCase().replace(/[^A-Z0-9_]+/gm, '_').replace(/_{2,}/gm, '_').replace(/_+$/gm, '');
         Object.assign(item, { key: key });
       } else {
         Object.assign(item, parameters);
+      }
+
+      if (item.divideBy == null) {
+        if ((item.unit == '°C') ||( item.unit == 'kW') || (item.unit == 'kWh') || (item.unit == 'l/m')) {
+          Object.assign(item, { divideBy: 10 });
+        }
       }
 
       if (item.divideBy > 0)
@@ -597,6 +612,30 @@ class Fetcher extends EventEmitter {
     } else {
       return false;
     }
+  }
+
+  async _getAndWriteAllParameters() {
+    let par = {};
+      for (let i = 40000; i < 50000; i = i + 15) {
+        let url = `parameters?parameterIds=${i}`;
+        for (let j = 1; j < 15; j ++) {
+          url = url + `&parameterIds=${i+j}`;
+        }
+        let raw = await this.getFromNibeuplink(url, 'en');
+        this.adapter.log.info(`${i}: ${raw.length}`);
+        this.processParams(raw, true);        
+        raw.forEach(item => {
+          if (item.key != '') {
+            if (item.divideBy != null) {
+              par[`${item.parameterId}`] = { key: item.key, divideBy: item.divideBy };
+            } else {
+              par[`${item.parameterId}`] = { key: item.key };
+            }
+          }
+        });
+      }
+      jsonfile.writeFileSync(Path.join(__dirname, './parameters40.json'), par, { spaces: 2 });
+      this.stop();
   }
 }
 
