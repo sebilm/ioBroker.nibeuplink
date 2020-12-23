@@ -3609,7 +3609,8 @@ const defaultOptions = {
       'divideBy': 10
     },
     '41778': {
-      'key': 'CURRENT_COMPR_FREQUENCY'
+      'key': 'CURRENT_COMPR_FREQUENCY',
+      'divideBy': 10
     },
     '41783': {
       'key': 'LOW_FLOW_OPT'
@@ -9200,7 +9201,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB108_EP15'
     },
     '44491': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB108_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB108_EP15',
+      'divideBy': 10
     },
     '44492': {
       'key': 'CPR_PROTECTION_MODE_EB108_EP15'
@@ -9246,7 +9248,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB108_EP14'
     },
     '44505': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB108_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB108_EP14',
+      'divideBy': 10
     },
     '44506': {
       'key': 'CPR_PROTECTION_MODE_EB108_EP14'
@@ -9292,7 +9295,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB107_EP15'
     },
     '44519': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB107_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB107_EP15',
+      'divideBy': 10
     },
     '44520': {
       'key': 'CPR_PROTECTION_MODE_EB107_EP15'
@@ -9338,7 +9342,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB107_EP14'
     },
     '44533': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB107_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB107_EP14',
+      'divideBy': 10
     },
     '44534': {
       'key': 'CPR_PROTECTION_MODE_EB107_EP14'
@@ -9384,7 +9389,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB106_EP15'
     },
     '44547': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB106_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB106_EP15',
+      'divideBy': 10
     },
     '44548': {
       'key': 'CPR_PROTECTION_MODE_EB106_EP15'
@@ -9430,7 +9436,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB106_EP14'
     },
     '44561': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB106_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB106_EP14',
+      'divideBy': 10
     },
     '44562': {
       'key': 'CPR_PROTECTION_MODE_EB106_EP14'
@@ -9476,7 +9483,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB105_EP15'
     },
     '44575': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB105_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB105_EP15',
+      'divideBy': 10
     },
     '44576': {
       'key': 'CPR_PROTECTION_MODE_EB105_EP15'
@@ -9522,7 +9530,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB105_EP14'
     },
     '44589': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB105_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB105_EP14',
+      'divideBy': 10
     },
     '44590': {
       'key': 'CPR_PROTECTION_MODE_EB105_EP14'
@@ -9568,7 +9577,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB104_EP15'
     },
     '44603': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB104_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB104_EP15',
+      'divideBy': 10
     },
     '44604': {
       'key': 'CPR_PROTECTION_MODE_EB104_EP15'
@@ -9614,7 +9624,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB104_EP14'
     },
     '44617': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB104_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB104_EP14',
+      'divideBy': 10
     },
     '44618': {
       'key': 'CPR_PROTECTION_MODE_EB104_EP14'
@@ -9660,7 +9671,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB103_EP15'
     },
     '44631': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB103_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB103_EP15',
+      'divideBy': 10
     },
     '44632': {
       'key': 'CPR_PROTECTION_MODE_EB103_EP15'
@@ -9706,7 +9718,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB103_EP14'
     },
     '44645': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB103_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB103_EP14',
+      'divideBy': 10
     },
     '44646': {
       'key': 'CPR_PROTECTION_MODE_EB103_EP14'
@@ -9752,7 +9765,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB102_EP15'
     },
     '44659': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB102_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB102_EP15',
+      'divideBy': 10
     },
     '44660': {
       'key': 'CPR_PROTECTION_MODE_EB102_EP15'
@@ -9798,7 +9812,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB102_EP14'
     },
     '44673': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB102_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB102_EP14',
+      'divideBy': 10
     },
     '44674': {
       'key': 'CPR_PROTECTION_MODE_EB102_EP14'
@@ -9844,7 +9859,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB101_EP15'
     },
     '44687': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB101_EP15'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB101_EP15',
+      'divideBy': 10
     },
     '44688': {
       'key': 'CPR_PROTECTION_MODE_EB101_EP15'
@@ -9891,7 +9907,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR_EB101_EP14'
     },
     '44701': {
-      'key': 'CURRENT_COMPR_FREQUENCY_EB101_EP14'
+      'key': 'CURRENT_COMPR_FREQUENCY_EB101_EP14',
+      'divideBy': 10
     },
     '44702': {
       'key': 'CPR_PROTECTION_MODE_EB101_EP14'
@@ -9934,7 +9951,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR'
     },
     '44715': {
-      'key': 'CURRENT_COMPR_FREQUENCY'
+      'key': 'CURRENT_COMPR_FREQUENCY',
+      'divideBy': 10
     },
     '44716': {
       'key': 'CPR_PROTECTION_MODE'
@@ -9949,7 +9967,8 @@ const defaultOptions = {
       'key': 'LOW_PRESSURE_SENSOR'
     },
     '44729': {
-      'key': 'CURRENT_COMPR_FREQUENCY'
+      'key': 'CURRENT_COMPR_FREQUENCY',
+      'divideBy': 10
     },
     '44730': {
       'key': 'CPR_PROTECTION_MODE'
