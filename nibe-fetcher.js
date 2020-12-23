@@ -17143,7 +17143,12 @@ const defaultOptions = {
   sessionStore: Path.join(__dirname, './.session.json')
 }
 
-class Fetcher extends EventEmitter {
+const versionKeys = ['VERSIO', 'VERSIE', 'VARIANTA', 'WERSJA', 'VERSJON'];
+const serialNumberKeys = ['SERIENNUMMER', 'SERIENUMMER', 'NUMER_SERYJNY', 'NUM_RO_DE_S_RIE', 'SARJANUMERO', 'S_RIOV_SLO'];
+const productKeys = ['PRODUKT', 'PRODUIT', 'TUOTE', 'V_ROBEK'];
+
+class Fetcher extends EventEmitter {  
+
   constructor (options, adapter) {
     super()
 
@@ -17160,7 +17165,7 @@ class Fetcher extends EventEmitter {
     })
 
     this.start();
-  }  
+  }
 
   start () {
     if (this._interval)
@@ -17304,7 +17309,7 @@ class Fetcher extends EventEmitter {
       throw new Error(response.statusCode + ': ' + response.statusMessage);
     }
     return payload;
-  }
+  }  
 
   processParams(params, collect = false) {
     params.forEach((item) => {
@@ -17319,6 +17324,15 @@ class Fetcher extends EventEmitter {
             key = key + "_" + item.designation;
         }
         key = key.toUpperCase().replace(/[^A-Z0-9_]+/gm, '_').replace(/_{2,}/gm, '_').replace(/_+$/gm, '');
+        if (item.parameterId == 0) {
+          if (versionKeys.includes(key)) {
+            key = 'VERSION';
+          } else if (serialNumberKeys.includes(key)) {
+            key = 'SERIAL_NUMBER';
+          } else if (productKeys.includes(key)) {
+            key = 'PRODUCT';
+          }
+        }
         Object.assign(item, { key: key });
       } else {
         Object.assign(item, parameters);
