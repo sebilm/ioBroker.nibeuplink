@@ -31,6 +31,7 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 ### 0.4.0
 * Set required js-controller to >=2.0.0
 * Test for Node 8 removed
+* Support for compact mode enabled
 * Support for more than one unit added
   - There is a new object structure - one level more for the unit.
   - The old objects will be updated if they are found - so don't panic.

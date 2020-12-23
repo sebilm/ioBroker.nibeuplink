@@ -4,7 +4,7 @@
         "version": "0.4.0",
         "news": {
             "0.4.0": {
-                "en": "set required js-controller to >=2.0.0; more bugfixes and changes - see readme"
+                "en": "set required js-controller to >=2.0.0; support for compact mode enabled; more bugfixes and changes - see readme"
             },
             "0.3.0": {
                 "en": "Compact mode disabled; Support for Node 6 removed; Bugfixing",
