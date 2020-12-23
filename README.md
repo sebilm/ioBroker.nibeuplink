@@ -36,7 +36,7 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
   - The old objects will be updated if they are found - so don't panic.
   - If you don't need the old objects, you can remove them. They will not be created again.
 * Devide by 10 added to external flow temperature
-* 10 missing parameters added for SMO 40
+* Hundreds of missing parameters were added
   - The old fallback objects are no longer supported and updated. So check your objects update time.
   - You can remove the old objects. They will not be created again.
 * Fallback names for unknown parameters changed (id added at the beginning)
