@@ -73,6 +73,8 @@
         "mode": "daemon",
 		"type": "climate-control",
         "compact": true,
+        "connectionType": "cloud",
+		"dataSource": "poll",
         "materialize": true, 
         "supportCustoms": false,
         "dependencies": [
