@@ -4,7 +4,7 @@
         "version": "0.4.1",
         "news": {
             "0.4.1": {
-                "en": "add new connection types"
+                "en": "Add new connection types; Supported node.js versions >=12.0.0 <17"
             },
             "0.4.0": {
                 "en": "set required js-controller to >=2.0.0; support for compact mode enabled; more bugfixes and changes - see readme"
