@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.4.0",
+        "version": "0.4.1",
         "news": {
+            "0.4.1": {
+                "en": "add new connection types"
+            },
             "0.4.0": {
                 "en": "set required js-controller to >=2.0.0; support for compact mode enabled; more bugfixes and changes - see readme"
             },
