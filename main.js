@@ -98,27 +98,6 @@ function createChannel(adapter, path, name)
     });
 }
 
-/**
- * @param {utils.Adapter} adapter
- */
-function createInfoObjects(adapter)
-{
-    createChannel(adapter, "info",                    "Information");
-    createStringObject(adapter, "info.updateTime",    "Last Update Time");
-    createStringObject(adapter, "info.currentError",  "Current Error");
-    createStringObject(adapter, "info.lastError",     "Last Error");
-    createStringObject(adapter, "info.lastErrorTime", "Last Error Time");
-    adapter.setObjectNotExists("info.connection", {
-        type: 'state',
-        common: {
-            name: "If connected to Nibe Uplink",
-            type: 'boolean',
-            role: 'indicator.connected'
-        },
-        native: {}
-    });
-}
-
 class NibeUplink extends utils.Adapter {
 
     /**
@@ -152,31 +131,39 @@ class NibeUplink extends utils.Adapter {
         let identifier = this.config.Identifier.trim();
         let secret = this.config.Secret.trim();
         let callbackURL = this.config.CallbackURL.trim();
+        let configured = this.config.Configured;
     
         let error = false;
         if ((identifier == "") || (identifier == undefined))
         {
-            this.log.error("Missing Identifier in the settings!");
+            if (configured != false) {
+                this.log.error("Missing Identifier in the settings!");
+            }
             error = true;
         }
         if ((secret == "") || (secret == undefined))
         {
-            this.log.error("Missing Secret in the settings!");
+            if (configured != false) {
+                this.log.error("Missing Secret in the settings!");
+            }
             error = true;
         }
         if ((callbackURL == "") || (callbackURL == undefined))
         {
-            this.log.error("Missing Callback URL in the settings!");
+            if (configured != false) {
+                this.log.error("Missing Callback URL in the settings!");
+            }
             error = true;
         }
         if ((this.config.SystemId == "") || (this.config.SystemId == undefined))
         {
-            this.log.error("Missing System ID in the settings!");
+            if (configured != false) {
+                this.log.error("Missing System ID in the settings!");
+            }
             error = true;
         }
         if (error)
         {
-            createInfoObjects(this);
             this.setState("info.connection", {val: false, ack: true});
             this.setState("info.currentError", {val: "Missing settings!", ack: true});
             return;
@@ -210,7 +197,6 @@ class NibeUplink extends utils.Adapter {
             this.log.debug("Data received.");
             this.log.silly(JSON.stringify(data, null, ' '));
 
-            createInfoObjects(this);
             this.setState("info.connection", {val: true, expire: refreshInterval + 30, ack: true});
     
             let newDate = new Date();
@@ -306,7 +292,6 @@ class NibeUplink extends utils.Adapter {
         this.fetcher.on('error', (data) => {
             this.log.error('' + data);
             
-            createInfoObjects(this);
             this.setState("info.connection", {val: false, ack: true});
     
             let newDate = new Date();

@@ -4,7 +4,7 @@
         "version": "0.4.1",
         "news": {
             "0.4.1": {
-                "en": "Add new connection types; Supported node.js versions >=12.0.0 <17"
+                "en": "Add new connection types; Supported node.js versions >=12.0.0 <17; Bugfixes"
             },
             "0.4.0": {
                 "en": "set required js-controller to >=2.0.0; support for compact mode enabled; more bugfixes and changes - see readme"
@@ -88,12 +88,13 @@
     },
     "native": {
         "Identifier": "",
-        "Secret" : "",
+        "Secret": "",
         "CallbackURL": "https://z0mt3c.github.io/nibe.html",
         "AuthCode": "",
         "SystemId": 0,
         "Interval": 1,
-        "Language": "en"
+        "Language": "en",
+        "Configured": false
     },
     "objects": [],
 	"instanceObjects": [
@@ -109,14 +110,66 @@
 			"_id": "info.connection",
 			"type": "state",
 			"common": {
+                "name": "Connected to Nibe Uplink",
 				"role": "indicator.connected",
-				"name": "Device or service connected",
 				"type": "boolean",
 				"read": true,
 				"write": false,
 				"def": false
 			},
 			"native": {}
-		}
+		},
+        {
+            "_id": "info.currentError",
+            "type": "state",
+			"common": {
+                "name": "Current Error",
+				"role": "text",				
+				"type": "string",
+				"read": true,
+				"write": false,
+				"def": ""
+			},
+            "native": {}
+        },
+        {
+            "_id": "info.updateTime",
+            "type": "state",
+			"common": {
+                "name": "Time of the last update",
+				"role": "text",				
+				"type": "string",
+				"read": true,
+				"write": false,
+				"def": ""
+			},
+            "native": {}
+        },
+        {
+            "_id": "info.lastError",
+            "type": "state",
+			"common": {
+                "name": "Last Error",
+				"role": "text",				
+				"type": "string",
+				"read": true,
+				"write": false,
+				"def": ""
+			},
+            "native": {}
+        },
+        {
+            "_id": "info.lastErrorTime",
+            "type": "state",
+			"common": {
+                "name": "Time of the last error",
+				"role": "text",				
+				"type": "string",
+				"read": true,
+				"write": false,
+				"def": ""
+			},
+            "native": {}
+        }
 	]
 }

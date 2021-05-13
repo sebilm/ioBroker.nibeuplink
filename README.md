@@ -31,6 +31,7 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 ### 0.4.1 - BETA
 * Add new connection types (cloud, poll)
 * Set supported node.js versions to >=12.0.0 <17
+* Do not log errors immediately after installation
 
 ### 0.4.0 - 2020-12-24
 * Set required js-controller to >=2.0.0
