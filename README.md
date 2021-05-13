@@ -91,7 +91,7 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 ## License
 MIT License
 
-Copyright (c) 2019 Sebastian Häßelbarth <seb@sebmail.de>
+Copyright (c) 2021 Sebastian Häßelbarth <seb@sebmail.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
