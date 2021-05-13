@@ -284,11 +284,13 @@ class NibeUplink extends utils.Adapter {
                                     if (obj) {
                                         for (let p in par) {   
                                             let parPath = path + "." + p;
-                                            if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId")))
+                                            if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId"))) {
                                                 createNumberObject(adapter, parPath, p);
-                                            else if (p != "name")
+                                            }
+                                            else if (p != "name") {
                                                 createStringObject(adapter, parPath, p);
                                                 adapter.setState(parPath, {val: par[p], ack: true});
+                                            }
                                         }     
                                     }
                                 });
