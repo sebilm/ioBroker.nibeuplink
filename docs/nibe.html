@@ -146,7 +146,7 @@
         box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
     }
 }</style><style type="text/css">/* This is not a zero-length file! */</style></head>
-  <body>
+<body>
 <div class="container">
     <b>Please copy your NIBE Uplink Auth Code:</b>
     <hr/>
@@ -155,22 +155,19 @@
     <script src="jquery.js"></script>
     <script type="text/javascript">
     function getParameterByName(name, url) {
-      if (!url) {
-        url = window.location.href;
-      }
+      if (!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, "\\$&");
-      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-          results = regex.exec(url);
-      if (!results) return null;
-      if (!results[2]) return '';
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+      results = regex.exec(url);
+      if (!results) return 'No code given!';
+      if (!results[2]) return 'No code given!';
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
     $(function() {
-	$('p').text(getParameterByName('code'))      
+	    $('p').text(getParameterByName('code'))
     })  
     </script>
 </div>
-  
-
-</body></html>
+</body>
+</html>
