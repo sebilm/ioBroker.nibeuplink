@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "news": {
+            "0.5.1": {
+                "en": "Store 'no current connection error' as empty string, not null"
+            },
             "0.5.0": {
                 "en": "Add new connection types; Supported node.js versions >=12.0.0 <17; Bugfixes"
             },

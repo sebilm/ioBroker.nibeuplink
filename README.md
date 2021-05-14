@@ -28,6 +28,9 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 
 ## Changelog
 
+### 0.5.1
+* Store 'no current connection error' as empty string, not null
+
 ### 0.5.0 - 2021-05-13
 * Add new connection types (cloud, poll)
 * Set supported node.js versions to >=12.0.0 <17

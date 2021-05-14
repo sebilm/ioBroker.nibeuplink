@@ -202,7 +202,7 @@ class NibeUplink extends utils.Adapter {
             let newDate = new Date();
             let datetime = newDate.today() + " " + newDate.timeNow();
             this.setState("info.updateTime", {val: datetime, ack: true});
-            this.setState("info.currentError", {val: null, ack: true});
+            this.setState("info.currentError", {val: "", ack: true});
 
             data.forEach(unit => {
                 let unitPath = `UNIT_${unit.systemUnitId}`;
