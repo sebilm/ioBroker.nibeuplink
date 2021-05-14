@@ -26,17 +26,17 @@ systemDictionary = {
         'pl': 'Get it from https://api.nibeuplink.com/Applications.',
         'zh-cn': 'Get it from https://api.nibeuplink.com/Applications.'
     },
-    'Does not need to be changed.': {
-        'en': 'Does not need to be changed.',
-        'de': 'Muss nicht geändert werden.',
-        'ru': 'Does not need to be changed.',
-        'pt': 'Does not need to be changed.',
-        'nl': 'Does not need to be changed.',
-        'fr': 'Does not need to be changed.',
-        'it': 'Does not need to be changed.',
-        'es': 'Does not need to be changed.',
-        'pl': 'Does not need to be changed.',
-        'zh-cn': 'Does not need to be changed.'
+    'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html': {
+        'en': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'de': 'Muss nicht geändert werden. Es kann https://sebilm.github.io/ioBroker.nibeuplink/nibe.html verwendet werden.',
+        'ru': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'pt': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'nl': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'fr': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'it': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'es': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'pl': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html',
+        'zh-cn': 'Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html'
     },
     'Click here to generate the Auth Code on NIBE Uplink.': {
         'en': 'Click here to generate the Auth Code on NIBE Uplink.',

@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.5.1",
+        "version": "0.5.2",
         "news": {
+            "0.5.2": {
+                "en": "Change Callback URL to own GitHub Pages"
+            },
             "0.5.1": {
                 "en": "Store 'no current connection error' as empty string, not null"
             },
@@ -96,7 +99,7 @@
     "native": {
         "Identifier": "",
         "Secret": "",
-        "CallbackURL": "https://z0mt3c.github.io/nibe.html",
+        "CallbackURL": "https://sebilm.github.io/ioBroker.nibeuplink/nibe.html",
         "AuthCode": "",
         "SystemId": 0,
         "Interval": 1,
