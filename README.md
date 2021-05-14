@@ -28,8 +28,9 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 
 ## Changelog
 
-### 0.5.1
+### 0.5.1 - 2021-05-14
 * Store 'no current connection error' as empty string, not null
+* Bump dependencies
 
 ### 0.5.0 - 2021-05-13
 * Add new connection types (cloud, poll)
