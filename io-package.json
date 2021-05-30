@@ -104,6 +104,7 @@
         "SystemId": 0,
         "Interval": 1,
         "Language": "en",
+        "EnableManageSupport": false,
         "Configured": false
     },
     "objects": [],
