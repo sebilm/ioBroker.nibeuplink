@@ -190,7 +190,6 @@ class NibeUplink extends utils.Adapter {
             authCode: this.config.AuthCode.trim(),
             systemId: this.config.SystemId,
             language: this.config.Language,
-            enableManage: this.config.EnableManageSupport,
             sessionStore: storeFile
         }, this);
     

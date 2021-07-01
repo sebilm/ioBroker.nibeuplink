@@ -121,29 +121,5 @@ systemDictionary = {
         'es': 'The language for naming the data objects.',
         'pl': 'The language for naming the data objects.',
         'zh-cn': 'The language for naming the data objects.'
-    },
-    'Enable support for Manage': {
-        'en': 'Enable support for Manage',
-        'de': 'Unterstützung für Verwalten aktivieren',
-        'ru': 'Enable support for Manage',
-        'pt': 'Enable support for Manage',
-        'nl': 'Enable support for Manage',
-        'fr': 'Enable support for Manage',
-        'it': 'Enable support for Manage',
-        'es': 'Enable support for Manage',
-        'pl': 'Enable support for Manage',
-        'zh-cn': 'Enable support for Manage'
-    },
-    'You must pay for it on Nibe Uplink website. Use at your own risk!': {
-        'en': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'de': 'Man muss dafür auf der Nibe Uplink Website bezahlen. Verwendung auf eigene Gefahr!',
-        'ru': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'pt': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'nl': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'fr': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'it': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'es': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'pl': 'You must pay for it on Nibe Uplink website. Use at your own risk!',
-        'zh-cn': 'You must pay for it on Nibe Uplink website. Use at your own risk!'
     }
 };
