@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.5.1",
-    "@hapi/hoek": "^9.2.0",
+    "@hapi/hoek": "^9.2.1",
     "@hapi/wreck": "^17.1.0",
     "jsonfile": "^6.1.0"
   },
