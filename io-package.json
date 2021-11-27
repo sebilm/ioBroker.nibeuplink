@@ -1,10 +1,13 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.5.2",
+        "version": "0.5.3",
         "news": {
+            "0.5.3": {
+                "en": "Bump dependencies"
+            },
             "0.5.2": {
-                "en": "Change Callback URL to own GitHub Pages"
+                "en": "Change default callback URL to own GitHub Pages; Bump dependencies"
             },
             "0.5.1": {
                 "en": "Store 'no current connection error' as empty string, not null"
