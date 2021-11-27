@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "0.5.3",
+        "version": "1.0.0-pre",
         "news": {
+            "1.0.0-pre": {
+                "en": "Support to manage Nibe heat pump"
+            },
             "0.5.3": {
                 "en": "Bump dependencies"
             },
@@ -108,6 +111,8 @@
         "Interval": 1,
         "Language": "en",
         "EnableManageSupport": false,
+        "ManageId": "",
+        "ManageName": "",
         "Configured": false
     },
     "objects": [],

@@ -35,6 +35,9 @@ If you (later) get a "400 bad request" error in the log, you must get a new Auth
 
 ## Changelog
 
+### 1.0.0-pre
+* Support to manage Nibe heat pump
+
 ### 0.5.3 - 2021-11-21
 * Bump dependencies
 
