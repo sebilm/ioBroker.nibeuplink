@@ -111,8 +111,9 @@
         "Interval": 1,
         "Language": "en",
         "EnableManageSupport": false,
-        "ManageId": "",
+        "ManageId": "MANAGE",
         "ManageName": "",
+        "ManagedParameters": [],
         "Configured": false
     },
     "objects": [],
