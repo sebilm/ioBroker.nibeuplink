@@ -219,14 +219,14 @@ class NibeUplink extends utils.Adapter {
                             if (conf && conf.id) {
                                 key = conf.id;
                             } else {
-                                key = parameter["key"];
+                                key = `${parameter.parameterId}_${parameter.key}`;
                             }
                             let title;
                             if (conf && conf.name) {
                                 title = conf.name;
                             } else {
-                                title = parameter["title"];
-                                const designation = parameter["designation"];            
+                                title = parameter.title;
+                                const designation = parameter.designation;
                                 if ((designation != null) && (designation != ""))
                                 {
                                     title = `${title} (${designation})`;

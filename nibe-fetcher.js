@@ -17169,6 +17169,22 @@ const versionKeys = ['VERSIO', 'VERSIE', 'VARIANTA', 'WERSJA', 'VERSJON'];
 const serialNumberKeys = ['SERIENNUMMER', 'SERIENUMMER', 'NUMER_SERYJNY', 'NUM_RO_DE_S_RIE', 'SARJANUMERO', 'S_RIOV_SLO'];
 const productKeys = ['PRODUKT', 'PRODUIT', 'TUOTE', 'V_ROBEK'];
 
+Array.prototype.inPartsOf = function(number) {
+  const parts = Math.floor(this.length / number); // number of parts - 1
+  const lastLength = this.length % number;
+  let result = [];
+  for (let i = 0; i < parts; i++) {
+    let start = i * number;
+    let part = this.slice(start, start + number);
+    result.push(part);
+  }
+  if (lastLength > 0) {
+    let lastPart = this.slice(parts * number);
+    result.push(lastPart);
+  }
+  return result;
+}
+
 class Fetcher extends EventEmitter {  
 
   constructor (options, adapter) {
@@ -17323,10 +17339,13 @@ class Fetcher extends EventEmitter {
     return categories;
   }
 
-  async fetchParams(unit, parameters) {    
-    const paramStr = parameters.join('&parameterIds=');
+  async fetchParams(unit, parameters) {        
     this.adapter.log.debug(`Fetch params ${parameters} of unit ${unit}.`);
-    return await this.getFromNibeuplink(`parameters?parameterIds=${paramStr}&systemUnitId=${unit}`);
+    let result = await Promise.all(parameters.inPartsOf(15).map(async (p) => {
+      let paramStr = p.join('&parameterIds=');
+      return await this.getFromNibeuplink(`parameters?parameterIds=${paramStr}&systemUnitId=${unit}`);
+    }));
+    return result.flat();
   }  
 
   /**
