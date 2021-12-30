@@ -17237,6 +17237,9 @@ class Fetcher extends EventEmitter {
   {
     this.adapter.log.debug("Fetch data.");
     try {
+      if (this._hasNewAuthCode()) {
+        this.clearSesssion();
+      }
       if (!this._hasRefreshToken()) {
         if (this.options.authCode) {
           let token = await this.getToken(this.options.authCode);
@@ -17494,6 +17497,9 @@ class Fetcher extends EventEmitter {
 
   setSesssion (auth) {
     this.adapter.log.debug("Set session.");
+    if (auth.authCode == null) {
+      auth.authCode = this.options.authCode;
+    }
     this._auth = auth;
     if (!this.options.sessionStore)
       return;
@@ -17505,14 +17511,20 @@ class Fetcher extends EventEmitter {
     this.setSesssion({});
   }
 
+  _hasNewAuthCode() {
+    let hasNewAuthCode = (this.getSession('authCode') != null) && (this.getSession('authCode') != this.options.authCode);
+    this.adapter.log.debug("Has new auth code: " + hasNewAuthCode);
+    return hasNewAuthCode;
+  }
+
   _isTokenExpired () {
-    var expired = (this.getSession('expires_at') || 0) < (Date.now() + this.options.renewBeforeExpiry);
+    let expired = (this.getSession('expires_at') || 0) < (Date.now() + this.options.renewBeforeExpiry);
     this.adapter.log.debug("Is token expired: " + expired);
     return expired;
   }
 
   _hasRefreshToken () {
-    var hasToken = !!this.getSession('refresh_token');
+    let hasToken = !!this.getSession('refresh_token');
     this.adapter.log.debug("Has refresh token: " + hasToken);
     return hasToken;
   }
