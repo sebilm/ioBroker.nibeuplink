@@ -17275,7 +17275,7 @@ class Fetcher extends EventEmitter {
         allData.push({
           "systemUnitId": "manage",
           "manageData": allManageData
-        })
+        });
       }
       this.adapter.log.debug('All data fetched.');
       this._onData(allData);
@@ -17346,7 +17346,31 @@ class Fetcher extends EventEmitter {
       return await this.getFromNibeuplink(`parameters?parameterIds=${paramStr}&systemUnitId=${unit}`);
     }));
     return result.flat();
-  }  
+  }
+
+  /**
+  * @param {string} unit
+  * @param {object} parameters
+  */
+  async getParams(unit, parameters) {
+    const result = await this.fetchParams(unit, parameters);
+    this.processParams(result);
+    let data = [{
+      "systemUnitId": "manage",
+      "manageData": [{ unit: unit, params: result }]
+    }];
+    this.adapter.log.debug('New data fetched.');
+    this._onData(data);
+  }
+
+  /**
+  * @param {string} unit
+  * @param {object} parameters
+  */
+  async setParams(unit, parameters) {
+    let url = `parameters?systemUnitId=${unit}`;
+    await this.putToNibeuplink(url, { settings: parameters });
+  }
 
   /**
   * @param {string} suburl
@@ -17371,7 +17395,44 @@ class Fetcher extends EventEmitter {
       throw new Error(response.statusCode + ': ' + response.statusMessage);
     }
     return payload;
-  }  
+  }
+
+  /**
+  * @param {string} suburl
+  * @param {object} body
+  * @param {string} lang
+  */
+   async putToNibeuplink(suburl, body, lang = '') {
+    if (lang == '') {
+      lang = this.options.language;
+    }
+    const systemId = this.options.systemId;
+    const url = `/api/v1/systems/${systemId}/${suburl}`;
+    this.adapter.log.debug(`PUT ${url} (lang: ${lang})`);
+    this.adapter.log.silly(`PUT body: ${JSON.stringify(body, null, ' ')}`);
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + this.getSession('access_token'),
+        'Accept-Language': lang,
+      },
+      json: true,
+      payload: body
+    };    
+    try {
+      const res = await this.wreck.request("PUT", url, options);
+      const body = await this.wreck.read(res, options);
+      this.adapter.log.debug(`PUT result: ${res.statusCode}: ${res.statusMessage}`);
+      if (res.statusCode != 200) {
+        throw new Error(JSON.stringify(body, null, ' '));
+      } else {
+        this.adapter.log.silly(`body: ${JSON.stringify(body, null, ' ')}`);
+      }
+    }
+    catch (err) {
+      this.adapter.log.error(err);
+      throw err;
+    }
+  }
 
   processParams(params, collect = false) {
     params.forEach((item) => {

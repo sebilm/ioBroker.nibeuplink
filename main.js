@@ -180,7 +180,8 @@ class NibeUplink extends utils.Adapter {
             this.log.error('Could not create storage directory (' + storeDir + '): ' + err);
             storeDir = __dirname;
         }
-        let storeFile = path.join(storeDir, "session." + this.instance + ".json");        
+        const storeFile = path.join(storeDir, "session." + this.instance + ".json");
+        const manageId = !this.config.ManageId ? "MANAGE" : this.config.ManageId;
     
         this.fetcher = new Fetcher({
             clientId: identifier,
@@ -208,7 +209,6 @@ class NibeUplink extends utils.Adapter {
 
             data.forEach(async (unit) => {
                 if (unit.systemUnitId == "manage") {
-                    const manageId = !this.config.ManageId ? "MANAGE" : this.config.ManageId;
                     const manageName = !this.config.ManageName ? "Manage" : this.config.ManageName;
                     await createDeviceAsync(this, manageId, manageName);
                     unit.manageData.forEach(async (unitData) => {
@@ -219,7 +219,7 @@ class NibeUplink extends utils.Adapter {
                             if (conf && conf.id) {
                                 key = conf.id;
                             } else {
-                                key = `${parameter.parameterId}_${parameter.key}`;
+                                key = `${unitId}_${parameter.parameterId}_${parameter.key}`;
                             }
                             let title;
                             if (conf && conf.name) {
@@ -242,7 +242,11 @@ class NibeUplink extends utils.Adapter {
                                     role: 'value',
                                     unit: parameter["unit"]
                                 },
-                                native: {}
+                                native: {
+                                    deviceUnit: unitId,
+                                    parameterId: parameter.parameterId,
+                                    divideBy: parameter.divideBy
+                                }
                             });
                             await this.setStateAsync(valuePath, {val: parameter["value"], ack: true});
                             
@@ -356,6 +360,10 @@ class NibeUplink extends utils.Adapter {
             this.setState("info.lastError", {val: '' + data, ack: true});        
             this.setState("info.currentError", {val: '' + data, ack: true});
         });
+
+        if (this.config.EnableManageSupport === true) {
+            this.subscribeStates(`${manageId}.*`);
+        }
     
         this.log.info('Adapter started.');
     }
@@ -400,13 +408,34 @@ class NibeUplink extends utils.Adapter {
      * @param {string} id
      * @param {ioBroker.State | null | undefined} state
      */
-    onStateChange(id, state) {
+    async onStateChange(id, state) {
         if (state) {
-            // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-        } else {
-            // The state was deleted
-            this.log.info(`state ${id} deleted`);
+            if (state.ack === false) {
+                this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                let obj = await this.getObjectAsync(id);
+                if (obj && obj.native && obj.native.parameterId && obj.native.deviceUnit) {
+                    const val = obj.native.divideBy ? state.val * obj.native.divideBy : state.val;
+                    let params = {};
+                    params[obj.native.parameterId] = val.toString();
+                    try {
+                        await this.fetcher.setParams(obj.native.deviceUnit, params);
+                    }
+                    catch (err) {
+                        const errorPath = `${id}_ERROR`;
+                            await this.setObjectNotExistsAsync(errorPath, {
+                                type: 'state',
+                                common: {
+                                    name: `${obj.common.name} [Error]`,
+                                    type: 'string',
+                                    role: 'text'
+                                },
+                                native: {}
+                            });
+                            await this.setStateAsync(errorPath, {val: err.toString(), ack: true});
+                    }
+                    await this.fetcher?.getParams(obj.native.deviceUnit, [ obj.native.parameterId ]);
+                }
+            }
         }
     }
 
