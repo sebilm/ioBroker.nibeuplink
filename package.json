@@ -1,6 +1,6 @@
 {
   "name": "iobroker.nibeuplink",
-  "version": "0.5.3",
+  "version": "1.0.0",
   "description": "nibeuplink",
   "author": {
     "name": "Sebastian Haesselbarth",

@@ -67,9 +67,9 @@ function createNumberObject(adapter, path, name)
  * @param {string} path
  * @param {string} name
  */
-function createDevice(adapter, path, name)
+async function createDeviceAsync(adapter, path, name)
 {
-    adapter.setObjectNotExists(path, {
+    await adapter.setObjectNotExistsAsync(path, {
         type: 'device',
         common: {
             name: name,
@@ -85,9 +85,9 @@ function createDevice(adapter, path, name)
  * @param {string} path
  * @param {string} name
  */
-function createChannel(adapter, path, name)
+ async function createChannelAsync(adapter, path, name)
 {
-    adapter.setObjectNotExists(path, {
+    await adapter.setObjectNotExistsAsync(path, {
         type: 'channel',
         common: {
             name: name,
@@ -118,7 +118,7 @@ class NibeUplink extends utils.Adapter {
     /**
      * Is called when databases are connected and adapter received configuration.
      */
-    onReady() {
+    async onReady() {
         // Initialize your adapter here
 
         this.log.info('Starting adapter.');
@@ -180,7 +180,8 @@ class NibeUplink extends utils.Adapter {
             this.log.error('Could not create storage directory (' + storeDir + '): ' + err);
             storeDir = __dirname;
         }
-        let storeFile = path.join(storeDir, "session." + this.instance + ".json");        
+        const storeFile = path.join(storeDir, "session." + this.instance + ".json");
+        const manageId = !this.config.ManageId ? "MANAGE" : this.config.ManageId;
     
         this.fetcher = new Fetcher({
             clientId: identifier,
@@ -190,6 +191,8 @@ class NibeUplink extends utils.Adapter {
             authCode: this.config.AuthCode.trim(),
             systemId: this.config.SystemId,
             language: this.config.Language,
+            enableManage: this.config.EnableManageSupport,
+            managedParameters: this.config.ManagedParameters,
             sessionStore: storeFile
         }, this);
     
@@ -199,91 +202,148 @@ class NibeUplink extends utils.Adapter {
 
             this.setState("info.connection", {val: true, expire: refreshInterval + 30, ack: true});
     
-            let newDate = new Date();
-            let datetime = newDate.today() + " " + newDate.timeNow();
+            const newDate = new Date();
+            const datetime = newDate.today() + " " + newDate.timeNow();
             this.setState("info.updateTime", {val: datetime, ack: true});
             this.setState("info.currentError", {val: "", ack: true});
 
-            data.forEach(unit => {
-                let unitPath = `UNIT_${unit.systemUnitId}`;
-                createDevice(this, unitPath, `${unit.name} (${unit.product})`);
-                unit.categories.forEach(category => {
-                    let categoryPath = `${unitPath}.${category.categoryId}`;
-                    createChannel(this, categoryPath, category.name);
-                    category.parameters.forEach(parameter => {
-                        let key = parameter["key"];
-                        let title = parameter["title"];
-                        let designation = parameter["designation"];            
-                        if ((designation != null) && (designation != ""))
-                        {
-                            title = `${title} (${designation})`;
-                        }
-                        let valuePath = `${categoryPath}.${key}`;
+            data.forEach(async (unit) => {
+                if (unit.systemUnitId == "manage") {
+                    const manageName = !this.config.ManageName ? "Manage" : this.config.ManageName;
+                    await createDeviceAsync(this, manageId, manageName);
+                    unit.manageData.forEach(async (unitData) => {
+                        const unitId = unitData.unit;
+                        unitData.params.forEach(async (parameter) => {
+                            const conf = this.config.ManagedParameters.find(x => x.unit == unitId && x.parameter == parameter.parameterId);
+                            let key;
+                            if (conf && conf.id) {
+                                key = conf.id;
+                            } else {
+                                key = `${unitId}_${parameter.parameterId}_${parameter.key}`;
+                            }
+                            let title;
+                            if (conf && conf.name) {
+                                title = conf.name;
+                            } else {
+                                title = parameter.title;
+                                const designation = parameter.designation;
+                                if ((designation != null) && (designation != ""))
+                                {
+                                    title = `${title} (${designation})`;
+                                }
+                            }
+                            const valuePath = `${manageId}.${key}`;
 
-                        this.setObjectNotExists(valuePath, {
-                            type: 'state',
-                            common: {
-                                name: title,
-                                type: 'number',
-                                role: 'value',
-                                unit: parameter["unit"]
-                            },
-                            native: {}
+                            await this.setObjectNotExistsAsync(valuePath, {
+                                type: 'state',
+                                common: {
+                                    name: title,
+                                    type: 'number',
+                                    role: 'value',
+                                    unit: parameter["unit"]
+                                },
+                                native: {
+                                    deviceUnit: unitId,
+                                    parameterId: parameter.parameterId,
+                                    divideBy: parameter.divideBy
+                                }
+                            });
+                            await this.setStateAsync(valuePath, {val: parameter["value"], ack: true});
+                            
+                            const displayPath = `${manageId}.${key}_DISPLAY`;
+                            await this.setObjectNotExistsAsync(displayPath, {
+                                type: 'state',
+                                common: {
+                                    name: `${title} [Display]`,
+                                    type: 'string',
+                                    role: 'text'
+                                },
+                                native: {}
+                            });
+                            await this.setStateAsync(displayPath, {val: parameter["displayValue"], ack: true});
                         });
-                        this.setState(valuePath, {val: parameter["value"], ack: true});
+                    });
+                } else {
+                    const unitPath = `UNIT_${unit.systemUnitId}`;
+                    await createDeviceAsync(this, unitPath, `${unit.name} (${unit.product})`);
+                    unit.categories.forEach(async (category) => {
+                        const categoryPath = `${unitPath}.${category.categoryId}`;
+                        await createChannelAsync(this, categoryPath, category.name);
+                        category.parameters.forEach(async (parameter) => {
+                            const key = parameter["key"];
+                            let title = parameter["title"];
+                            const designation = parameter["designation"];            
+                            if ((designation != null) && (designation != ""))
+                            {
+                                title = `${title} (${designation})`;
+                            }
+                            const valuePath = `${categoryPath}.${key}`;
+
+                            await this.setObjectNotExistsAsync(valuePath, {
+                                type: 'state',
+                                common: {
+                                    name: title,
+                                    type: 'number',
+                                    role: 'value',
+                                    unit: parameter["unit"]
+                                },
+                                native: {}
+                            });
+                            await this.setStateAsync(valuePath, {val: parameter["value"], ack: true});
+                            
+                            const displayPath = `${categoryPath}.${key}_DISPLAY`;
+                            await this.setObjectNotExistsAsync(displayPath, {
+                                type: 'state',
+                                common: {
+                                    name: `${title} [Display]`,
+                                    type: 'string',
+                                    role: 'text'
+                                },
+                                native: {}
+                            });
+                            await this.setStateAsync(displayPath, {val: parameter["displayValue"], ack: true});
                         
-                        let displayPath = `${categoryPath}.${key}_DISPLAY`;
-                        this.setObjectNotExists(displayPath, {
-                            type: 'state',
-                            common: {
-                                name: `${title} [Display]`,
-                                type: 'string',
-                                role: 'text'
-                            },
-                            native: {}
-                        });
-                        this.setState(displayPath, {val: parameter["displayValue"], ack: true});
-                    
-                        if (unit.systemUnitId == 0)
-                        {
-                            let adapter = this;
+                            if (unit.systemUnitId == 0)
+                            {
+                                const adapter = this;
 
-                            // update deprecated subpath values if present (pre 0.4.0):
-                            let oldValuePath = `${category.categoryId}.${key}`;
-                            this.getObject(oldValuePath, function (err, obj) {
-                                if (obj) {
-                                    adapter.setState(oldValuePath, {val: parameter["value"], ack: true});
-                                }
-                            });
-                            let oldDisplayPath = `${category.categoryId}.${key}_DISPLAY`;
-                            this.getObject(oldDisplayPath, function (err, obj) {
-                                if (obj) {
-                                    adapter.setState(oldDisplayPath, {val: parameter["displayValue"], ack: true});
-                                }
-                            });
-
-                            // update deprecated subpath values if present (very old):
-                            let parameterId = parameter["parameterId"];
-                            let path = category.categoryId + "." + parameterId;                            
-                            (function(path, par) {
-                                adapter.getObject(path, function (err, obj) {
+                                // update deprecated subpath values if present (pre 0.4.0):
+                                const oldValuePath = `${category.categoryId}.${key}`;
+                                this.getObject(oldValuePath, function (err, obj) {
                                     if (obj) {
-                                        for (let p in par) {   
-                                            let parPath = path + "." + p;
-                                            if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId"))) {
-                                                createNumberObject(adapter, parPath, p);
-                                            }
-                                            else if (p != "name") {
-                                                createStringObject(adapter, parPath, p);
-                                                adapter.setState(parPath, {val: par[p], ack: true});
-                                            }
-                                        }     
+                                        adapter.setState(oldValuePath, {val: parameter["value"], ack: true});
                                     }
                                 });
-                            })(path, parameter);
-                        }
+                                const oldDisplayPath = `${category.categoryId}.${key}_DISPLAY`;
+                                this.getObject(oldDisplayPath, function (err, obj) {
+                                    if (obj) {
+                                        adapter.setState(oldDisplayPath, {val: parameter["displayValue"], ack: true});
+                                    }
+                                });
+
+                                // update deprecated subpath values if present (very old):
+                                const parameterId = parameter["parameterId"];
+                                const path = category.categoryId + "." + parameterId;                            
+                                (function(path, par) {
+                                    adapter.getObject(path, function (err, obj) {
+                                        if (obj) {
+                                            for (const p in par) {   
+                                                const parPath = path + "." + p;
+                                                if ((p == "value") || (p == "rawValue" || (p == "divideBy") || (p == "parameterId"))) {
+                                                    createNumberObject(adapter, parPath, p);
+                                                }
+                                                else if (p != "name") {
+                                                    createStringObject(adapter, parPath, p);
+                                                    adapter.setState(parPath, {val: par[p], ack: true});
+                                                }
+                                            }     
+                                        }
+                                    });
+                                })(path, parameter);
+                            }
+                        })
                     })
-                })
+                }
             });
             this.log.debug("Data processed.");
         });
@@ -300,6 +360,10 @@ class NibeUplink extends utils.Adapter {
             this.setState("info.lastError", {val: '' + data, ack: true});        
             this.setState("info.currentError", {val: '' + data, ack: true});
         });
+
+        if (this.config.EnableManageSupport === true) {
+            this.subscribeStates(`${manageId}.*`);
+        }
     
         this.log.info('Adapter started.');
     }
@@ -344,13 +408,34 @@ class NibeUplink extends utils.Adapter {
      * @param {string} id
      * @param {ioBroker.State | null | undefined} state
      */
-    onStateChange(id, state) {
+    async onStateChange(id, state) {
         if (state) {
-            // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-        } else {
-            // The state was deleted
-            this.log.info(`state ${id} deleted`);
+            if (state.ack === false) {
+                this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                let obj = await this.getObjectAsync(id);
+                if (obj && obj.native && obj.native.parameterId && obj.native.deviceUnit) {
+                    const val = obj.native.divideBy ? state.val * obj.native.divideBy : state.val;
+                    let params = {};
+                    params[obj.native.parameterId] = val.toString();
+                    try {
+                        await this.fetcher.setParams(obj.native.deviceUnit, params);
+                    }
+                    catch (err) {
+                        const errorPath = `${id}_ERROR`;
+                            await this.setObjectNotExistsAsync(errorPath, {
+                                type: 'state',
+                                common: {
+                                    name: `${obj.common.name} [Error]`,
+                                    type: 'string',
+                                    role: 'text'
+                                },
+                                native: {}
+                            });
+                            await this.setStateAsync(errorPath, {val: err.toString(), ack: true});
+                    }
+                    await this.fetcher?.getParams(obj.native.deviceUnit, [ obj.native.parameterId ]);
+                }
+            }
         }
     }
 

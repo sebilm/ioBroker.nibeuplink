@@ -21,16 +21,23 @@ const Path = require('path');
 const fs = require('fs');
 
 const defaultOptions = {
+  authCode: null,
   clientId: null,
   clientSecret: null,
   systemId: null,
   baseUrl: 'https://api.nibeuplink.com',
   redirectUri: 'https://z0mt3c.github.io/nibe.html',
-  scope: 'READSYSTEM',
+  scope: 'READSYSTEM WRITESYSTEM',
+  enableManage: false,
+  managedParameters: [],
   timeout: 45000,
   maxBytes: 1048576,
   followRedirects: 2,
   userAgent: [info.name, info.version].join(' '),
+  interval: 60,
+  language: 'en',
+  renewBeforeExpiry: 5 * 60 * 1000,
+  sessionStore: Path.join(__dirname, './.session.json'),
   parameters: {
     '10001': {
       'key': 'FAN_SPEED',
@@ -17155,16 +17162,28 @@ const defaultOptions = {
       'key': 'SPEED_BRINE_PUMP_EXTERNAL_CTRL',
       'divideBy': 10
     }
-  },
-  interval: 60,
-  language: 'en',
-  renewBeforeExpiry: 5 * 60 * 1000,
-  sessionStore: Path.join(__dirname, './.session.json')
+  }
 }
 
 const versionKeys = ['VERSIO', 'VERSIE', 'VARIANTA', 'WERSJA', 'VERSJON'];
 const serialNumberKeys = ['SERIENNUMMER', 'SERIENUMMER', 'NUMER_SERYJNY', 'NUM_RO_DE_S_RIE', 'SARJANUMERO', 'S_RIOV_SLO'];
 const productKeys = ['PRODUKT', 'PRODUIT', 'TUOTE', 'V_ROBEK'];
+
+Array.prototype.inPartsOf = function(number) {
+  const parts = Math.floor(this.length / number); // number of parts - 1
+  const lastLength = this.length % number;
+  let result = [];
+  for (let i = 0; i < parts; i++) {
+    let start = i * number;
+    let part = this.slice(start, start + number);
+    result.push(part);
+  }
+  if (lastLength > 0) {
+    let lastPart = this.slice(parts * number);
+    result.push(lastPart);
+  }
+  return result;
+}
 
 class Fetcher extends EventEmitter {  
 
@@ -17186,17 +17205,20 @@ class Fetcher extends EventEmitter {
     this.start();
   }
 
-  start () {
-    if (this._interval)
+  start() {
+    if (this._interval) {
       return;
-    var active = false;
+    }
+    
+    this._active = false;
 
     var exec = () => {
-      if (active)
+      if (this._active) {
         return;
-      active = true;
+      }
+      this._active = true;
       this.fetch().then(() => {
-        active = false;
+        this._active = false;
       });
     }
 
@@ -17204,7 +17226,7 @@ class Fetcher extends EventEmitter {
     exec();
   }
 
-  stop () {
+  stop() {
     if (!this._interval)
       return;
     clearInterval(this._interval);
@@ -17237,9 +17259,24 @@ class Fetcher extends EventEmitter {
         this.units = await this.fetchUnits();
       }
       let allData = await Promise.all(this.units.map(async (unit) => {        
-        let categories = await this.fetchCategories(unit);
+        const categories = await this.fetchCategories(unit);
         return Object.assign({}, unit, { categories: categories });
       }));
+      if ((this.options.enableManage == true) && this.options.managedParameters && this.options.managedParameters.length > 0) {
+        const parametersByUnit = this.groupBy(this.options.managedParameters, "unit");        
+        const parametersGroups = Object.values(parametersByUnit);
+        const allManageData = await Promise.all(parametersGroups.map(async (group) => {
+          const unit = group[0].unit;
+          const parameters = group.map(x => x.parameter);
+          const result = await this.fetchParams(unit, parameters);
+          this.processParams(result);
+          return { unit: unit, params: result };
+        }));
+        allData.push({
+          "systemUnitId": "manage",
+          "manageData": allManageData
+        });
+      }
       this.adapter.log.debug('All data fetched.');
       this._onData(allData);
     }
@@ -17248,7 +17285,7 @@ class Fetcher extends EventEmitter {
     }
   }
 
-  async getToken (authCode) {
+  async getToken(authCode) {
     this.adapter.log.debug("token()");
     const data = {
       grant_type: 'authorization_code',
@@ -17261,7 +17298,7 @@ class Fetcher extends EventEmitter {
     return await this.postTokenRequest(data);
   }
 
-  async getRefreshToken () {
+  async getRefreshToken() {
     this.adapter.log.debug("Refresh token.");
     const data = {
       grant_type: 'refresh_token',
@@ -17287,25 +17324,53 @@ class Fetcher extends EventEmitter {
     return payload;
   }
 
-  async fetchUnits () {
+  async fetchUnits() {
     this.adapter.log.debug('Fetch units.');
-    let units = await this.getFromNibeuplink('units');
+    const units = await this.getFromNibeuplink('units');
     this.adapter.log.debug(`${units.length} units fetched.`);
     return units;
   }
 
-  async fetchCategories (unit) {
+  async fetchCategories(unit) {
     this.adapter.log.debug("Fetch categories.");
-    let categories = await this.getFromNibeuplink(`serviceinfo/categories?parameters=true&systemUnitId=${unit.systemUnitId}`);
+    const categories = await this.getFromNibeuplink(`serviceinfo/categories?parameters=true&systemUnitId=${unit.systemUnitId}`);
     categories.forEach(category => this.processParams(category.parameters));
     this.adapter.log.debug(`${categories.length} categories fetched.`);
     return categories;
   }
 
-  async fetchParams (category) {
-    this.adapter.log.debug(`Fetch params of category ${category}.`);
-    return await this.getFromNibeuplink(`serviceinfo/categories/status?categoryId=${category}`);
-  }  
+  async fetchParams(unit, parameters) {        
+    this.adapter.log.debug(`Fetch params ${parameters} of unit ${unit}.`);
+    let result = await Promise.all(parameters.inPartsOf(15).map(async (p) => {
+      let paramStr = p.join('&parameterIds=');
+      return await this.getFromNibeuplink(`parameters?parameterIds=${paramStr}&systemUnitId=${unit}`);
+    }));
+    return result.flat();
+  }
+
+  /**
+  * @param {string} unit
+  * @param {object} parameters
+  */
+  async getParams(unit, parameters) {
+    const result = await this.fetchParams(unit, parameters);
+    this.processParams(result);
+    let data = [{
+      "systemUnitId": "manage",
+      "manageData": [{ unit: unit, params: result }]
+    }];
+    this.adapter.log.debug('New data fetched.');
+    this._onData(data);
+  }
+
+  /**
+  * @param {string} unit
+  * @param {object} parameters
+  */
+  async setParams(unit, parameters) {
+    let url = `parameters?systemUnitId=${unit}`;
+    await this.putToNibeuplink(url, { settings: parameters });
+  }
 
   /**
   * @param {string} suburl
@@ -17316,7 +17381,9 @@ class Fetcher extends EventEmitter {
       lang = this.options.language;
     }
     const systemId = this.options.systemId;
-    const { response, payload } = await this.wreck.get(`/api/v1/systems/${systemId}/${suburl}`, {
+    const url = `/api/v1/systems/${systemId}/${suburl}`;
+    this.adapter.log.debug(`GET ${url} (lang: ${lang})`);
+    const { response, payload } = await this.wreck.get(url, {
       headers: {
         Authorization: 'Bearer ' + this.getSession('access_token'),
         'Accept-Language': lang,
@@ -17328,7 +17395,44 @@ class Fetcher extends EventEmitter {
       throw new Error(response.statusCode + ': ' + response.statusMessage);
     }
     return payload;
-  }  
+  }
+
+  /**
+  * @param {string} suburl
+  * @param {object} body
+  * @param {string} lang
+  */
+   async putToNibeuplink(suburl, body, lang = '') {
+    if (lang == '') {
+      lang = this.options.language;
+    }
+    const systemId = this.options.systemId;
+    const url = `/api/v1/systems/${systemId}/${suburl}`;
+    this.adapter.log.debug(`PUT ${url} (lang: ${lang})`);
+    this.adapter.log.silly(`PUT body: ${JSON.stringify(body, null, ' ')}`);
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + this.getSession('access_token'),
+        'Accept-Language': lang,
+      },
+      json: true,
+      payload: body
+    };    
+    try {
+      const res = await this.wreck.request("PUT", url, options);
+      const body = await this.wreck.read(res, options);
+      this.adapter.log.debug(`PUT result: ${res.statusCode}: ${res.statusMessage}`);
+      if (res.statusCode != 200) {
+        throw new Error(JSON.stringify(body, null, ' '));
+      } else {
+        this.adapter.log.silly(`body: ${JSON.stringify(body, null, ' ')}`);
+      }
+    }
+    catch (err) {
+      this.adapter.log.error(err);
+      throw err;
+    }
+  }
 
   processParams(params, collect = false) {
     params.forEach((item) => {
@@ -17455,6 +17559,13 @@ class Fetcher extends EventEmitter {
       jsonfile.writeFileSync(Path.join(__dirname, './parameters40.json'), par, { spaces: 2 });
       this.stop();
   }
+
+  groupBy = function(xs, key) {
+    return xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
 }
 
 module.exports = Fetcher;
