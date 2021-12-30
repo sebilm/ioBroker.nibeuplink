@@ -433,7 +433,7 @@ class NibeUplink extends utils.Adapter {
                             });
                             await this.setStateAsync(errorPath, {val: err.toString(), ack: true});
                     }
-                    await this.fetcher?.getParams(obj.native.deviceUnit, [ obj.native.parameterId ]);
+                    await this.fetcher.getParams(obj.native.deviceUnit, [ obj.native.parameterId ]);
                 }
             }
         }
