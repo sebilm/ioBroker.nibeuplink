@@ -414,9 +414,8 @@ class NibeUplink extends utils.Adapter {
                 this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
                 let obj = await this.getObjectAsync(id);
                 if (obj && obj.native && obj.native.parameterId && obj.native.deviceUnit) {
-                    const val = obj.native.divideBy ? state.val * obj.native.divideBy : state.val;
                     let params = {};
-                    params[obj.native.parameterId] = val.toString();
+                    params[obj.native.parameterId] = state.val.toString();
                     try {
                         await this.fetcher.setParams(obj.native.deviceUnit, params);
                     }

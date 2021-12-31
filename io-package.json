@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "news": {
+            "1.0.1": {
+                "en": "Fix write support #6"
+            },
             "1.0.0": {
                 "en": "Support to manage Nibe heat pump (write support #6)"
             },
