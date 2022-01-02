@@ -1,12 +1,12 @@
 # ioBroker.nibeuplink
 
 [![NPM version](https://img.shields.io/npm/v/iobroker.nibeuplink.svg)](https://www.npmjs.com/package/iobroker.nibeuplink)
+![Current version in stable repository](https://iobroker.live/badges/nibeuplink-stable.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.nibeuplink.svg)](https://www.npmjs.com/package/iobroker.nibeuplink)
 ![Number of Installations](https://iobroker.live/badges/nibeuplink-installed.svg)
-![Current version in stable repository](https://iobroker.live/badges/nibeuplink-stable.svg)
-[![Dependency Status](https://img.shields.io/david/sebilm/iobroker.nibeuplink.svg)](https://david-dm.org/sebilm/iobroker.nibeuplink)
-[![NPM](https://nodei.co/npm/iobroker.nibeuplink.png?downloads=true)](https://nodei.co/npm/iobroker.nibeuplink/)
 [![Build Status](https://github.com/sebilm/ioBroker.nibeuplink/workflows/Test%20and%20Release/badge.svg)](https://github.com/sebilm/ioBroker.nibeuplink/actions/workflows/test-and-release.yml)
+
+[![NPM](https://nodei.co/npm/iobroker.nibeuplink.png?downloads=true)](https://nodei.co/npm/iobroker.nibeuplink/)
 
 ## nibeuplink adapter for ioBroker
 
