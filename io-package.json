@@ -65,39 +65,54 @@
                 "zh-cn": "首次出版"
             }
         },
-		"title": "Nibe Uplink",
+        "title": "Nibe Uplink",
         "titleLang": {
             "en": "Nibe Uplink",
-            "de": "Nibe Uplink"
+            "de": "Nibe Uplink",
+            "ru": "Nibe Uplink",
+            "pt": "Nibe Uplink",
+            "nl": "Nibe Uplink",
+            "fr": "Nibe Uplink",
+            "it": "Nibe Uplink",
+            "es": "Nibe Uplink",
+            "pl": "Nibe Uplink",
+            "zh-cn": "Nibe Uplink"
         },
         "desc": {
             "en": "With this adapter data of a Nibe heat pump can be read from Nibe Uplink.",
-            "de": "Mit diesem Adapter können Daten einer Nibe Wärmepumpe von Nibe Uplink gelesen werden."
+            "de": "Mit diesem Adapter können Daten einer Nibe Wärmepumpe aus Nibe Uplink gelesen werden.",
+            "ru": "С помощью этого адаптера данные теплового насоса Nibe могут быть прочитаны из Nibe Uplink.",
+            "pt": "Com este adaptador, os dados de uma bomba de calor Nibe podem ser lidos no Nibe Uplink.",
+            "nl": "Met deze adapter kunnen gegevens van een Nibe warmtepomp uit Nibe Uplink worden uitgelezen.",
+            "fr": "Avec cet adaptateur, les données d'une pompe à chaleur Nibe peuvent être lues à partir de Nibe Uplink.",
+            "it": "Con questo adattatore i dati di una pompa di calore Nibe possono essere letti da Nibe Uplink.",
+            "es": "Con este adaptador, los datos de una bomba de calor Nibe se pueden leer desde Nibe Uplink.",
+            "pl": "Za pomocą tego adaptera dane pompy ciepła Nibe można odczytać z Nibe Uplink.",
+            "zh-cn": "使用此适配器，可以从 Nibe Uplink 读取 Nibe 热泵的数据。"
         },
-        "authors": [
-            "Sebastian Haesselbarth <seb@sebmail.de>"
-        ],
-		"keywords": [
+        "authors": [ "Sebastian Haesselbarth <seb@sebmail.de>" ],
+        "keywords": [
             "ioBroker",
             "Smart Home",
             "home automation",
-			"nibeuplink",
-			"nibe"
+            "nibeuplink",
+            "nibe",
+            "heat pump"
         ],
-		"license": "MIT",
+        "license": "MIT",
         "platform": "Javascript/Node.js",
-		"main": "main.js",
+        "main": "build/main.js",
         "icon": "nibeuplink.png",
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/sebilm/ioBroker.nibeuplink/master/admin/nibeuplink.png",
         "readme": "https://github.com/sebilm/ioBroker.nibeuplink/blob/master/README.md",
         "loglevel": "info",
         "mode": "daemon",
-		"type": "climate-control",
+        "type": "climate-control",
         "compact": true,
         "connectionType": "cloud",
-		"dataSource": "poll",
-        "materialize": true, 
+        "dataSource": "poll",
+        "materialize": true,
         "supportCustoms": false,
         "dependencies": [
             {
@@ -120,79 +135,79 @@
         "Configured": false
     },
     "objects": [],
-	"instanceObjects": [
-		{
-			"_id": "info",
-			"type": "channel",
-			"common": {
-				"name": "Information"
-			},
-			"native": {}
-		},
-		{
-			"_id": "info.connection",
-			"type": "state",
-			"common": {
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
                 "name": "Connected to Nibe Uplink",
-				"role": "indicator.connected",
-				"type": "boolean",
-				"read": true,
-				"write": false,
-				"def": false
-			},
-			"native": {}
-		},
+                "role": "indicator.connected",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        },
         {
             "_id": "info.currentError",
             "type": "state",
-			"common": {
+            "common": {
                 "name": "Current Error",
-				"role": "text",				
-				"type": "string",
-				"read": true,
-				"write": false,
-				"def": ""
-			},
+                "role": "text",				
+                "type": "string",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
             "native": {}
         },
         {
             "_id": "info.updateTime",
             "type": "state",
-			"common": {
+            "common": {
                 "name": "Time of the last update",
-				"role": "text",				
-				"type": "string",
-				"read": true,
-				"write": false,
-				"def": ""
-			},
+                "role": "text",				
+                "type": "string",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
             "native": {}
         },
         {
             "_id": "info.lastError",
             "type": "state",
-			"common": {
+            "common": {
                 "name": "Last Error",
-				"role": "text",				
-				"type": "string",
-				"read": true,
-				"write": false,
+                "role": "text",				
+                "type": "string",
+                "read": true,
+                "write": false,
 				"def": ""
-			},
+            },
             "native": {}
         },
         {
             "_id": "info.lastErrorTime",
             "type": "state",
-			"common": {
+            "common": {
                 "name": "Time of the last error",
-				"role": "text",				
-				"type": "string",
-				"read": true,
-				"write": false,
-				"def": ""
-			},
+                "role": "text",				
+                "type": "string",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
             "native": {}
         }
-	]
+    ]
 }

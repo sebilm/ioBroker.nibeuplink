@@ -8,10 +8,10 @@ const gulp = require('gulp');
 const fs = require('fs');
 const pkg = require('./package.json');
 const iopackage = require('./io-package.json');
-const version = (pkg && pkg.version) ? pkg.version : iopackage.common.version;
+const version = pkg && pkg.version ? pkg.version : iopackage.common.version;
 const fileName = 'words.js';
 const EMPTY = '';
-const translate = require('./lib/tools').translateText;
+const translate = require('./build/lib/tools').translateText;
 const languages = {
     en: {},
     de: {},
@@ -22,11 +22,11 @@ const languages = {
     it: {},
     es: {},
     pl: {},
-    'zh-cn': {}
+    'zh-cn': {},
 };
 
 function lang2data(lang) {
-    let str ='{\n';
+    let str = '{\n';
     let count = 0;
     for (const w in lang) {
         if (lang.hasOwnProperty(w)) {
@@ -117,8 +117,7 @@ function words2languages(src) {
             fs.mkdirSync(src + 'i18n/');
         }
         for (const l in langs) {
-            if (!langs.hasOwnProperty(l))
-                continue;
+            if (!langs.hasOwnProperty(l)) continue;
             const keys = Object.keys(langs[l]);
             keys.sort();
             const obj = {};
@@ -145,26 +144,21 @@ function languages2words(src) {
         const posA = order.indexOf(a);
         const posB = order.indexOf(b);
         if (posA === -1 && posB === -1) {
-            if (a > b)
-                return 1;
-            if (a < b)
-                return -1;
+            if (a > b) return 1;
+            if (a < b) return -1;
             return 0;
         } else if (posA === -1) {
             return -1;
         } else if (posB === -1) {
             return 1;
         } else {
-            if (posA > posB)
-                return 1;
-            if (posA < posB)
-                return -1;
+            if (posA > posB) return 1;
+            if (posA < posB) return -1;
             return 0;
         }
     });
     for (const lang of dirs) {
-        if (lang === 'flat.txt')
-            continue;
+        if (lang === 'flat.txt') continue;
         langs[lang] = fs.readFileSync(src + 'i18n/' + lang + '/translations.json').toString();
         langs[lang] = JSON.parse(langs[lang]);
         const words = langs[lang];
@@ -190,15 +184,13 @@ function languages2words(src) {
                     bigOne[w] = aWords[w];
                 }
                 dirs.forEach(function (lang) {
-                    if (temporaryIgnore.indexOf(lang) !== -1)
-                        return;
+                    if (temporaryIgnore.indexOf(lang) !== -1) return;
                     if (!bigOne[w][lang]) {
                         console.warn('Missing "' + lang + '": ' + w);
                     }
                 });
             }
         }
-
     }
 
     writeWordJs(bigOne, src);
@@ -250,7 +242,7 @@ gulp.task('updatePackages', function (done) {
             it: 'notizie',
             es: 'noticias',
             pl: 'nowości',
-            'zh-cn': '新'
+            'zh-cn': '新',
         };
         iopackage.common.news = Object.assign(newNews, news);
     }
@@ -267,23 +259,28 @@ gulp.task('updateReadme', function (done) {
 
         if (readme.indexOf(version) === -1) {
             const timestamp = new Date();
-            const date = timestamp.getFullYear() + '-' +
-                    ('0' + (timestamp.getMonth() + 1).toString(10)).slice(-2) + '-' +
-                    ('0' + (timestamp.getDate()).toString(10)).slice(-2);
+            const date =
+                timestamp.getFullYear() +
+                '-' +
+                ('0' + (timestamp.getMonth() + 1).toString(10)).slice(-2) +
+                '-' +
+                ('0' + timestamp.getDate().toString(10)).slice(-2);
 
             let news = '';
             if (iopackage.common.news && iopackage.common.news[pkg.version]) {
                 news += '* ' + iopackage.common.news[pkg.version].en;
             }
 
-            fs.writeFileSync('README.md', readmeStart + '### ' + version + ' (' + date + ')\n' + (news ? news + '\n\n' : '\n') + readmeEnd);
+            fs.writeFileSync(
+                'README.md',
+                readmeStart + '### ' + version + ' (' + date + ')\n' + (news ? news + '\n\n' : '\n') + readmeEnd,
+            );
         }
     }
     done();
 });
 
 gulp.task('translate', async function (done) {
-
     let yandex;
     const i = process.argv.indexOf('--yandex');
     if (i > -1) {
@@ -327,7 +324,6 @@ gulp.task('translate', async function (done) {
                 fs.writeFileSync('./admin/i18n/' + l + '/translations.json', JSON.stringify(existing, null, 4));
             }
         }
-
     }
     fs.writeFileSync('io-package.json', JSON.stringify(iopackage, null, 4));
 });

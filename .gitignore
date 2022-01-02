@@ -1,5 +1,8 @@
-.git
-.idea
+# No dot-directories except github/vscode
+.*/
+!.vscode/
+!.github/
+
 *.code-workspace
 node_modules
 nbproject
@@ -9,7 +12,9 @@ iobroker.*.tgz
 
 Thumbs.db
 
+# NYC coverage files
+coverage
+
 # i18n intermediate files
 admin/i18n/flat.txt
 admin/i18n/*/flat.txt
-.session.json

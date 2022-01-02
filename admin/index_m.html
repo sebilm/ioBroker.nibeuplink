@@ -32,20 +32,20 @@
                 var id = $key.attr('id');
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
-                        $key.prop('checked', settings[id])
-                            .on('change', () => onChange())
-                            ;
+                    $key.prop('checked', settings[id])
+                        .on('change', () => onChange())
+                        ;
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
-                        $key.val(settings[id])
-                            .on('change', () => onChange())
-                            .on('keyup', () => onChange())
-                            ;
+                    $key.val(settings[id])
+                        .on('change', () => onChange())
+                        .on('keyup', () => onChange())
+                        ;
                 }
             });
             onChange(false);
             // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-            if (M){
+            if (M) {
                 M.updateTextFields();
             }
         }
@@ -58,8 +58,8 @@
                 var $this = $(this);
                 if ($this.attr('type') === 'checkbox') {
                     obj[$this.attr('id')] = $this.prop('checked');
-                    } else if ($this.attr('type') === 'number') {
-                        obj[$this.attr('id')] = parseFloat($this.val());
+                } else if ($this.attr('type') === 'number') {
+                    obj[$this.attr('id')] = parseFloat($this.val());
                 } else {
                     obj[$this.attr('id')] = $this.val();
                 }
