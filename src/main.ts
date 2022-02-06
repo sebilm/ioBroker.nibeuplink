@@ -3,26 +3,78 @@
  */
 
 import * as utils from '@iobroker/adapter-core';
-//import * as path from 'path';
-//import * as tools from utils.controllerDir + '/build/lib/tools';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as fetcher from './nibe-fetcher';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const tools = require(utils.controllerDir + '/build/lib/tools');
-//import * as fs from 'fs';
-//import * as fetcher from './nibe-fetcher.js';
-const Fetcher = require('./nibe-fetcher.js');
 
 // Helper functions:
 
 // For todays date;
-Date.prototype.today = function () { 
-    return this.getFullYear() + "-" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "-" + ((this.getDate() < 10)?"0":"") + this.getDate();
+declare global {
+    interface Date {
+        today(): string;
+    }
 }
+Date.prototype.today = function (): string {
+    return (
+        this.getFullYear() +
+        '-' +
+        (this.getMonth() + 1 < 10 ? '0' : '') +
+        (this.getMonth() + 1) +
+        '-' +
+        (this.getDate() < 10 ? '0' : '') +
+        this.getDate()
+    );
+};
 
 // For the time now
-Date.prototype.timeNow = function () {
-    return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+declare global {
+    interface Date {
+        timeNow(): string;
+    }
+}
+Date.prototype.timeNow = function (): string {
+    return (
+        (this.getHours() < 10 ? '0' : '') +
+        this.getHours() +
+        ':' +
+        (this.getMinutes() < 10 ? '0' : '') +
+        this.getMinutes() +
+        ':' +
+        (this.getSeconds() < 10 ? '0' : '') +
+        this.getSeconds()
+    );
+};
+
+async function createDeviceAsync(adapter: NibeUplink, path: string, name: string): Promise<void> {
+    await adapter.setObjectNotExistsAsync(path, {
+        type: 'device',
+        common: {
+            name: name,
+            role: 'text',
+        },
+        native: {},
+    });
 }
 
-class Nibeuplink extends utils.Adapter {
+async function createChannelAsync(adapter: NibeUplink, path: string, name: string): Promise<void> {
+    await adapter.setObjectNotExistsAsync(path, {
+        type: 'channel',
+        common: {
+            name: name,
+            role: 'text',
+        },
+        native: {},
+    });
+}
+
+function setProperty<K extends keyof any>(obj: any, propertyName: K, value: any): void {
+    obj[propertyName] = value;
+}
+
+class NibeUplink extends utils.Adapter {
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
@@ -35,64 +87,240 @@ class Nibeuplink extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
+    private fetcher: fetcher.Fetcher | undefined;
+
     /**
      * Is called when databases are connected and adapter received configuration.
      */
     private async onReady(): Promise<void> {
         // Initialize your adapter here
 
-        // Reset the connection indicator during startup
-        this.setState('info.connection', false, true);
+        this.log.info('Starting adapter.');
 
-        // The adapters config (in the instance object everything under the attribute "native") is accessible via
-        // this.config:
-        this.log.info('config option1: ' + this.config.option1);
-        this.log.info('config option2: ' + this.config.option2);
+        let refreshInterval: number = this.config.Interval * 60;
+        if (refreshInterval < 60) {
+            refreshInterval = 60;
+        }
 
-        /*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-        await this.setObjectNotExistsAsync('testVariable', {
-            type: 'state',
-            common: {
-                name: 'testVariable',
-                type: 'boolean',
-                role: 'indicator',
-                read: true,
-                write: true,
+        const identifier: string = this.config.Identifier.trim();
+        const secret: string = this.config.Secret.trim();
+        const callbackURL: string = this.config.CallbackURL.trim();
+        const configured: boolean = this.config.Configured;
+
+        let error = false;
+        if (identifier == '' || identifier == null) {
+            if (configured != false) {
+                this.log.error('Missing Identifier in the settings!');
+            }
+            error = true;
+        }
+        if (secret == '' || secret == null) {
+            if (configured != false) {
+                this.log.error('Missing Secret in the settings!');
+            }
+            error = true;
+        }
+        if (callbackURL == '' || callbackURL == null) {
+            if (configured != false) {
+                this.log.error('Missing Callback URL in the settings!');
+            }
+            error = true;
+        }
+        if (this.config.SystemId == '' || this.config.SystemId == null) {
+            if (configured != false) {
+                this.log.error('Missing System ID in the settings!');
+            }
+            error = true;
+        }
+        if (error) {
+            this.setState('info.connection', { val: false, ack: true });
+            this.setState('info.currentError', { val: 'Missing settings!', ack: true });
+            return;
+        }
+
+        const dataDir: string = path.normalize(utils.controllerDir + '/' + tools.getDefaultDataDir());
+        let storeDir: string = path.join(dataDir, 'nibeuplink');
+        try {
+            // create directory
+            if (!fs.existsSync(storeDir)) {
+                fs.mkdirSync(storeDir);
+            }
+        } catch (err) {
+            this.log.error('Could not create storage directory (' + storeDir + '): ' + err);
+            storeDir = __dirname;
+        }
+        const storeFile = path.join(storeDir, 'session.' + this.instance + '.json');
+        const manageId = !this.config.ManageId ? 'MANAGE' : this.config.ManageId;
+
+        this.fetcher = new fetcher.Fetcher(
+            {
+                clientId: identifier,
+                clientSecret: secret,
+                redirectUri: callbackURL,
+                interval: refreshInterval,
+                authCode: this.config.AuthCode.trim(),
+                systemId: this.config.SystemId,
+                language: this.config.Language,
+                enableManage: this.config.EnableManageSupport,
+                managedParameters: this.config.ManagedParameters,
+                sessionStore: storeFile,
             },
-            native: {},
+            this,
+        );
+
+        this.fetcher.on('data', async (d) => {
+            const data = d as fetcher.Data;
+            this.log.debug('Data received.');
+            this.log.silly(JSON.stringify(data, null, ' '));
+
+            this.setState('info.connection', { val: true, expire: refreshInterval + 30, ack: true });
+
+            const newDate = new Date();
+            const datetime = newDate.today() + ' ' + newDate.timeNow();
+            this.setState('info.updateTime', { val: datetime, ack: true });
+            this.setState('info.currentError', { val: '', ack: true });
+
+            data.unitData.forEach(async (unit) => {
+                const unitPath = `UNIT_${unit.systemUnitId}`;
+                await createDeviceAsync(this, unitPath, `${unit.name} (${unit.product})`);
+                unit.categories?.forEach(async (category) => {
+                    const categoryPath = `${unitPath}.${category.categoryId}`;
+                    await createChannelAsync(this, categoryPath, category.name);
+                    category.parameters.forEach(async (parameter) => {
+                        const key = parameter['key'];
+                        let title = parameter['title'];
+                        const designation = parameter['designation'];
+                        if (designation != null && designation != '') {
+                            title = `${title} (${designation})`;
+                        }
+                        const valuePath = `${categoryPath}.${key}`;
+
+                        await this.setObjectNotExistsAsync(valuePath, {
+                            type: 'state',
+                            common: {
+                                name: title,
+                                type: 'number',
+                                role: 'value',
+                                unit: parameter['unit'],
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        });
+                        await this.setStateAsync(valuePath, { val: parameter['value'], ack: true });
+
+                        const displayPath = `${categoryPath}.${key}_DISPLAY`;
+                        await this.setObjectNotExistsAsync(displayPath, {
+                            type: 'state',
+                            common: {
+                                name: `${title} [Display]`,
+                                type: 'string',
+                                role: 'text',
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        });
+                        await this.setStateAsync(displayPath, { val: parameter['displayValue'], ack: true });
+
+                        if (unit.systemUnitId == 0) {
+                            // update deprecated subpath values if present (pre 0.4.0):
+                            const oldValuePath = `${category.categoryId}.${key}`;
+                            this.getObject(oldValuePath, (err, obj) => {
+                                if (obj) {
+                                    this.setState(oldValuePath, { val: parameter['value'], ack: true });
+                                }
+                            });
+                            const oldDisplayPath = `${category.categoryId}.${key}_DISPLAY`;
+                            this.getObject(oldDisplayPath, (err, obj) => {
+                                if (obj) {
+                                    this.setState(oldDisplayPath, { val: parameter['displayValue'], ack: true });
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+            if (data.manageData) {
+                const manageName = !this.config.ManageName ? 'Manage' : this.config.ManageName;
+                await createDeviceAsync(this, manageId, manageName);
+                data.manageData.forEach(async (manageData) => {
+                    const unit = manageData.unit;
+                    manageData.parameters.forEach(async (parameter) => {
+                        const parameterId = parameter.parameterId.toString();
+                        const conf = this.config.ManagedParameters.find((x) => x.unit == unit && x.parameter == parameterId);
+                        let key;
+                        if (conf && conf.id) {
+                            key = conf.id;
+                        } else {
+                            key = `${unit}_${parameterId}_${parameter.key}`;
+                        }
+                        let title;
+                        if (conf && conf.name) {
+                            title = conf.name;
+                        } else {
+                            title = parameter.title;
+                            const designation = parameter.designation;
+                            if (designation != null && designation != '') {
+                                title = `${title} (${designation})`;
+                            }
+                        }
+                        const valuePath = `${manageId}.${key}`;
+
+                        await this.setObjectNotExistsAsync(valuePath, {
+                            type: 'state',
+                            common: {
+                                name: title,
+                                type: 'number',
+                                role: 'value',
+                                unit: parameter['unit'],
+                                read: true,
+                                write: true,
+                            },
+                            native: {
+                                deviceUnit: unit,
+                                parameterId: parameter.parameterId,
+                                divideBy: parameter.divideBy,
+                            },
+                        });
+                        await this.setStateAsync(valuePath, { val: parameter['value'], ack: true });
+
+                        const displayPath = `${manageId}.${key}_DISPLAY`;
+                        await this.setObjectNotExistsAsync(displayPath, {
+                            type: 'state',
+                            common: {
+                                name: `${title} [Display]`,
+                                type: 'string',
+                                role: 'text',
+                                read: true,
+                                write: false,
+                            },
+                            native: {},
+                        });
+                        await this.setStateAsync(displayPath, { val: parameter['displayValue'], ack: true });
+                    });
+                });
+            }
+            this.log.debug('Data processed.');
         });
 
-        // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-        this.subscribeStates('testVariable');
-        // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-        // this.subscribeStates('lights.*');
-        // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-        // this.subscribeStates('*');
+        this.fetcher.on('error', (data) => {
+            this.log.error('' + data);
 
-        /*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-        // the variable testVariable is set to true as command (ack=false)
-        await this.setStateAsync('testVariable', true);
+            this.setState('info.connection', { val: false, ack: true });
 
-        // same thing, but the value is flagged "ack"
-        // ack should be always set to true if the value is received from or acknowledged from the target system
-        await this.setStateAsync('testVariable', { val: true, ack: true });
+            const newDate = new Date();
+            const datetime = newDate.today() + ' ' + newDate.timeNow();
+            this.setState('info.lastErrorTime', { val: datetime, ack: true });
+            this.setState('info.lastError', { val: '' + data, ack: true });
+            this.setState('info.currentError', { val: '' + data, ack: true });
+        });
 
-        // same thing, but the state is deleted after 30s (getState will return null afterwards)
-        await this.setStateAsync('testVariable', { val: true, ack: true, expire: 30 });
+        if (this.config.EnableManageSupport === true) {
+            this.subscribeStates(`${manageId}.*`);
+        }
 
-        // examples for the checkPassword/checkGroup functions
-        let result = await this.checkPasswordAsync('admin', 'iobroker');
-        this.log.info('check user admin pw iobroker: ' + result);
-
-        result = await this.checkGroupAsync('admin', 'admin');
-        this.log.info('check group user admin group admin: ' + result);
+        this.log.info('Adapter started.');
     }
 
     /**
@@ -100,12 +328,12 @@ class Nibeuplink extends utils.Adapter {
      */
     private onUnload(callback: () => void): void {
         try {
-            // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            // clearInterval(interval1);
-
+            if (this.fetcher != null) {
+                this.fetcher.stop();
+            }
+            this.fetcher = undefined;
+            this.setState('info.connection', { val: false, ack: true });
+            this.log.info('Cleaned everything up...');
             callback();
         } catch (e) {
             callback();
@@ -130,13 +358,34 @@ class Nibeuplink extends utils.Adapter {
     /**
      * Is called if a subscribed state changes
      */
-    private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
-        if (state) {
-            // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-        } else {
-            // The state was deleted
-            this.log.info(`state ${id} deleted`);
+    private async onStateChange(id: string, state: ioBroker.State | null | undefined): Promise<void> {
+        if (state && state.ack === false && state.val && this.fetcher) {
+            this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            const obj = await this.getObjectAsync(id);
+            if (obj && obj.native && obj.native.parameterId && obj.native.deviceUnit) {
+                const params = {};
+                const parameterId = obj.native.parameterId as number;
+                setProperty(params, parameterId.toString(), state.val.toString());
+                try {
+                    await this.fetcher.setParams(obj.native.deviceUnit, params);
+                } catch (error) {
+                    const errorPath = `${id}_ERROR`;
+                    await this.setObjectNotExistsAsync(errorPath, {
+                        type: 'state',
+                        common: {
+                            name: `${obj.common.name} [Error]`,
+                            type: 'string',
+                            role: 'text',
+                            read: true,
+                            write: false,
+                        },
+                        native: {},
+                    });
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    await this.setStateAsync(errorPath, { val: errorMessage, ack: true });
+                }
+                await this.fetcher.getParams(obj.native.deviceUnit, [obj.native.parameterId]);
+            }
         }
     }
 
@@ -160,8 +409,8 @@ class Nibeuplink extends utils.Adapter {
 
 if (require.main !== module) {
     // Export the constructor in compact mode
-    module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new Nibeuplink(options);
+    module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new NibeUplink(options);
 } else {
     // otherwise start the instance directly
-    (() => new Nibeuplink())();
+    (() => new NibeUplink())();
 }

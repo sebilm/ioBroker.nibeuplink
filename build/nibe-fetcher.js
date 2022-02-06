@@ -1,3 +1,4 @@
+"use strict";
 //
 // nibe-fetcher
 //
@@ -10,45 +11,37 @@
 //
 // this version is based on original nibe-fetcher version 1.1.0
 //
-
-import * as utils from '@iobroker/adapter-core';
-import axios, { AxiosError } from 'axios';
-import * as eventEmitter from 'events';
-import * as fs from 'fs';
-import jsonfile from 'jsonfile';
-import * as nibeDto from './nibeDto';
-import * as parameters from './parameters';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Fetcher = void 0;
+const axios_1 = __importDefault(require("axios"));
+const eventEmitter = __importStar(require("events"));
+const fs = __importStar(require("fs"));
+const jsonfile_1 = __importDefault(require("jsonfile"));
+const parameters = __importStar(require("./parameters"));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const info = require('./package.json');
-
-export interface Options {
-    authCode: string;
-    clientId: string;
-    clientSecret: string;
-    systemId: string;
-    redirectUri: string;
-    enableManage: boolean;
-    managedParameters: ioBroker.Parameter[];
-    interval: number;
-    language: string;
-    sessionStore: string;
-}
-
-export interface Data {
-    unitData: nibeDto.SystemUnit[];
-    manageData?: ManageData[];
-}
-
-export interface ManageData {
-    unit: string;
-    parameters: nibeDto.Parameter[];
-}
-
-interface Session extends nibeDto.Session {
-    expires_at?: number;
-    authCode?: string;
-}
-
 const consts = {
     baseUrl: 'https://api.nibeuplink.com',
     scope: 'READSYSTEM WRITESYSTEM',
@@ -57,24 +50,16 @@ const consts = {
     renewBeforeExpiry: 5 * 60 * 1000,
     parameters: parameters.NibeParameters,
 };
-
 const versionKeys = ['VERSIO', 'VERSIE', 'VARIANTA', 'WERSJA', 'VERSJON'];
 const serialNumberKeys = ['SERIENNUMMER', 'SERIENUMMER', 'NUMER_SERYJNY', 'NUM_RO_DE_S_RIE', 'SARJANUMERO', 'S_RIOV_SLO'];
 const productKeys = ['PRODUKT', 'PRODUIT', 'TUOTE', 'V_ROBEK'];
-
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Array<T> {
-        inPartsOf<T>(number: number): T[][];
-    }
-}
-Array.prototype.inPartsOf = function <T>(number: number) {
-    const parts: number = Math.floor(this.length / number); // number of parts - 1
-    const lastLength: number = this.length % number;
-    const result: T[][] = [];
+Array.prototype.inPartsOf = function (number) {
+    const parts = Math.floor(this.length / number); // number of parts - 1
+    const lastLength = this.length % number;
+    const result = [];
     for (let i = 0; i < parts; i++) {
-        const start: number = i * number;
-        const part: T[] = this.slice(start, start + number);
+        const start = i * number;
+        const part = this.slice(start, start + number);
         result.push(part);
     }
     if (lastLength > 0) {
@@ -83,20 +68,18 @@ Array.prototype.inPartsOf = function <T>(number: number) {
     }
     return result;
 };
-
-function getProperty<T, K extends keyof T>(obj: T, propertyName: K): T[K] {
+function getProperty(obj, propertyName) {
     return obj[propertyName];
 }
-
-function groupBy<T, K extends keyof any>(list: T[], getKey: (item: T) => K): Record<K, T[]> {
+function groupBy(list, getKey) {
     return list.reduce((previous, currentItem) => {
         const group = getKey(currentItem);
-        if (!previous[group]) previous[group] = [];
+        if (!previous[group])
+            previous[group] = [];
         previous[group].push(currentItem);
         return previous;
-    }, {} as Record<K, T[]>);
+    }, {});
 }
-
 /**
  * Parse the string as int to number. If it is NaN, it returns the default value.
  * If the default value is not given, it is 0.
@@ -104,44 +87,31 @@ function groupBy<T, K extends keyof any>(list: T[], getKey: (item: T) => K): Rec
  * @param def The default value. The default default value is 0.
  * @returns The parsed number or the default value if the parse result is NaN.
  */
-function parseIntOrDefault(str: string, def = 0): number {
+function parseIntOrDefault(str, def = 0) {
     const num = parseInt(str);
     if (isNaN(num)) {
         return def;
-    } else {
+    }
+    else {
         return num;
     }
 }
-
-export class Fetcher extends eventEmitter.EventEmitter {
-    constructor(options: Options, adapter: utils.AdapterInstance) {
+class Fetcher extends eventEmitter.EventEmitter {
+    constructor(options, adapter) {
         super();
-
         this.adapter = adapter;
         this.options = options;
-
-        axios.defaults.baseURL = consts.baseUrl;
-        axios.defaults.headers.common['user-agent'] = consts.userAgent;
-        axios.defaults.timeout = consts.timeout;
-
+        axios_1.default.defaults.baseURL = consts.baseUrl;
+        axios_1.default.defaults.headers.common['user-agent'] = consts.userAgent;
+        axios_1.default.defaults.timeout = consts.timeout;
         this.start();
     }
-
-    private adapter: utils.AdapterInstance;
-    private options: Options;
-    private interval: NodeJS.Timeout | null | undefined;
-    private active: boolean | undefined;
-    private units: nibeDto.SystemUnit[] | null | undefined;
-    private auth: Session | null | undefined;
-
-    start(): void {
+    start() {
         if (this.interval) {
             return;
         }
-
         this.active = false;
-
-        const exec = (): void => {
+        const exec = () => {
             if (this.active) {
                 return;
             }
@@ -150,18 +120,16 @@ export class Fetcher extends eventEmitter.EventEmitter {
                 this.active = false;
             });
         };
-        this.interval = setInterval(exec, <number>this.options.interval * 1000);
-
+        this.interval = setInterval(exec, this.options.interval * 1000);
         exec();
     }
-
-    stop(): void {
-        if (!this.interval) return;
+    stop() {
+        if (!this.interval)
+            return;
         clearInterval(this.interval);
         this.interval = null;
     }
-
-    async fetch(): Promise<void> {
+    async fetch() {
         this.adapter.log.debug('Fetch data.');
         try {
             if (this.hasNewAuthCode()) {
@@ -171,7 +139,8 @@ export class Fetcher extends eventEmitter.EventEmitter {
                 if (this.options.authCode) {
                     const token = await this.getToken(this.options.authCode);
                     this.setSesssion(token);
-                } else {
+                }
+                else {
                     this.adapter.log.error('You need to get and set a new Auth-Code. You can do this in the adapter setting.');
                     this.stop();
                     return;
@@ -182,55 +151,49 @@ export class Fetcher extends eventEmitter.EventEmitter {
                 const token = await this.getRefreshToken();
                 this.setSesssion(token);
             }
-
             // await this._getAndWriteAllParameters();
-
             if (this.units == null) {
                 this.units = await this.fetchUnits();
             }
-            const unitData = await Promise.all(
-                this.units.map(async (unit) => {
-                    const categories = await this.fetchCategories(unit);
-                    const newUnit: nibeDto.SystemUnit = {
-                        systemUnitId: unit.systemUnitId,
-                        name: unit.name,
-                        shortName: unit.shortName,
-                        product: unit.product,
-                        softwareVersion: unit.softwareVersion,
-                        categories: categories,
-                    };
-                    return newUnit;
-                }),
-            );
-            const allData: Data = {
+            const unitData = await Promise.all(this.units.map(async (unit) => {
+                const categories = await this.fetchCategories(unit);
+                const newUnit = {
+                    systemUnitId: unit.systemUnitId,
+                    name: unit.name,
+                    shortName: unit.shortName,
+                    product: unit.product,
+                    softwareVersion: unit.softwareVersion,
+                    categories: categories,
+                };
+                return newUnit;
+            }));
+            const allData = {
                 unitData: unitData,
             };
             if (this.options.enableManage == true && this.options.managedParameters && this.options.managedParameters.length > 0) {
                 const parametersByUnit = groupBy(this.options.managedParameters, (x) => x.unit);
                 const parametersGroups = Object.values(parametersByUnit);
-                const allManageData = await Promise.all(
-                    parametersGroups.map(async (group) => {
-                        const unit = group[0].unit;
-                        const parameters = group.map((x) => parseIntOrDefault(x.parameter));
-                        const result = await this.fetchParams(unit, parameters);
-                        this.processParams(result);
-                        const manageData: ManageData = {
-                            unit: unit,
-                            parameters: result,
-                        };
-                        return manageData;
-                    }),
-                );
+                const allManageData = await Promise.all(parametersGroups.map(async (group) => {
+                    const unit = group[0].unit;
+                    const parameters = group.map((x) => parseIntOrDefault(x.parameter));
+                    const result = await this.fetchParams(unit, parameters);
+                    this.processParams(result);
+                    const manageData = {
+                        unit: unit,
+                        parameters: result,
+                    };
+                    return manageData;
+                }));
                 allData.manageData = allManageData;
             }
             this.adapter.log.debug('All data fetched.');
             this._onData(allData);
-        } catch (error) {
+        }
+        catch (error) {
             this._onError(error);
         }
     }
-
-    private async getToken(authCode: string): Promise<Session> {
+    async getToken(authCode) {
         this.adapter.log.debug('token()');
         const data = {
             grant_type: 'authorization_code',
@@ -242,8 +205,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
         };
         return await this.postTokenRequest(data);
     }
-
-    private async getRefreshToken(): Promise<Session> {
+    async getRefreshToken() {
         this.adapter.log.debug('Refresh token.');
         const data = {
             grant_type: 'refresh_token',
@@ -253,72 +215,65 @@ export class Fetcher extends eventEmitter.EventEmitter {
         };
         return await this.postTokenRequest(data);
     }
-
-    private async postTokenRequest(body: any): Promise<Session> {
+    async postTokenRequest(body) {
+        var _a;
         const url = '/oauth/token';
         try {
-            const { data } = await axios.post<Session>(url, body, {
+            const { data } = await axios_1.default.post(url, body, {
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
                 },
             });
-            const expiresIn = data.expires_in ?? 1800;
+            const expiresIn = (_a = data.expires_in) !== null && _a !== void 0 ? _a : 1800;
             data.expires_at = Date.now() + expiresIn * 1000;
             return data;
-        } catch (error) {
+        }
+        catch (error) {
             throw this.checkError(url, error);
         }
     }
-
-    private async fetchUnits(): Promise<nibeDto.SystemUnit[]> {
+    async fetchUnits() {
         this.adapter.log.debug('Fetch units.');
-        const units = await this.getFromNibeuplink<nibeDto.SystemUnit[]>('units');
+        const units = await this.getFromNibeuplink('units');
         this.adapter.log.debug(`${units.length} units fetched.`);
         return units;
     }
-
-    private async fetchCategories(unit: nibeDto.SystemUnit): Promise<nibeDto.Category[]> {
+    async fetchCategories(unit) {
         this.adapter.log.debug('Fetch categories.');
         const url = `serviceinfo/categories?parameters=true&systemUnitId=${unit.systemUnitId}`;
-        const categories = await this.getFromNibeuplink<nibeDto.Category[]>(url);
+        const categories = await this.getFromNibeuplink(url);
         categories.forEach((category) => this.processParams(category.parameters));
         this.adapter.log.debug(`${categories.length} categories fetched.`);
         return categories;
     }
-
-    private async fetchParams(unit: string, parameters: number[]): Promise<nibeDto.Parameter[]> {
+    async fetchParams(unit, parameters) {
         this.adapter.log.debug(`Fetch params ${parameters} of unit ${unit}.`);
-        const result = await Promise.all(
-            parameters.inPartsOf<number>(15).map(async (p) => {
-                const paramStr = p.join('&parameterIds=');
-                const url = `parameters?parameterIds=${paramStr}&systemUnitId=${unit}`;
-                return await this.getFromNibeuplink<nibeDto.Parameter[]>(url);
-            }),
-        );
+        const result = await Promise.all(parameters.inPartsOf(15).map(async (p) => {
+            const paramStr = p.join('&parameterIds=');
+            const url = `parameters?parameterIds=${paramStr}&systemUnitId=${unit}`;
+            return await this.getFromNibeuplink(url);
+        }));
         return result.flat();
     }
-
-    async getParams(unit: string, parameters: number[]): Promise<void> {
+    async getParams(unit, parameters) {
         const result = await this.fetchParams(unit, parameters);
         this.processParams(result);
-        const manageData: ManageData = {
+        const manageData = {
             unit: unit,
             parameters: result,
         };
-        const data: Data = {
+        const data = {
             unitData: [],
             manageData: [manageData],
         };
         this.adapter.log.debug('New data fetched.');
         this._onData(data);
     }
-
-    async setParams(unit: string, parameters: any): Promise<void> {
+    async setParams(unit, parameters) {
         const url = `parameters?systemUnitId=${unit}`;
         await this.putToNibeuplink(url, { settings: parameters });
     }
-
-    private async getFromNibeuplink<T>(suburl: string, lang = ''): Promise<T> {
+    async getFromNibeuplink(suburl, lang = '') {
         if (lang == '') {
             lang = this.options.language;
         }
@@ -326,19 +281,19 @@ export class Fetcher extends eventEmitter.EventEmitter {
         const url = `/api/v1/systems/${systemId}/${suburl}`;
         this.adapter.log.debug(`GET ${url} (lang: ${lang})`);
         try {
-            const { data } = await axios.get<T>(url, {
+            const { data } = await axios_1.default.get(url, {
                 headers: {
                     Authorization: 'Bearer ' + this.getSession('access_token'),
                     'Accept-Language': lang,
                 },
             });
             return data;
-        } catch (error) {
+        }
+        catch (error) {
             throw this.checkError(suburl, error);
         }
     }
-
-    private async putToNibeuplink(suburl: string, body: any, lang = ''): Promise<void> {
+    async putToNibeuplink(suburl, body, lang = '') {
         if (lang == '') {
             lang = this.options.language;
         }
@@ -347,21 +302,21 @@ export class Fetcher extends eventEmitter.EventEmitter {
         this.adapter.log.debug(`PUT ${url} (lang: ${lang})`);
         this.adapter.log.silly(`PUT body: ${JSON.stringify(body, null, ' ')}`);
         try {
-            await axios.put(url, body, {
+            await axios_1.default.put(url, body, {
                 headers: {
                     Authorization: 'Bearer ' + this.getSession('access_token'),
                     'Accept-Language': lang,
                 },
             });
-        } catch (error) {
+        }
+        catch (error) {
             throw this.checkError(suburl, error);
         }
     }
-
-    private checkError(suburl: string, error: unknown): unknown {
+    checkError(suburl, error) {
         this.adapter.log.error(`error from ${suburl}`);
-        if (axios.isAxiosError(error)) {
-            const axiosError = error as AxiosError;
+        if (axios_1.default.isAxiosError(error)) {
+            const axiosError = error;
             if (axiosError.response) {
                 if (axiosError.response.status == 401) {
                     this.clearSesssion();
@@ -370,15 +325,15 @@ export class Fetcher extends eventEmitter.EventEmitter {
                     const responseText = JSON.stringify(axiosError.response.data, null, ' ');
                     const errorMessage = `${axiosError.response.statusText}: ${responseText}`;
                     return new Error(errorMessage);
-                } else {
+                }
+                else {
                     return new Error(axiosError.response.statusText);
                 }
             }
         }
         return error;
     }
-
-    private processParams(params: nibeDto.Parameter[], collect = false): void {
+    processParams(params, collect = false) {
         params.forEach((item) => {
             const parameters = consts.parameters.get(item.parameterId);
             if (parameters == null) {
@@ -397,48 +352,47 @@ export class Fetcher extends eventEmitter.EventEmitter {
                 if (item.parameterId == 0) {
                     if (versionKeys.includes(key)) {
                         key = 'VERSION';
-                    } else if (serialNumberKeys.includes(key)) {
+                    }
+                    else if (serialNumberKeys.includes(key)) {
                         key = 'SERIAL_NUMBER';
-                    } else if (productKeys.includes(key)) {
+                    }
+                    else if (productKeys.includes(key)) {
                         key = 'PRODUCT';
                     }
                 }
                 Object.assign(item, { key: key });
-            } else {
+            }
+            else {
                 Object.assign(item, parameters);
             }
-
             if (item.divideBy == null) {
                 if (item.unit == '°C' || item.unit == 'kW' || item.unit == 'kWh' || item.unit == 'l/m') {
                     Object.assign(item, { divideBy: 10 });
                 }
             }
-
             if (item.divideBy != null && item.divideBy > 0) {
                 item.value = item.rawValue / item.divideBy;
-            } else {
+            }
+            else {
                 item.value = item.rawValue;
             }
         });
     }
-
-    private readSession(): void {
+    readSession() {
         this.adapter.log.debug('Read session.');
         if (!this.options.sessionStore || !fs.existsSync(this.options.sessionStore)) {
             return;
         }
-        this.auth = jsonfile.readFileSync(this.options.sessionStore, { throws: false });
+        this.auth = jsonfile_1.default.readFileSync(this.options.sessionStore, { throws: false });
     }
-
-    private getSession(key: keyof Session): string | number | undefined | null {
+    getSession(key) {
         this.adapter.log.silly('Get session.');
         if (this.auth == null) {
             this.readSession();
         }
         return this.auth ? getProperty(this.auth, key) : null;
     }
-
-    private setSesssion(auth: Session): void {
+    setSesssion(auth) {
         this.adapter.log.debug('Set session.');
         if (auth.authCode == null) {
             auth.authCode = this.options.authCode;
@@ -447,63 +401,34 @@ export class Fetcher extends eventEmitter.EventEmitter {
         if (!this.options.sessionStore) {
             return;
         }
-        jsonfile.writeFileSync(this.options.sessionStore, this.auth, { spaces: 2 });
+        jsonfile_1.default.writeFileSync(this.options.sessionStore, this.auth, { spaces: 2 });
     }
-
-    private clearSesssion(): void {
+    clearSesssion() {
         this.adapter.log.debug('Clear session.');
         this.setSesssion({});
     }
-
-    private hasNewAuthCode(): boolean {
+    hasNewAuthCode() {
         const hasNewAuthCode = this.getSession('authCode') != null && this.getSession('authCode') != this.options.authCode;
         this.adapter.log.debug('Has new auth code: ' + hasNewAuthCode);
         return hasNewAuthCode;
     }
-
-    private isTokenExpired(): boolean {
+    isTokenExpired() {
         const expired = (this.getSession('expires_at') || 0) < Date.now() + consts.renewBeforeExpiry;
         this.adapter.log.debug('Is token expired: ' + expired);
         return expired;
     }
-
-    private hasRefreshToken(): boolean {
+    hasRefreshToken() {
         const hasToken = !!this.getSession('refresh_token');
         this.adapter.log.debug('Has refresh token: ' + hasToken);
         return hasToken;
     }
-
-    private _onData(data: Data): void {
+    _onData(data) {
         this.emit('data', data);
     }
-
-    private _onError(error: unknown): void {
+    _onError(error) {
         this.emit('error', error);
     }
-
-    // async _getAndWriteAllParameters() {
-    //     let par = {};
-    //     for (let i = 40000; i < 50000; i = i + 15) {
-    //         let url = `parameters?parameterIds=${i}`;
-    //         for (let j = 1; j < 15; j++) {
-    //             url = url + `&parameterIds=${i + j}`;
-    //         }
-    //         let raw = await this.getFromNibeuplink(url, 'en');
-    //         this.adapter.log.info(`${i}: ${raw.length}`);
-    //         this.processParams(raw, true);
-    //         raw.forEach((item) => {
-    //             if (item.key != '') {
-    //                 if (item.divideBy != null) {
-    //                     par[`${item.parameterId}`] = { key: item.key, divideBy: item.divideBy };
-    //                 } else {
-    //                     par[`${item.parameterId}`] = { key: item.key };
-    //                 }
-    //             }
-    //         });
-    //     }
-    //     jsonfile.writeFileSync(path.join(__dirname, './parameters40.json'), par, { spaces: 2 });
-    //     this.stop();
-    // }
 }
-
+exports.Fetcher = Fetcher;
 module.exports = Fetcher;
+//# sourceMappingURL=nibe-fetcher.js.map

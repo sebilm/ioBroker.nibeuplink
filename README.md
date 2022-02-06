@@ -49,6 +49,11 @@ https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 ## Changelog
 
+### 1.1.0 - 2022-02-06:
+
+- Switch to TypeSctipt
+- Use axios instead of wreck
+
 ### 1.0.1 - 2021-12-31
 
 - Fix write support #6
@@ -56,6 +61,7 @@ https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 ### 1.0.0 - 2021-12-30
 
 - Support to manage Nibe heat pump (write support #6)
+  - To manage your Nibe heat pump you must pay for it on Nibe Uplink website!
   - You need to run the new version 30 minutes and then get a new AuthCode in the settings to use it!
 
 ### 0.5.3 - 2021-11-21
