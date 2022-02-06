@@ -18,8 +18,6 @@ import * as fs from 'fs';
 import jsonfile from 'jsonfile';
 import * as nibeDto from './nibeDto';
 import * as parameters from './parameters';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const info = require('./package.json');
 
 export interface Options {
     authCode: string;
@@ -53,7 +51,7 @@ const consts = {
     baseUrl: 'https://api.nibeuplink.com',
     scope: 'READSYSTEM WRITESYSTEM',
     timeout: 45000,
-    userAgent: [info.name, info.version].join(' '),
+    userAgent: 'iobroker.nibeuplink',
     renewBeforeExpiry: 5 * 60 * 1000,
     parameters: parameters.NibeParameters,
 };
@@ -505,5 +503,3 @@ export class Fetcher extends eventEmitter.EventEmitter {
     //     this.stop();
     // }
 }
-
-module.exports = Fetcher;

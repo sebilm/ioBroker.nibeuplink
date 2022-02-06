@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as fetcher from './nibe-fetcher';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const tools = require(utils.controllerDir + '/build/lib/tools');
+const controllerTools = require(path.join(utils.controllerDir, 'lib/tools'));
 
 // Helper functions:
 
@@ -138,7 +138,7 @@ class NibeUplink extends utils.Adapter {
             return;
         }
 
-        const dataDir: string = path.normalize(utils.controllerDir + '/' + tools.getDefaultDataDir());
+        const dataDir: string = path.normalize(utils.controllerDir + '/' + controllerTools.getDefaultDataDir());
         let storeDir: string = path.join(dataDir, 'nibeuplink');
         try {
             // create directory
