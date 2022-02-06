@@ -11,7 +11,6 @@ nbproject
 iobroker.*.tgz
 
 Thumbs.db
-package-lock.json
 
 # NYC coverage files
 coverage
