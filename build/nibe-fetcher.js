@@ -40,13 +40,11 @@ const eventEmitter = __importStar(require("events"));
 const fs = __importStar(require("fs"));
 const jsonfile_1 = __importDefault(require("jsonfile"));
 const parameters = __importStar(require("./parameters"));
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const info = require('./package.json');
 const consts = {
     baseUrl: 'https://api.nibeuplink.com',
     scope: 'READSYSTEM WRITESYSTEM',
     timeout: 45000,
-    userAgent: [info.name, info.version].join(' '),
+    userAgent: 'iobroker.nibeuplink',
     renewBeforeExpiry: 5 * 60 * 1000,
     parameters: parameters.NibeParameters,
 };
@@ -217,11 +215,12 @@ class Fetcher extends eventEmitter.EventEmitter {
     }
     async postTokenRequest(body) {
         var _a;
+        const stringBody = new URLSearchParams(body).toString();
         const url = '/oauth/token';
         try {
-            const { data } = await axios_1.default.post(url, body, {
+            const { data } = await axios_1.default.post(url, stringBody, {
                 headers: {
-                    'content-type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
             });
             const expiresIn = (_a = data.expires_in) !== null && _a !== void 0 ? _a : 1800;
@@ -430,5 +429,4 @@ class Fetcher extends eventEmitter.EventEmitter {
     }
 }
 exports.Fetcher = Fetcher;
-module.exports = Fetcher;
 //# sourceMappingURL=nibe-fetcher.js.map

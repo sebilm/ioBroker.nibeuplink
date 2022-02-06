@@ -19,7 +19,7 @@ import jsonfile from 'jsonfile';
 import * as nibeDto from './nibeDto';
 import * as parameters from './parameters';
 
-export interface Options {
+export default interface Options {
     authCode: string;
     clientId: string;
     clientSecret: string;
@@ -253,11 +253,12 @@ export class Fetcher extends eventEmitter.EventEmitter {
     }
 
     private async postTokenRequest(body: any): Promise<Session> {
+        const stringBody = new URLSearchParams(body).toString();
         const url = '/oauth/token';
         try {
-            const { data } = await axios.post<Session>(url, body, {
+            const { data } = await axios.post<Session>(url, stringBody, {
                 headers: {
-                    'content-type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
             });
             const expiresIn = data.expires_in ?? 1800;

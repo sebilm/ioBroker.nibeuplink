@@ -27,7 +27,7 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const fetcher = __importStar(require("./nibe-fetcher"));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const tools = require(utils.controllerDir + '/build/lib/tools');
+const controllerTools = require(path.join(utils.controllerDir, 'lib/tools'));
 Date.prototype.today = function () {
     return (this.getFullYear() +
         '-' +
@@ -126,7 +126,7 @@ class NibeUplink extends utils.Adapter {
             this.setState('info.currentError', { val: 'Missing settings!', ack: true });
             return;
         }
-        const dataDir = path.normalize(utils.controllerDir + '/' + tools.getDefaultDataDir());
+        const dataDir = path.normalize(utils.controllerDir + '/' + controllerTools.getDefaultDataDir());
         let storeDir = path.join(dataDir, 'nibeuplink');
         try {
             // create directory
