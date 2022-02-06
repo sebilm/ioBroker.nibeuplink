@@ -1,234 +1,234 @@
 <html>
+    <head>
+        <!-- Load ioBroker scripts and styles-->
+        <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+        <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css" />
 
-<head>
+        <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
-    <!-- Load ioBroker scripts and styles-->
-    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
-    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+        <script type="text/javascript" src="../../js/translate.js"></script>
+        <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+        <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
-    <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+        <!-- Load our own files -->
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <script type="text/javascript" src="words.js"></script>
+        <script type="text/javascript" src="scripts.js"></script>
 
-    <script type="text/javascript" src="../../js/translate.js"></script>
-    <script type="text/javascript" src="../../lib/js/materialize.js"></script>
-    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
-
-    <!-- Load our own files -->
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <script type="text/javascript" src="words.js"></script>
-    <script type="text/javascript" src="scripts.js"></script>
-
-    <script type="text/javascript">
-        // This will be called by the admin adapter when the settings page loads
-        function load(settings, onChange) {            
-            if (!settings) {
-                return;
-            }
-            managedParameters = settings.ManagedParameters || [];
-            values2table('values', managedParameters, onChange);
-            // select elements with id=key and class=value and insert value
-            $('.value').each(function () {            
-                var $key = $(this);
-                var id = $key.attr('id');
-                if ($key.attr('type') === 'checkbox') {
-                    // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id])
-                        .on('change', () => onChange())
-                        ;
-                } else {
-                    // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id])
-                        .on('change', () => onChange())
-                        .on('keyup', () => onChange())
-                        ;
+        <script type="text/javascript">
+            // This will be called by the admin adapter when the settings page loads
+            function load(settings, onChange) {
+                if (!settings) {
+                    return;
                 }
-            });
-            onChange(false);
-            // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-            if (M) {
-                M.updateTextFields();
-            }
-        }
-
-        // This will be called by the admin adapter when the user presses the save button
-        function save(callback) {
-            // select elements with class=value and build settings object
-            var obj = {};
-            $('.value').each(function () {
-                var $this = $(this);
-                if ($this.attr('type') === 'checkbox') {
-                    obj[$this.attr('id')] = $this.prop('checked');
-                } else if ($this.attr('type') === 'number') {
-                    obj[$this.attr('id')] = parseFloat($this.val());
-                } else {
-                    obj[$this.attr('id')] = $this.val();
+                managedParameters = settings.ManagedParameters || [];
+                values2table('values', managedParameters, onChange);
+                // select elements with id=key and class=value and insert value
+                $('.value').each(function () {
+                    var $key = $(this);
+                    var id = $key.attr('id');
+                    if ($key.attr('type') === 'checkbox') {
+                        // do not call onChange direct, because onChange could expect some arguments
+                        $key.prop('checked', settings[id]).on('change', () => onChange());
+                    } else {
+                        // do not call onChange direct, because onChange could expect some arguments
+                        $key.val(settings[id])
+                            .on('change', () => onChange())
+                            .on('keyup', () => onChange());
+                    }
+                });
+                onChange(false);
+                // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
+                if (M) {
+                    M.updateTextFields();
                 }
-            });
-            obj.ManagedParameters = table2values('values');
-            obj["Configured"] = true;
-            callback(obj);
-        }
-    </script>
+            }
 
-    <style>
-        .sub-title {
-            margin-top: 1rem!important;
-            padding: 0.5rem;
-            background: #64b5f6;
-            color: white;
-        }
-    </style>
+            // This will be called by the admin adapter when the user presses the save button
+            function save(callback) {
+                // select elements with class=value and build settings object
+                var obj = {};
+                $('.value').each(function () {
+                    var $this = $(this);
+                    if ($this.attr('type') === 'checkbox') {
+                        obj[$this.attr('id')] = $this.prop('checked');
+                    } else if ($this.attr('type') === 'number') {
+                        obj[$this.attr('id')] = parseFloat($this.val());
+                    } else {
+                        obj[$this.attr('id')] = $this.val();
+                    }
+                });
+                obj.ManagedParameters = table2values('values');
+                obj['Configured'] = true;
+                callback(obj);
+            }
+        </script>
 
-</head>
+        <style>
+            .sub-title {
+                margin-top: 1rem !important;
+                padding: 0.5rem;
+                background: #64b5f6;
+                color: white;
+            }
+        </style>
+    </head>
 
-<body>
-
-    <div class="m adapter-container">
-
-        <div class="section">
-            <div class="row">
-                <div class="col s12 m4 l2">
-                    <img src="nibeuplink.png" class="logo">
+    <body>
+        <div class="m adapter-container">
+            <div class="section">
+                <div class="row">
+                    <div class="col s12 m4 l2">
+                        <img src="nibeuplink.png" class="logo" />
+                    </div>
                 </div>
             </div>
-        </div>
 
-		<!-- Forms are the standard way to receive user inputted data.
+            <!-- Forms are the standard way to receive user inputted data.
              Learn more http://materializecss.com/forms.html-->
 
-        <div class="section">
-            <div class="row">
-                <div class="col s12">
-                    <h6 class="translate sub-title">Authentication</h6>
+            <div class="section">
+                <div class="row">
+                    <div class="col s12">
+                        <h6 class="translate sub-title">Authentication</h6>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6 l6">
+                        <input class="value" id="Identifier" type="text" onchange="generateURL()" />
+                        <label for="Identifier">Identifier</label>
+                        <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+                    </div>
+                    <div class="input-field col s12 m6 l6">
+                        <input class="value" id="Secret" type="text" />
+                        <label for="Secret">Secret</label>
+                        <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input class="value" id="CallbackURL" type="text" onchange="generateURL()" />
+                        <label for="CallbackURL">Callback URL</label>
+                        <span class="translate">Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <p><a class="translate" target="_blank" id="URL">Click here to generate the Auth Code on NIBE Uplink.</a></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input class="value" id="AuthCode" type="text" />
+                        <label for="AuthCode">Auth Code</label>
+                        <span class="translate">Paste your Auth Code here.</span>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="input-field col s12 m6 l6">
-                    <input class="value" id="Identifier" type="text" onchange="generateURL()">
-                    <label for="Identifier">Identifier</label>
-                    <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+
+            <div class="section">
+                <div class="row">
+                    <div class="col s12">
+                        <h6 class="translate sub-title">Settings</h6>
+                    </div>
                 </div>
-                <div class="input-field col s12 m6 l6">
-                    <input class="value" id="Secret" type="text">
-                    <label for="Secret">Secret</label>
-                    <span class="translate">Get it from https://api.nibeuplink.com/Applications.</span>
+                <div class="row">
+                    <div class="input-field col s12 m4 l4">
+                        <input type="number" class="value" id="SystemId" />
+                        <label for="SystemId">System ID</label>
+                        <span class="translate">Log in at https://www.nibeuplink.com. It is the number in the URL.</span>
+                    </div>
+                    <div class="input-field col s12 m4 l4">
+                        <input type="number" class="value" id="Interval" min="1" />
+                        <label for="Interval" class="translate">Refresh interval</label>
+                        <span class="translate">Time in minutes of fetching data from Nibe Uplink.</span>
+                    </div>
+                    <div class="input-field col s12 m4 l4">
+                        <select class="value" id="Language">
+                            <option value="cs" class="translate">Czech</option>
+                            <option value="da" class="translate">Danish</option>
+                            <option value="nl" class="translate">Dutch</option>
+                            <option value="en" class="translate">English</option>
+                            <option value="fi" class="translate">Finnish</option>
+                            <option value="fr" class="translate">French</option>
+                            <option value="de" class="translate">German</option>
+                            <option value="no" class="translate">Norwegian</option>
+                            <option value="pl" class="translate">Polish</option>
+                            <option value="sv" class="translate">Swedish</option>
+                        </select>
+                        <label for="Language" class="translate">Language</label>
+                        <span class="translate">The language for naming the data objects.</span>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input class="value" id="CallbackURL" type="text" onchange="generateURL()">
-                    <label for="CallbackURL">Callback URL</label>
-                    <span class="translate">Does not need to be changed. You can use https://sebilm.github.io/ioBroker.nibeuplink/nibe.html</span>
+
+            <div class="section" id="values">
+                <div class="row">
+                    <div class="col s12">
+                        <h6 class="translate sub-title">Manage heat pump (experimental)</h6>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    <p><a class="translate" target="_blank" id="URL">Click here to generate the Auth Code on NIBE Uplink.</a></p>
+                <div class="row">
+                    <div class="input-field col s12 m12 l12">
+                        <input type="checkbox" class="value" id="EnableManageSupport" />
+                        <label for="EnableManageSupport" class="translate">Enable support for managing the heat pump</label>
+                        <p><span class="translate">You must pay for it on Nibe Uplink website. Use at your own risk!</span></p>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input class="value" id="AuthCode" type="text">
-                    <label for="AuthCode">Auth Code</label>
-                    <span class="translate">Paste your Auth Code here.</span>
+                <div class="row">
+                    <div class="input-field col s12 m6 l6">
+                        <input class="value" id="ManageId" type="text" />
+                        <label for="ManageId" class="translate">Manage ID</label>
+                        <span class="translate">The ID of the management sub-tree in Objects.</span>
+                    </div>
+                    <div class="input-field col s12 m6 l6">
+                        <input class="value" id="ManageName" type="text" />
+                        <label for="ManageName" class="translate">Manage Name</label>
+                        <span class="translate">The name of the management sub-tree in Objects.</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12">
+                        <button title="Add parameter" class="table-button-add btn-floating waves-effect waves-light btn-small">
+                            <i class="material-icons">add</i>
+                        </button>
+                        <label class="translate">Add a parameter</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12">
+                        <table class="table-values" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th data-name="unit" data-type="number" style="width: 40px" class="translate">Unit ID</th>
+                                    <th data-name="parameter" data-type="number" style="width: 80px" class="translate">Parameter</th>
+                                    <th data-name="id" data-type="value" style="width: 150px" class="translate">ID</th>
+                                    <th data-name="name" data-type="value" style="width: 200px" class="translate">Name</th>
+                                    <th data-buttons="delete" style="width: 40px"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="col s12 m12 l12">
+                        <p>
+                            <span class="translate"><b>Unit ID</b>: The unit within the heat pump. Mostly 0, sometimes higher.</span><br />
+                            <span class="translate"
+                                ><b>Parameter</b>: The number of the parameter. Can be found on the Internet for your heat pump. Between 0 and
+                                65535.</span
+                            ><br />
+                            <span class="translate"><b>ID / Name</b>: The sub-ID / name in the Objects tree.</span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="section">
-            <div class="row">
-                <div class="col s12">
-                    <h6 class="translate sub-title">Settings</h6>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12 m4 l4">
-                    <input type="number" class="value" id="SystemId" />
-                    <label for="SystemId">System ID</label>
-                    <span class="translate">Log in at https://www.nibeuplink.com. It is the number in the URL.</span>
-                </div>
-                <div class="input-field col s12 m4 l4">
-                    <input type="number" class="value" id="Interval" min="1" />
-                    <label for="Interval" class="translate">Refresh interval</label>
-                    <span class="translate">Time in minutes of fetching data from Nibe Uplink.</span>
-                </div>
-                <div class="input-field col s12 m4 l4">
-                    <select class="value" id="Language">
-                        <option value="cs" class="translate">Czech</option>
-                        <option value="da" class="translate">Danish</option>
-                        <option value="nl" class="translate">Dutch</option>
-                        <option value="en" class="translate">English</option>
-                        <option value="fi" class="translate">Finnish</option>
-                        <option value="fr" class="translate">French</option>
-                        <option value="de" class="translate">German</option>
-                        <option value="no" class="translate">Norwegian</option>
-                        <option value="pl" class="translate">Polish</option>
-                        <option value="sv" class="translate">Swedish</option>
-                    </select>
-                    <label for="Language" class="translate">Language</label>
-                    <span class="translate">The language for naming the data objects.</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section" id="values">
-            <div class="row">
-                <div class="col s12">
-                    <h6 class="translate sub-title">Manage heat pump (experimental)</h6>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12 m12 l12">
-                    <input type="checkbox" class="value" id="EnableManageSupport" />
-                    <label for="EnableManageSupport" class="translate">Enable support for managing the heat pump</label>
-                    <p><span class="translate">You must pay for it on Nibe Uplink website. Use at your own risk!</span></p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12 m6 l6">
-                    <input class="value" id="ManageId" type="text">
-                    <label for="ManageId" class="translate">Manage ID</label>
-                    <span class="translate">The ID of the management sub-tree in Objects.</span>
-                </div>
-                <div class="input-field col s12 m6 l6">
-                    <input class="value" id="ManageName" type="text">
-                    <label for="ManageName" class="translate">Manage Name</label>
-                    <span class="translate">The name of the management sub-tree in Objects.</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m12 l12">
-                    <button title="Add parameter" class="table-button-add btn-floating waves-effect waves-light btn-small"><i class="material-icons">add</i></button>
-                    <label class="translate">Add a parameter</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m12 l12">
-                    <table class="table-values" style="width: 100%">
-                        <thead>
-                            <tr>                                
-                                <th data-name="unit" data-type="number" style="width: 40px" class="translate">Unit ID</th>
-                                <th data-name="parameter" data-type="number" style="width: 80px"class="translate">Parameter</th>
-                                <th data-name="id" data-type="value" style="width: 150px" class="translate">ID</th>
-                                <th data-name="name" data-type="value" style="width: 200px" class="translate">Name</th>
-                                <th data-buttons="delete" style="width: 40px"></th>                             
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                <div class="col s12 m12 l12">
-                    <p><span class="translate"><b>Unit ID</b>: The unit within the heat pump. Mostly 0, sometimes higher.</span><br>
-                    <span class="translate"><b>Parameter</b>: The number of the parameter. Can be found on the Internet for your heat pump. Between 0 and 65535.</span><br>
-                    <span class="translate"><b>ID / Name</b>: The sub-ID / name in the Objects tree.</span></p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        var id = setInterval(function() { clearInterval(id); generateURL(); }, 1000);
-    </script>
-</body>
-
+        <script>
+            var id = setInterval(function () {
+                clearInterval(id);
+                generateURL();
+            }, 1000);
+        </script>
+    </body>
 </html>
