@@ -49,7 +49,7 @@ https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 ## Changelog
 
-### 1.1.1:
+### 1.1.1 - 2022-04-02:
 - Fix write support (does not send zero) #6 #128
 - Bump dependencies
 
