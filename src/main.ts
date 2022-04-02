@@ -250,13 +250,13 @@ class NibeUplink extends utils.Adapter {
                         const parameterId = parameter.parameterId.toString();
                         const conf = this.config.ManagedParameters.find((x) => x.unit == unit && x.parameter == parameterId);
                         let key;
-                        if (conf != null && conf.id != null) {
+                        if (conf != null && conf.id) {
                             key = conf.id;
                         } else {
                             key = `${unit}_${parameterId}_${parameter.key}`;
                         }
                         let title;
-                        if (conf != null && conf.name != null) {
+                        if (conf != null && conf.name) {
                             title = conf.name;
                         } else {
                             title = parameter.title;
@@ -362,7 +362,14 @@ class NibeUplink extends utils.Adapter {
         if (state != null && state.ack === false && state.val != null && this.fetcher != null) {
             this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
             const obj = await this.getObjectAsync(id);
-            if (obj != null && obj.native != null && obj.native.parameterId != null && obj.native.deviceUnit != null) {
+            if (
+                obj != null &&
+                obj.native != null &&
+                obj.native.parameterId != null &&
+                obj.native.parameterId != '' &&
+                obj.native.deviceUnit != null &&
+                obj.native.deviceUnit != ''
+            ) {
                 const params = {};
                 const parameterId = obj.native.parameterId as number;
                 setProperty(params, parameterId.toString(), state.val.toString());
