@@ -206,13 +206,13 @@ class NibeUplink extends utils.Adapter {
                             // update deprecated subpath values if present (pre 0.4.0):
                             const oldValuePath = `${category.categoryId}.${key}`;
                             this.getObject(oldValuePath, (err, obj) => {
-                                if (obj) {
+                                if (obj != null) {
                                     this.setState(oldValuePath, { val: parameter['value'], ack: true });
                                 }
                             });
                             const oldDisplayPath = `${category.categoryId}.${key}_DISPLAY`;
                             this.getObject(oldDisplayPath, (err, obj) => {
-                                if (obj) {
+                                if (obj != null) {
                                     this.setState(oldDisplayPath, { val: parameter['displayValue'], ack: true });
                                 }
                             });
@@ -220,7 +220,7 @@ class NibeUplink extends utils.Adapter {
                     });
                 });
             });
-            if (data.manageData) {
+            if (data.manageData != null) {
                 const manageName = !this.config.ManageName ? 'Manage' : this.config.ManageName;
                 await createDeviceAsync(this, manageId, manageName);
                 data.manageData.forEach(async (manageData) => {
@@ -229,14 +229,14 @@ class NibeUplink extends utils.Adapter {
                         const parameterId = parameter.parameterId.toString();
                         const conf = this.config.ManagedParameters.find((x) => x.unit == unit && x.parameter == parameterId);
                         let key;
-                        if (conf && conf.id) {
+                        if (conf != null && conf.id != null) {
                             key = conf.id;
                         }
                         else {
                             key = `${unit}_${parameterId}_${parameter.key}`;
                         }
                         let title;
-                        if (conf && conf.name) {
+                        if (conf != null && conf.name != null) {
                             title = conf.name;
                         }
                         else {
@@ -331,10 +331,10 @@ class NibeUplink extends utils.Adapter {
      * Is called if a subscribed state changes
      */
     async onStateChange(id, state) {
-        if (state && state.ack === false && state.val && this.fetcher) {
+        if (state != null && state.ack === false && state.val != null && this.fetcher != null) {
             this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
             const obj = await this.getObjectAsync(id);
-            if (obj && obj.native && obj.native.parameterId && obj.native.deviceUnit) {
+            if (obj != null && obj.native != null && obj.native.parameterId != null && obj.native.deviceUnit != null) {
                 const params = {};
                 const parameterId = obj.native.parameterId;
                 setProperty(params, parameterId.toString(), state.val.toString());
