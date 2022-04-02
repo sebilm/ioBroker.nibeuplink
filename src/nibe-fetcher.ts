@@ -133,7 +133,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
     private auth: Session | null | undefined;
 
     start(): void {
-        if (this.interval) {
+        if (this.interval != null) {
             return;
         }
 
@@ -154,7 +154,9 @@ export class Fetcher extends eventEmitter.EventEmitter {
     }
 
     stop(): void {
-        if (!this.interval) return;
+        if (this.interval == null) {
+            return;
+        }
         clearInterval(this.interval);
         this.interval = null;
     }
@@ -203,7 +205,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
             const allData: Data = {
                 unitData: unitData,
             };
-            if (this.options.enableManage == true && this.options.managedParameters && this.options.managedParameters.length > 0) {
+            if (this.options.enableManage == true && this.options.managedParameters != null && this.options.managedParameters.length > 0) {
                 const parametersByUnit = groupBy(this.options.managedParameters, (x) => x.unit);
                 const parametersGroups = Object.values(parametersByUnit);
                 const allManageData = await Promise.all(
@@ -361,11 +363,11 @@ export class Fetcher extends eventEmitter.EventEmitter {
         this.adapter.log.error(`error from ${suburl}`);
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError;
-            if (axiosError.response) {
+            if (axiosError.response != null) {
                 if (axiosError.response.status == 401) {
                     this.clearSesssion();
                 }
-                if (axiosError.response.data) {
+                if (axiosError.response.data != null) {
                     const responseText = JSON.stringify(axiosError.response.data, null, ' ');
                     const errorMessage = `${axiosError.response.statusText}: ${responseText}`;
                     return new Error(errorMessage);
