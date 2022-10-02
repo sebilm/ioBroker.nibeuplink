@@ -21,7 +21,6 @@ var utils = __toESM(require("@iobroker/adapter-core"));
 var fs = __toESM(require("fs"));
 var path = __toESM(require("path"));
 var fetcher = __toESM(require("./nibe-fetcher"));
-const controllerTools = require(path.join(utils.controllerDir, "lib/tools"));
 Date.prototype.today = function() {
   return this.getFullYear() + "-" + (this.getMonth() + 1 < 10 ? "0" : "") + (this.getMonth() + 1) + "-" + (this.getDate() < 10 ? "0" : "") + this.getDate();
 };
@@ -101,7 +100,7 @@ class NibeUplink extends utils.Adapter {
       this.setState("info.currentError", { val: "Missing settings!", ack: true });
       return;
     }
-    const dataDir = path.normalize(utils.controllerDir + "/" + controllerTools.getDefaultDataDir());
+    const dataDir = path.normalize(utils.controllerDir + "/" + utils.getAbsoluteDefaultDataDir());
     let storeDir = path.join(dataDir, "nibeuplink");
     try {
       if (!fs.existsSync(storeDir)) {
