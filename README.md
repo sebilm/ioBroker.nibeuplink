@@ -48,6 +48,9 @@ You can read other values but I think you can't write other values. Other values
 https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 ## Changelog
+### **WORK IN PROGRESS**
+- Update some files from up-to-date adapter creator
+- Bump dependencies
 
 ### 1.1.1 - 2022-04-02:
 - Fix write support (does not send zero) #6 #128

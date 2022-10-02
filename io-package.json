@@ -86,8 +86,8 @@
         },
         "desc": {
             "en": "With this adapter data of a Nibe heat pump can be read from Nibe Uplink.",
-            "de": "Mit diesem Adapter können Daten einer Nibe Wärmepumpe aus Nibe Uplink gelesen werden.",
-            "ru": "С помощью этого адаптера данные теплового насоса Nibe могут быть прочитаны из Nibe Uplink.",
+            "de": "Mit diesem Adapter können Daten einer Nibe-Wärmepumpe von Nibe Uplink ausgelesen werden.",
+            "ru": "С помощью этого адаптера данные теплового насоса Nibe можно считывать с Nibe Uplink.",
             "pt": "Com este adaptador, os dados de uma bomba de calor Nibe podem ser lidos no Nibe Uplink.",
             "nl": "Met deze adapter kunnen gegevens van een Nibe warmtepomp uit Nibe Uplink worden uitgelezen.",
             "fr": "Avec cet adaptateur, les données d'une pompe à chaleur Nibe peuvent être lues à partir de Nibe Uplink.",
