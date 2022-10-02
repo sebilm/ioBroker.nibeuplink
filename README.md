@@ -49,14 +49,15 @@ https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 ## Changelog
 ### **WORK IN PROGRESS**
+- Requires js-controller >= 3.3.22 and admin >= 5.0.0
 - Update some files from up-to-date adapter creator
 - Bump dependencies
 
-### 1.1.1 - 2022-04-02:
+### 1.1.1 - 2022-04-02
 - Fix write support (does not send zero) #6 #128
 - Bump dependencies
 
-### 1.1.0 - 2022-02-06:
+### 1.1.0 - 2022-02-06
 
 - Switch to TypeScript
 - Use axios instead of wreck
