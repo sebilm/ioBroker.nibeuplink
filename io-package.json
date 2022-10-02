@@ -1,218 +1,190 @@
 {
-    "common": {
-        "name": "nibeuplink",
-        "version": "1.1.1",
-        "news": {
-            "1.1.1": {
-                "en": "Fix write support (does not send zero) #6 #128\nBump dependencies"
-            },
-            "1.1.0": {
-                "en": "Switch to TypeSctipt\nuse axios instead of wreck"
-            },
-            "1.0.1": {
-                "en": "Fix write support #6"
-            },
-            "1.0.0": {
-                "en": "Support to manage Nibe heat pump (write support #6)"
-            },
-            "0.5.3": {
-                "en": "Bump dependencies"
-            },
-            "0.5.2": {
-                "en": "Change default callback URL to own GitHub Pages\nBump dependencies"
-            },
-            "0.5.1": {
-                "en": "Store 'no current connection error' as empty string, not null"
-            },
-            "0.5.0": {
-                "en": "Add new connection types\nSupported node.js versions >=12.0.0 <17\nBugfixes"
-            },
-            "0.4.0": {
-                "en": "set required js-controller to >=2.0.0\nsupport for compact mode enabled\nmore bugfixes and changes - see readme"
-            },
-            "0.3.0": {
-                "en": "Compact mode disabled\nSupport for Node 6 removed\nBugfixing",
-                "de": "Compact mode deaktiviert\nNode 6 wird nicht mehr unterstützt\nFehlerbehebung"
-            },
-            "0.2.2": {
-                "en": "Internal clean-up",
-                "de": "Interne Aufräumarbeiten"
-            },
-            "0.2.1": {
-                "en": "Dependencies update\nFix problem with nodejs 6 and the spread operator and async",
-                "de": "Abhängigkeiten aktualisiert\nProblem mit nodejs 6 und dem Spread-Operator und async gelöst"
-            },
-            "0.2.0": {
-                "en": "Code change to new template\nSupport for Compact mode added (#1)\nTranslations in settings page\nType moved from general to climate control",
-                "de": "Code anhand des neuen Templates geändert\nSupport für Compact mode (#1)\nÜbersetzungen in den Einstellungen\nder Typ wurde von Allgemein zu Klimakontrolle geändert"
-            },
-            "0.1.1": {
-                "en": "info.connection added\ndo not create deprecated sub path objects",
-                "de": "info.connection hinzugefügt\nveraltete Unterpfade werden nicht mehr angelegt"
-            },
-            "0.1.0": {
-                "en": "Objects tree changed: New, more readable objects added",
-                "de": "Objektbaum wurde geändert: Neue, besser lesbare Objekte wurden hinzugefügt"
-            },
-            "0.0.2": {
-                "en": "Language support for objects tree",
-                "de": "Unterstützung von Sprachen im Objektbaum"
-            },
-            "0.0.1": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Начальная версия",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "zh-cn": "首次出版"
-            }
-        },
-        "title": "Nibe Uplink",
-        "titleLang": {
-            "en": "Nibe Uplink",
-            "de": "Nibe Uplink",
-            "ru": "Nibe Uplink",
-            "pt": "Nibe Uplink",
-            "nl": "Nibe Uplink",
-            "fr": "Nibe Uplink",
-            "it": "Nibe Uplink",
-            "es": "Nibe Uplink",
-            "pl": "Nibe Uplink",
-            "zh-cn": "Nibe Uplink"
-        },
-        "desc": {
-            "en": "With this adapter data of a Nibe heat pump can be read from Nibe Uplink.",
-            "de": "Mit diesem Adapter können Daten einer Nibe-Wärmepumpe von Nibe Uplink ausgelesen werden.",
-            "ru": "С помощью этого адаптера данные теплового насоса Nibe можно считывать с Nibe Uplink.",
-            "pt": "Com este adaptador, os dados de uma bomba de calor Nibe podem ser lidos no Nibe Uplink.",
-            "nl": "Met deze adapter kunnen gegevens van een Nibe warmtepomp uit Nibe Uplink worden uitgelezen.",
-            "fr": "Avec cet adaptateur, les données d'une pompe à chaleur Nibe peuvent être lues à partir de Nibe Uplink.",
-            "it": "Con questo adattatore i dati di una pompa di calore Nibe possono essere letti da Nibe Uplink.",
-            "es": "Con este adaptador, los datos de una bomba de calor Nibe se pueden leer desde Nibe Uplink.",
-            "pl": "Za pomocą tego adaptera dane pompy ciepła Nibe można odczytać z Nibe Uplink.",
-            "zh-cn": "使用此适配器，可以从 Nibe Uplink 读取 Nibe 热泵的数据。"
-        },
-        "authors": ["Sebastian Haesselbarth <seb@sebmail.de>"],
-        "keywords": ["ioBroker", "Smart Home", "home automation", "nibeuplink", "nibe", "heat pump"],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "build/main.js",
-        "icon": "nibeuplink.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/sebilm/ioBroker.nibeuplink/master/admin/nibeuplink.png",
-        "readme": "https://github.com/sebilm/ioBroker.nibeuplink/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "climate-control",
-        "compact": true,
-        "connectionType": "cloud",
-        "dataSource": "poll",
-        "adminUI": {
-            "config": "materialize"
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=3.3.22"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=5.0.0"
-            }
-        ]
+  "common": {
+    "name": "nibeuplink",
+    "version": "1.2.0",
+    "news": {
+      "1.2.0": {
+        "en": "Requires js-controller >= 3.3.22 and admin >= 5.0.0\nUpdate some files from up-to-date adapter creator\nBump dependencies",
+        "de": "Erfordert js-controller >= 3.3.22 und admin >= 5.0.0\nAktualisieren Sie einige Dateien vom aktuellen Adapter-Ersteller\nBump-Abhängigkeiten",
+        "ru": "Требуется JS-контроллер >= 3.3.22 и админ >= 5.0.0\nОбновление некоторых файлов от современного создателя адаптера\nBump зависимости",
+        "pt": "Requer js-controller >= 3.3.22 e admin >= 5.0.0\nAtualize alguns arquivos do criador de adaptador atualizado\nDependências de Bump",
+        "nl": "Verzoek js-controller 3,3,22 en Admin 5.0\nUpdate wat dossiers van up-to-date adapter creator\nBump afhankelijkheid",
+        "fr": "Nécessite js-contrôleur > 3.3.22 et admin > 5.0.0\nMettre à jour certains fichiers du créateur d'adaptateur à jour\nDépendance de la masse",
+        "it": "Richiede js-controller >= 3.3.22 e admin >= 5.0.0\nAggiornare alcuni file dal creatore dell'adattatore aggiornato\nDipendenze di bump",
+        "es": "Requiere js-controller >= 3.3.22 y admin\nActualizar algunos archivos del creador de adaptador actualizado\nDependencias de bombas",
+        "pl": "Wymaga js-controller >= 3,3.22 i admin >= 5.0.0\nUpdate niektóre pliki z aktualizatora\nZależności Bump",
+        "zh-cn": "要求控制力行李:=3.3.22和注释>=5.0.0\n最新材料\nB 倾销依赖"
+      },
+      "1.1.1": {
+        "en": "Fix write support (does not send zero) #6 #128\nBump dependencies"
+      },
+      "1.1.0": {
+        "en": "Switch to TypeSctipt\nuse axios instead of wreck"
+      },
+      "1.0.1": {
+        "en": "Fix write support #6"
+      },
+      "1.0.0": {
+        "en": "Support to manage Nibe heat pump (write support #6)"
+      },
+      "0.5.3": {
+        "en": "Bump dependencies"
+      },
+      "0.5.2": {
+        "en": "Change default callback URL to own GitHub Pages\nBump dependencies"
+      }
     },
-    "native": {
-        "Identifier": "",
-        "Secret": "",
-        "CallbackURL": "https://sebilm.github.io/ioBroker.nibeuplink/nibe.html",
-        "AuthCode": "",
-        "SystemId": 0,
-        "Interval": 1,
-        "Language": "en",
-        "EnableManageSupport": false,
-        "ManageId": "MANAGE",
-        "ManageName": "",
-        "ManagedParameters": [],
-        "Configured": false
+    "title": "Nibe Uplink",
+    "titleLang": {
+      "en": "Nibe Uplink",
+      "de": "Nibe Uplink",
+      "ru": "Nibe Uplink",
+      "pt": "Nibe Uplink",
+      "nl": "Nibe Uplink",
+      "fr": "Nibe Uplink",
+      "it": "Nibe Uplink",
+      "es": "Nibe Uplink",
+      "pl": "Nibe Uplink",
+      "zh-cn": "Nibe Uplink"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "name": "Connected to Nibe Uplink",
-                "role": "indicator.connected",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.currentError",
-            "type": "state",
-            "common": {
-                "name": "Current Error",
-                "role": "text",
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": ""
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.updateTime",
-            "type": "state",
-            "common": {
-                "name": "Time of the last update",
-                "role": "text",
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": ""
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.lastError",
-            "type": "state",
-            "common": {
-                "name": "Last Error",
-                "role": "text",
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": ""
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.lastErrorTime",
-            "type": "state",
-            "common": {
-                "name": "Time of the last error",
-                "role": "text",
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": ""
-            },
-            "native": {}
-        }
+    "desc": {
+      "en": "With this adapter data of a Nibe heat pump can be read from Nibe Uplink.",
+      "de": "Mit diesem Adapter können Daten einer Nibe-Wärmepumpe von Nibe Uplink ausgelesen werden.",
+      "ru": "С помощью этого адаптера данные теплового насоса Nibe можно считывать с Nibe Uplink.",
+      "pt": "Com este adaptador, os dados de uma bomba de calor Nibe podem ser lidos no Nibe Uplink.",
+      "nl": "Met deze adapter kunnen gegevens van een Nibe warmtepomp uit Nibe Uplink worden uitgelezen.",
+      "fr": "Avec cet adaptateur, les données d'une pompe à chaleur Nibe peuvent être lues à partir de Nibe Uplink.",
+      "it": "Con questo adattatore i dati di una pompa di calore Nibe possono essere letti da Nibe Uplink.",
+      "es": "Con este adaptador, los datos de una bomba de calor Nibe se pueden leer desde Nibe Uplink.",
+      "pl": "Za pomocą tego adaptera dane pompy ciepła Nibe można odczytać z Nibe Uplink.",
+      "zh-cn": "使用此适配器，可以从 Nibe Uplink 读取 Nibe 热泵的数据。"
+    },
+    "authors": [
+      "Sebastian Haesselbarth <seb@sebmail.de>"
+    ],
+    "keywords": [
+      "ioBroker",
+      "Smart Home",
+      "home automation",
+      "nibeuplink",
+      "nibe",
+      "heat pump"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "build/main.js",
+    "icon": "nibeuplink.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/sebilm/ioBroker.nibeuplink/master/admin/nibeuplink.png",
+    "readme": "https://github.com/sebilm/ioBroker.nibeuplink/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "climate-control",
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "poll",
+    "adminUI": {
+      "config": "materialize"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=3.3.22"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=5.0.0"
+      }
     ]
+  },
+  "native": {
+    "Identifier": "",
+    "Secret": "",
+    "CallbackURL": "https://sebilm.github.io/ioBroker.nibeuplink/nibe.html",
+    "AuthCode": "",
+    "SystemId": 0,
+    "Interval": 1,
+    "Language": "en",
+    "EnableManageSupport": false,
+    "ManageId": "MANAGE",
+    "ManageName": "",
+    "ManagedParameters": [],
+    "Configured": false
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "name": "Connected to Nibe Uplink",
+        "role": "indicator.connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.currentError",
+      "type": "state",
+      "common": {
+        "name": "Current Error",
+        "role": "text",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.updateTime",
+      "type": "state",
+      "common": {
+        "name": "Time of the last update",
+        "role": "text",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.lastError",
+      "type": "state",
+      "common": {
+        "name": "Last Error",
+        "role": "text",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.lastErrorTime",
+      "type": "state",
+      "common": {
+        "name": "Time of the last error",
+        "role": "text",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    }
+  ]
 }
