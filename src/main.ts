@@ -136,7 +136,7 @@ class NibeUplink extends utils.Adapter {
             return;
         }
 
-        const dataDir: string = path.normalize(utils.controllerDir + '/' + utils.getAbsoluteDefaultDataDir());
+        const dataDir: string = utils.getAbsoluteDefaultDataDir();
         let storeDir: string = path.join(dataDir, 'nibeuplink');
         try {
             // create directory
