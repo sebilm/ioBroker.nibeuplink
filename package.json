@@ -1,6 +1,6 @@
 {
   "name": "iobroker.nibeuplink",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "With this adapter data of a Nibe heat pump can be read from Nibe Uplink.",
   "author": {
     "name": "Sebastian Haesselbarth",

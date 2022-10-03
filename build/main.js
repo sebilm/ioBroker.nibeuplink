@@ -100,7 +100,7 @@ class NibeUplink extends utils.Adapter {
       this.setState("info.currentError", { val: "Missing settings!", ack: true });
       return;
     }
-    const dataDir = path.normalize(utils.controllerDir + "/" + utils.getAbsoluteDefaultDataDir());
+    const dataDir = utils.getAbsoluteDefaultDataDir();
     let storeDir = path.join(dataDir, "nibeuplink");
     try {
       if (!fs.existsSync(storeDir)) {

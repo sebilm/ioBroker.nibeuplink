@@ -1,11 +1,13 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "1.2.0",
+        "version": "1.2.1",
         "news": {
+            "1.2.1": {
+                "en": "Fix getting data directory"
+            },
             "1.2.0": {
-                "en": "Requires js-controller >= 3.3.22 and admin >= 5.0.0\nUpdate some files from up-to-date adapter creator\nBump dependencies",
-                "de": "Erfordert js-controller >= 3.3.22 und Admin >= 5.0.0\nEinige Dateien vom aktuellen Adapter Creator wurden aktualisiert\nAbhängigkeiten angehoben"
+                "en": "Requires js-controller >= 3.3.22 and admin >= 5.0.0\nUpdate some files from up-to-date adapter creator\nBump dependencies"
             },
             "1.1.1": {
                 "en": "Fix write support (does not send zero) #6 #128\nBump dependencies"
@@ -21,9 +23,6 @@
             },
             "0.5.3": {
                 "en": "Bump dependencies"
-            },
-            "0.5.2": {
-                "en": "Change default callback URL to own GitHub Pages\nBump dependencies"
             }
         },
         "title": "Nibe Uplink",

@@ -48,7 +48,7 @@ You can read other values but I think you can't write other values. Other values
 https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.2.1 (2022-10-03)
 - Fix getting data directory
 
 ### 1.2.0 (2022-10-02)
