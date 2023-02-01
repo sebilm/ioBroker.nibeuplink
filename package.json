@@ -29,7 +29,7 @@
     "node": ">= 14"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.6.6",
+    "@iobroker/adapter-core": "^2.6.7",
     "@types/jsonfile": "^6.1.0",
     "axios": "^0.27.2",
     "jsonfile": "^6.1.0"
