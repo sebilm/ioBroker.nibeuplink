@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "nibeuplink",
-        "version": "1.2.1",
+        "version": "1.2.2",
         "news": {
+            "1.2.2": {
+                "en": "Bump dependencies"
+            },
             "1.2.1": {
                 "en": "Fix getting data directory"
             },
@@ -20,9 +23,6 @@
             },
             "1.0.0": {
                 "en": "Support to manage Nibe heat pump (write support #6)"
-            },
-            "0.5.3": {
-                "en": "Bump dependencies"
             }
         },
         "title": "Nibe Uplink",
