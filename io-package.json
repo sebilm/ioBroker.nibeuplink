@@ -36,6 +36,7 @@
             "it": "Nibe Uplink",
             "es": "Nibe Uplink",
             "pl": "Nibe Uplink",
+            "uk": "Nibe Uplink",
             "zh-cn": "Nibe Uplink"
         },
         "desc": {
@@ -48,10 +49,11 @@
             "it": "Con questo adattatore i dati di una pompa di calore Nibe possono essere letti da Nibe Uplink.",
             "es": "Con este adaptador, los datos de una bomba de calor Nibe se pueden leer desde Nibe Uplink.",
             "pl": "Za pomocą tego adaptera dane pompy ciepła Nibe można odczytać z Nibe Uplink.",
+            "uk": "За допомогою цього адаптера дані теплового насоса Nibe можна зчитувати з Nibe Uplink.",
             "zh-cn": "使用此适配器，可以从 Nibe Uplink 读取 Nibe 热泵的数据。"
         },
         "authors": ["Sebastian Haesselbarth <seb@sebmail.de>"],
-        "keywords": ["ioBroker", "Smart Home", "home automation", "nibeuplink", "nibe", "heat pump"],
+        "keywords": ["nibeuplink", "nibe", "heat pump"],
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "build/main.js",
