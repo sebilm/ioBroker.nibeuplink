@@ -49,7 +49,7 @@ You can read other values but I think you can't write other values. Other values
 https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.3.0 (2023-08-27)
 - Remove NodeJS 14 support
 - Support strings as parameters in the management #241
 - Bump dependencies
