@@ -245,7 +245,7 @@ class NibeUplink extends utils.Adapter {
                 data.manageData.forEach(async (manageData) => {
                     const unit = manageData.unit;
                     manageData.parameters.forEach(async (parameter) => {
-                        const parameterId = parameter.parameterId.toString();
+                        const parameterId = parameter.name.toString(); // name => number or string name
                         const conf = this.config.ManagedParameters.find((x) => x.unit == unit && x.parameter == parameterId);
                         let key;
                         if (conf != null && conf.id) {
