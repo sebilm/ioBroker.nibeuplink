@@ -44,7 +44,12 @@ export interface ManageData {
 
 interface Session extends nibeDto.Session {
     expires_at?: number;
+    expires_in?: number;
     authCode?: string;
+    access_token?: string;
+    refresh_token?: string;
+    token_type?: string;
+    scope?: string;
 }
 
 const consts = {
@@ -82,10 +87,6 @@ Array.prototype.inPartsOf = function <T>(number: number) {
     return result;
 };
 
-function getProperty<T, K extends keyof T>(obj: T, propertyName: K): T[K] {
-    return obj[propertyName];
-}
-
 function groupBy<T, K extends keyof any>(list: T[], getKey: (item: T) => K): Record<K, T[]> {
     return list.reduce((previous, currentItem) => {
         const group = getKey(currentItem);
@@ -93,22 +94,6 @@ function groupBy<T, K extends keyof any>(list: T[], getKey: (item: T) => K): Rec
         previous[group].push(currentItem);
         return previous;
     }, {} as Record<K, T[]>);
-}
-
-/**
- * Parse the string as int to number. If it is NaN, it returns the default value.
- * If the default value is not given, it is 0.
- * @param str The string to parse.
- * @param def The default value. The default default value is 0.
- * @returns The parsed number or the default value if the parse result is NaN.
- */
-function parseIntOrDefault(str: string, def = 0): number {
-    const num = parseInt(str);
-    if (isNaN(num)) {
-        return def;
-    } else {
-        return num;
-    }
 }
 
 export class Fetcher extends eventEmitter.EventEmitter {
@@ -211,7 +196,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
                 const allManageData = await Promise.all(
                     parametersGroups.map(async (group) => {
                         const unit = group[0].unit;
-                        const parameters = group.map((x) => parseIntOrDefault(x.parameter));
+                        const parameters = group.map((x) => x.parameter);
                         const result = await this.fetchParams(unit, parameters);
                         this.processParams(result);
                         const manageData: ManageData = {
@@ -247,7 +232,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
         this.adapter.log.debug('Refresh token.');
         const data = {
             grant_type: 'refresh_token',
-            refresh_token: this.getSession('refresh_token'),
+            refresh_token: this.getSessionRefreshToken(),
             client_id: this.options.clientId,
             client_secret: this.options.clientSecret,
         };
@@ -287,10 +272,10 @@ export class Fetcher extends eventEmitter.EventEmitter {
         return categories;
     }
 
-    private async fetchParams(unit: string, parameters: number[]): Promise<nibeDto.Parameter[]> {
+    private async fetchParams(unit: string, parameters: string[]): Promise<nibeDto.Parameter[]> {
         this.adapter.log.debug(`Fetch params ${parameters} of unit ${unit}.`);
         const result = await Promise.all(
-            parameters.inPartsOf<number>(15).map(async (p) => {
+            parameters.inPartsOf<string>(15).map(async (p) => {
                 const paramStr = p.join('&parameterIds=');
                 const url = `parameters?parameterIds=${paramStr}&systemUnitId=${unit}`;
                 return await this.getFromNibeuplink<nibeDto.Parameter[]>(url);
@@ -299,7 +284,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
         return result.flat();
     }
 
-    async getParams(unit: string, parameters: number[]): Promise<void> {
+    async getParams(unit: string, parameters: string[]): Promise<void> {
         const result = await this.fetchParams(unit, parameters);
         this.processParams(result);
         const manageData: ManageData = {
@@ -329,7 +314,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
         try {
             const { data } = await axios.get<T>(url, {
                 headers: {
-                    Authorization: 'Bearer ' + this.getSession('access_token'),
+                    Authorization: 'Bearer ' + this.getSessionAccessToken(),
                     'Accept-Language': lang,
                 },
             });
@@ -350,7 +335,7 @@ export class Fetcher extends eventEmitter.EventEmitter {
         try {
             await axios.put(url, body, {
                 headers: {
-                    Authorization: 'Bearer ' + this.getSession('access_token'),
+                    Authorization: 'Bearer ' + this.getSessionAccessToken(),
                     'Accept-Language': lang,
                 },
             });
@@ -431,12 +416,36 @@ export class Fetcher extends eventEmitter.EventEmitter {
         this.auth = jsonfile.readFileSync(this.options.sessionStore, { throws: false });
     }
 
-    private getSession(key: keyof Session): string | number | undefined | null {
-        this.adapter.log.silly('Get session.');
+    private getSessionAuthCode(): string | undefined | null {
+        this.adapter.log.silly('Get session authCode.');
         if (this.auth == null) {
             this.readSession();
         }
-        return this.auth ? getProperty(this.auth, key) : null;
+        return this.auth ? this.auth.authCode : null;
+    }
+
+    private getSessionAccessToken(): string | undefined | null {
+        this.adapter.log.silly('Get session access_token.');
+        if (this.auth == null) {
+            this.readSession();
+        }
+        return this.auth ? this.auth.access_token : null;
+    }
+
+    private getSessionRefreshToken(): string | undefined | null {
+        this.adapter.log.silly('Get session refresh_token.');
+        if (this.auth == null) {
+            this.readSession();
+        }
+        return this.auth ? this.auth.refresh_token : null;
+    }
+
+    private getSessionExpires(): number | undefined | null {
+        this.adapter.log.silly('Get session expires.');
+        if (this.auth == null) {
+            this.readSession();
+        }
+        return this.auth ? this.auth.expires_at : null;
     }
 
     private setSesssion(auth: Session): void {
@@ -457,19 +466,20 @@ export class Fetcher extends eventEmitter.EventEmitter {
     }
 
     private hasNewAuthCode(): boolean {
-        const hasNewAuthCode = this.getSession('authCode') != null && this.getSession('authCode') != this.options.authCode;
+        const authCode = this.getSessionAuthCode();
+        const hasNewAuthCode = authCode != null && authCode != this.options.authCode;
         this.adapter.log.debug('Has new auth code: ' + hasNewAuthCode);
         return hasNewAuthCode;
     }
 
     private isTokenExpired(): boolean {
-        const expired = (this.getSession('expires_at') || 0) < Date.now() + consts.renewBeforeExpiry;
+        const expired = (this.getSessionExpires() || 0) < Date.now() + consts.renewBeforeExpiry;
         this.adapter.log.debug('Is token expired: ' + expired);
         return expired;
     }
 
     private hasRefreshToken(): boolean {
-        const hasToken = !!this.getSession('refresh_token');
+        const hasToken = !!this.getSessionRefreshToken();
         this.adapter.log.debug('Has refresh token: ' + hasToken);
         return hasToken;
     }

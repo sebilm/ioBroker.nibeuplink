@@ -1,7 +1,1 @@
-{
-  "version": 3,
-  "sources": ["../src/nibeDto.ts"],
-  "sourcesContent": ["export interface Session {\n    token_type?: string;\n    access_token?: string;\n    refresh_token?: string;\n    scope?: string;\n    expires_in?: number;\n}\n\nexport interface SystemUnit {\n    systemUnitId: number;\n    name: string;\n    shortName: string;\n    product: string;\n    softwareVersion: string;\n    categories?: Category[]; // no nibe api property\n}\n\nexport interface Parameter {\n    parameterId: number;\n    name: string;\n    title: string;\n    designation: string;\n    unit: string;\n    displayValue: string;\n    rawValue: number;\n    key?: string; // no nibe api property\n    divideBy?: number; // no nibe api property\n    value?: number; // no nibe api property\n}\n\nexport interface Category {\n    categoryId: string;\n    name: string;\n    parameters: Parameter[];\n}\n"],
-  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
-  "names": []
-}
+{"version":3,"file":"nibeDto.js","sourceRoot":"","sources":["../src/nibeDto.ts"],"names":[],"mappings":""}
