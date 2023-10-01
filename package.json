@@ -31,7 +31,7 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.8",
     "@types/jsonfile": "^6.1.1",
-    "axios": "^1.4.0",
+    "axios": "^1.5.1",
     "jsonfile": "^6.1.0"
   },
   "devDependencies": {
