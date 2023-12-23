@@ -59,13 +59,17 @@ Array.prototype.inPartsOf = function(number) {
   return result;
 };
 function groupBy(list, getKey) {
-  return list.reduce((previous, currentItem) => {
-    const group = getKey(currentItem);
-    if (!previous[group])
-      previous[group] = [];
-    previous[group].push(currentItem);
-    return previous;
-  }, {});
+  return list.reduce(
+    (previous, currentItem) => {
+      const group = getKey(currentItem);
+      if (!previous[group]) {
+        previous[group] = [];
+      }
+      previous[group].push(currentItem);
+      return previous;
+    },
+    {}
+  );
 }
 class Fetcher extends eventEmitter.EventEmitter {
   constructor(options, adapter) {
