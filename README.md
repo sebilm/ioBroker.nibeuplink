@@ -177,7 +177,7 @@ https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 MIT License
 
-Copyright (c) 2023 Sebastian Häßelbarth <seb@sebmail.de>
+Copyright (c) 2024 Sebastian Häßelbarth <seb@sebmail.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
