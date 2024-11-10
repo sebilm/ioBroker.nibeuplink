@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "nibeuplink",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "news": {
+      "1.3.2": {
+        "en": "The nibeuplink API has been officially discontinued! For this reason, this ioBroker adapter will not be developed any further! Please use the myUplink adapter!\nDependencies have been updated",
+        "de": "Die Nibeuplink API wurde offiziell eingestellt! Aus diesem Grund wird dieser ioBroker Adapter nicht weiter entwickelt! Bitte nutzen Sie den myUplink Adapter!\nAbhängigkeiten wurden aktualisiert",
+        "ru": "Nibeuplink API был официально прекращен! По этой причине этот адаптер ioBroker больше не будет разработан! Пожалуйста, используйте адаптер myUplink!\nЗависимость обновлена",
+        "pt": "A API de nibeuplink foi oficialmente descontinuada! Por esta razão, este adaptador ioBroker não será desenvolvido mais! Por favor, use o adaptador myUplink!\nAs dependências foram atualizadas",
+        "nl": "De nibeuplink API is officieel stopgezet! Om deze reden zal deze ioBroker adapter niet verder ontwikkeld worden! Gebruik de myUplink adapter!\nAfhankelijkheden zijn bijgewerkt",
+        "fr": "L'API de nibeuplink a été officiellement abandonnée ! Pour cette raison, cet adaptateur ioBroker ne sera pas développé plus loin! Veuillez utiliser l'adaptateur myUplink!\nLes dépendances ont été actualisées",
+        "it": "L'API nibeuplink è stata ufficialmente interrotta! Per questo motivo, questo adattatore ioBroker non sarà ulteriormente sviluppato! Si prega di utilizzare l'adattatore myUplink!\nLe dipendenze sono state aggiornate",
+        "es": "¡La API de nibeuplink ha sido suspendida oficialmente! Por esta razón, este adaptador de ioBroker no se desarrollará más! ¡Por favor, usa el adaptador myUplink!\nSe han actualizado las dependencias",
+        "pl": "API Nibeuplink zostało oficjalnie przerwane! Z tego powodu ten adapter joBroker nie będzie dalej rozwijany! Proszę użyć adaptera myUplink!\nZaktualizowano zależności",
+        "uk": "Неперевершено API nibeuplink! З цієї причини цей адаптер ioBroker не буде розвиватися далі! Будь ласка, використовуйте адаптер myUplink!\nЗалежність було оновлено",
+        "zh-cn": "Nibeuplink API正式停办! 由于这个原因,这个ioBroker适配器不会再被开发了! 请使用 MyUplink 适配器!\n依赖关系已更新"
+      },
       "1.3.1": {
         "en": "Bump dependencies"
       },
@@ -30,9 +43,6 @@
       },
       "1.1.1": {
         "en": "Fix write support (does not send zero) #6 #128\nBump dependencies"
-      },
-      "1.1.0": {
-        "en": "Switch to TypeSctipt\nuse axios instead of wreck"
       }
     },
     "title": "Nibe Uplink",

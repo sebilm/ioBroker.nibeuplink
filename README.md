@@ -51,8 +51,7 @@ You can read other values but I think you can't write other values. Other values
 https://github.com/sebilm/ioBroker.nibeuplink/blob/master/nibe-fetcher.js#L41
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 1.3.2 (2024-11-10)
 - The nibeuplink API has been officially discontinued! For this reason, this ioBroker adapter will not be developed any further! Please use the myUplink adapter!
 - Dependencies have been updated
 

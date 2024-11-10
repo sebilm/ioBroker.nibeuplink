@@ -18,6 +18,10 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
@@ -418,6 +422,29 @@ class Fetcher extends eventEmitter.EventEmitter {
   _onError(error) {
     this.emit("error", error);
   }
+  // async _getAndWriteAllParameters() {
+  //     let par = {};
+  //     for (let i = 40000; i < 50000; i = i + 15) {
+  //         let url = `parameters?parameterIds=${i}`;
+  //         for (let j = 1; j < 15; j++) {
+  //             url = url + `&parameterIds=${i + j}`;
+  //         }
+  //         let raw = await this.getFromNibeuplink(url, 'en');
+  //         this.adapter.log.info(`${i}: ${raw.length}`);
+  //         this.processParams(raw, true);
+  //         raw.forEach((item) => {
+  //             if (item.key != '') {
+  //                 if (item.divideBy != null) {
+  //                     par[`${item.parameterId}`] = { key: item.key, divideBy: item.divideBy };
+  //                 } else {
+  //                     par[`${item.parameterId}`] = { key: item.key };
+  //                 }
+  //             }
+  //         });
+  //     }
+  //     jsonfile.writeFileSync(path.join(__dirname, './parameters40.json'), par, { spaces: 2 });
+  //     this.stop();
+  // }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
